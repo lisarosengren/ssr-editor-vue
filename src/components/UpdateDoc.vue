@@ -1,5 +1,5 @@
 <script>
-  import { getAll } from '@/models/docs';
+  import { update } from '@/models/docs';
 
 
   export default {

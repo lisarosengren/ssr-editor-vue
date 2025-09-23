@@ -5,11 +5,11 @@ const baseURL = import.meta.env.VITE_API_URL;
  * @returns {object} result Returns JSON response from the API
  */
 export async function getAll() {
-        const response = await fetch(baseURL);
-        const result = await response.json();
+    const response = await fetch(baseURL);
+    const result = await response.json();
 
-        return result
-    }
+    return result;
+}
 
 /**
  * Updates a document
@@ -21,7 +21,7 @@ export async function updateDoc(docToUpdate) {
     const response = await fetch(baseURL, {
         body: JSON.stringify(docToUpdate),
         headers: {
-            'content-type': 'application/json'            
+            'content-type': 'application/json'
         },
         method: 'PUT'
     });
@@ -29,8 +29,16 @@ export async function updateDoc(docToUpdate) {
     return response;
 }
 
+/**
+ * Gets an entry from the database
+ * @param {string} id the id of the database entry 
+ * @returns the API response, the id, the title and the content
+ */
 export async function getOne(id) {
+    const response = await fetch(`${baseURL}/${id}`);
+    const result = await response.json();
 
+    return result;
 }
 
 

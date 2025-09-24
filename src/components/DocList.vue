@@ -1,7 +1,7 @@
 <script>
   import { getAll } from '@/models/docs';
 
-  
+
   export default {
     data() {
       return {
@@ -9,7 +9,13 @@
       };
     },
     async mounted() {
+        console.log("Component mounted");
       this.allDocs = await getAll();
+    },
+    methods: {
+      onClick() {
+        console.log("Clicked")
+      }
     }
   };
 
@@ -19,12 +25,12 @@
 
 
 <template>
-
-  <li v-for="(entry) in allDocs" :key="entry._id">
-    <router-link :to="`/${ entry._id }`">{{ entry.title }}</router-link>
-
-
-  </li>
+  <ul>
+    <li v-for="(entry) in allDocs" :key="entry._id">
+      <router-link :to="`/${ entry._id }`" @click="onClick">{{ entry.title }}</router-link>
+        <button @click="onClick">Test Click</button>
+    </li>
+  </ul>
 </template>
 
 <style scoped>

@@ -18,7 +18,7 @@ export async function getAll() {
  */
 export async function updateDoc(docToUpdate) {
 
-    const response = await fetch(baseURL, {
+    const response = await fetch(`${baseURL}/update`, {
         body: JSON.stringify(docToUpdate),
         headers: {
             'content-type': 'application/json'

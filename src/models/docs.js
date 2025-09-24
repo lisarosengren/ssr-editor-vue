@@ -6,6 +6,10 @@ const baseURL = import.meta.env.VITE_API_URL;
  */
 export async function getAll() {
     const response = await fetch(baseURL);
+    if (!response.ok) {
+        console.log(response);
+        throw new Error("Database error");
+    }
     const result = await response.json();
 
     return result;
@@ -36,7 +40,7 @@ export async function updateDoc(docToUpdate) {
 /**
  * Gets an entry from the database
  * @param {string} id the id of the database entry 
- * @returns {object} response - the original response from fetch, result - the document data
+ * @returns {object} result the document data
  */
 export async function getOne(id) {
     const response = await fetch(`${baseURL}/${id}`);
@@ -45,10 +49,32 @@ export async function getOne(id) {
         console.log(result);
         throw new Error("Database error");    
     }
-    
+
     return result;
 }
 
+/**
+ * Creates a new document in the database
+ * @param {object} body the title and the content of the new document
+ * @returns {object} the response from the API
+ */
+export async function newDoc(newDocData) {
 
-const docs = { getAll, updateDoc, getOne }
+    const response = await fetch(`${baseURL}/`, {
+        body: JSON.stringify(newDocData),
+        headers: {
+            'content-type': 'application/json'
+        },
+        method: 'POST'
+    });
+    if (!response.ok) {
+        console.log(response);
+        throw new Error("Database error");
+    }
+    const result = await response.json()
+    
+    return result.insertedId;
+}
+
+const docs = { getAll, updateDoc, getOne, newDoc }
 export default docs;

@@ -9,7 +9,12 @@
       };
     },
     async mounted() {
+      try {
       this.allDocs = await getAll();
+      } catch (e) {
+        console.log(e)
+        this.$router.push('/fail')
+      }
     },
     methods: {
       onClick() {
@@ -27,7 +32,6 @@
   <ul>
     <li v-for="(entry) in allDocs" :key="entry._id">
       <router-link :to="`/${ entry._id }`" @click="onClick">{{ entry.title }}</router-link>
-        <button @click="onClick">Test Click</button>
     </li>
   </ul>
 </template>

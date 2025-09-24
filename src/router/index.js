@@ -1,20 +1,20 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import DocList from '@/components/DocList.vue'
+import HomeView from '@/views/HomeView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      name: 'Listan',
-      component: DocList,
+      name: 'Öppna dokument',
+      component: HomeView,
       // This one loads even if it's not visited. Use for important pages that needs fast loading.
     },
-    // {
-    //   path: '/',
-    //   name: 'home',
-    //   component: HomeView,
-    // },
+    {
+      path: '/create',
+      name: 'Nytt dokument',
+      component: () => import('../views/NewDocView.vue'),
+    },
     {
       path: '/:id',
       name: 'UpdateDoc',

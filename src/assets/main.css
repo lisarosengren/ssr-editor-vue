@@ -15,6 +15,25 @@ a,
   padding: 3px;
 }
 
+input,
+textarea {
+    margin-bottom: 1.4rem;
+    font-size: 1rem;
+    padding: 1.4rem;
+}
+
+.update-doc {
+    display: flex;
+    flex-direction: column;
+}
+
+label,
+input,
+textarea {
+  display: block;
+  width: 100%;
+}
+
 @media (hover: hover) {
   a:hover {
     background-color: hsla(160, 100%, 37%, 0.2);

@@ -9,7 +9,6 @@
       };
     },
     async mounted() {
-        console.log("Component mounted");
       this.allDocs = await getAll();
     },
     methods: {

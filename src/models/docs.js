@@ -14,7 +14,7 @@ export async function getAll() {
 /**
  * Updates a document
  * @param {object} docToUpdate Object with the properties _id, title and content 
- * @returns {object} Returns JSON with id, if succesful
+ * @returns {object} Returns the API response
  */
 export async function updateDoc(docToUpdate) {
 
@@ -25,6 +25,10 @@ export async function updateDoc(docToUpdate) {
         },
         method: 'PUT'
     });
+    if (!response.ok) {
+        console.log(response);
+        throw new Error("Database error");
+    }
 
     return response;
 }
@@ -32,12 +36,16 @@ export async function updateDoc(docToUpdate) {
 /**
  * Gets an entry from the database
  * @param {string} id the id of the database entry 
- * @returns the API response, the id, the title and the content
+ * @returns {object} response - the original response from fetch, result - the document data
  */
 export async function getOne(id) {
     const response = await fetch(`${baseURL}/${id}`);
     const result = await response.json();
-
+    if (!response.ok) {    
+        console.log(result);
+        throw new Error("Database error");    
+    }
+    
     return result;
 }
 

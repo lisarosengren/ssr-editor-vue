@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
 import DocList from '@/components/DocList.vue'
 
 const router = createRouter({
@@ -9,6 +8,7 @@ const router = createRouter({
       path: '/',
       name: 'Listan',
       component: DocList,
+      // This one loads even if it's not visited. Use for important pages that needs fast loading.
     },
     // {
     //   path: '/',
@@ -21,7 +21,12 @@ const router = createRouter({
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('../components/UpdateDoc.vue'),
+      component: () => import('../views/DocView.vue'),
+    },
+    {
+      path: '/fail',
+      name: 'Fail',
+      component: () => import('../views/FailView.vue'),
     },
   ],
 })

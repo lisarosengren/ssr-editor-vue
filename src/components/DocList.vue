@@ -1,7 +1,7 @@
 <script>
   import { getAll } from '@/models/docs';
 
-
+  
   export default {
     data() {
       return {

@@ -2,7 +2,7 @@ const baseURL = import.meta.env.VITE_API_URL;
 
 /**
  * Fetches all documents from the database
- * @returns {object} result Returns JSON response from the API
+ * @returns {array} result Returns JSON response from the API
  */
 export async function getAll() {
     const response = await fetch(baseURL);

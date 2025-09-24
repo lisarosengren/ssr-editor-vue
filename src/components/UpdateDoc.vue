@@ -1,15 +1,14 @@
 <script>
-  import { update } from '@/models/docs';
-
+  import { update, getOne } from '@/models/docs';
 
   export default {
     data() {
       return {
-        allDocs: []
+        docToUpdate: {}
       };
     },
     async mounted() {
-      this.allDocs = await getAll();
+      this.docToUpdate = await getOne();
     }
   };
 
@@ -19,16 +18,16 @@
 
 
 <template>
+  <form @submit.prevent="onSubmit">
+    <label for="title">Titel</label>
+    <input type="text" v-model="docToUpdate.title" />
 
-  <li v-for="(entry) in allDocs" :key="entry._id">
-    <router-link :to="`/${ entry._id }`">{{ entry.title }}</router-link>
+    <label for="content">Innehåll</label>
+    <textarea v-model="docToUpdate.content"></textarea>
 
-
-  </li>
+  </form>
 </template>
 
 <style scoped>
-li {
-  list-style-type: none;
-}
+
 </style>

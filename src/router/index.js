@@ -1,21 +1,32 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import HomeView from '@/views/HomeView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      name: 'home',
+      name: 'Öppna dokument',
       component: HomeView,
+      // This one loads even if it's not visited. Use for important pages that needs fast loading.
     },
     {
-      path: '/about',
-      name: 'about',
+      path: '/create',
+      name: 'Nytt dokument',
+      component: () => import('../views/NewDocView.vue'),
+    },
+    {
+      path: '/:id',
+      name: 'UpdateDoc',
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue'),
+      component: () => import('../views/DocView.vue'),
+    },
+    {
+      path: '/fail',
+      name: 'Fail',
+      component: () => import('../views/FailView.vue'),
     },
   ],
 })

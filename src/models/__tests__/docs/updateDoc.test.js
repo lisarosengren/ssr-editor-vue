@@ -1,34 +1,33 @@
 /* eslint-disable no-undef */
 
 import { test, describe, expect, vi } from "vitest";
-import { updateDoc} from "@/models/docs";
+import { updateDoc } from "@/models/docs";
 
 describe('function updateDoc', () => {
     afterEach(() => {
     vi.restoreAllMocks();
 });
-    test('Test the function when response is ok', async () =>{
-        const mockResponse = [
-        { "_id": "68d0fb6182a1de187f427d65",
-        "title": "Test title",
-        "content": "Test content" }
-        ];
+    test('Test that no error is thrown when response is ok', async () =>{
+        
+        const docToUpdate = {
+            _id: "68d0fb6182a1de187f427d65",
+            title: "test title",
+            content: "test content"
+        }
+
 
         global.fetch = vi.fn().mockResolvedValue({
-        ok: true,
-        json: vi.fn().mockResolvedValue(mockResponse)
+        ok: true
         });
 
-        const res = await getAll();
-                
-        expect(res).toEqual(mockResponse);
+        expect(updateDoc(docToUpdate)).resolves.toBeUndefined;
     });
-    test('Test the function when response is not ok', async () =>{
+    test('Test that error is thrown if response is not ok', async () =>{
 
         global.fetch = vi.fn().mockResolvedValue({
         ok: false
         });
 
-        await expect(getAll()).rejects.toThrow('Database error')
+        await expect(updateDoc()).rejects.toThrow('Database error')
     });
 })

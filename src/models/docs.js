@@ -6,8 +6,9 @@ const baseURL = import.meta.env.VITE_API_URL;
  */
 export async function getAll() {
     const response = await fetch(baseURL);
+    fetch(baseURL).then(res => console.log(res));
+    console.log(response)
     if (!response.ok) {
-        console.log(response);
         throw new Error("Database error");
     }
     const result = await response.json();

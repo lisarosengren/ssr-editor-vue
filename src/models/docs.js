@@ -34,8 +34,6 @@ export async function updateDoc(docToUpdate) {
         console.log(response);
         throw new Error("Database error");
     }
-
-    return response;
 }
 
 /**

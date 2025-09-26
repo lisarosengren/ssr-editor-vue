@@ -7,7 +7,7 @@ const baseURL = import.meta.env.VITE_API_URL;
 export async function getAll() {
     const response = await fetch(baseURL);
     fetch(baseURL).then(res => console.log(res));
-    console.log(response)
+
     if (!response.ok) {
         throw new Error("Database error");
     }
@@ -43,11 +43,14 @@ export async function updateDoc(docToUpdate) {
  */
 export async function getOne(id) {
     const response = await fetch(`${baseURL}/${id}`);
-    const result = await response.json();
+
     if (!response.ok) {    
-        console.log(result);
+        console.log(response);
         throw new Error("Database error");    
     }
+
+    const result = await response.json();
+
 
     return result;
 }

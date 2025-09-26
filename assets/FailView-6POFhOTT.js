@@ -1,0 +1,1 @@
+import{_ as t,c as r,o as a,a as e,F as o}from"./index-DqYuMxhB.js";const s={};function l(i,n){return a(),r(o,null,[n[0]||(n[0]=e("h1",null,"Åh nej!",-1)),n[1]||(n[1]=e("h2",null,"Nånting har gått åt pipan...",-1))],64)}const f=t(s,[["render",l]]);export{f as default};

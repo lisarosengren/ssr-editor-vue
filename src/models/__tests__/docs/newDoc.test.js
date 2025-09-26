@@ -1,17 +1,16 @@
 /* eslint-disable no-undef */
 
 import { test, describe, expect, vi } from "vitest";
-import { getOne } from "@/models/docs";
+import { newDoc } from "@/models/docs";
 
-describe('function getOne', () => {
+describe('function newDoc', () => {
     afterEach(() => {
     vi.restoreAllMocks();
 });
     test('Test the function when response is ok', async () =>{
         const mockResponse = {
-        "_id": "68d0fb6182a1de187f427d65",
-        "title": "Test title",
-        "content": "Test content"
+            "acknowledged": true,
+            "insertedId": "68d680f5e00b06809e15130f"
         };
 
         global.fetch = vi.fn().mockResolvedValue({
@@ -19,9 +18,9 @@ describe('function getOne', () => {
         json: vi.fn().mockResolvedValue(mockResponse)
         });
 
-        const res = await getOne();
+        const res = await newDoc();
                 
-        expect(res).toEqual(mockResponse);
+        expect(res).toEqual(mockResponse.insertedId);
     });
     test('Test the function when response is not ok', async () =>{
 
@@ -29,6 +28,6 @@ describe('function getOne', () => {
         ok: false
         });
 
-        await expect(getOne()).rejects.toThrow('Database error')
+        await expect(newDoc()).rejects.toThrow('Database error')
     });
 })

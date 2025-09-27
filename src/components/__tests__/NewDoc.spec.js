@@ -10,9 +10,7 @@ vi.mock('@/models/docs', () => ({
 
 const mockPush = vi.fn();
 
-test('mock successful doc insertion', async () => {
-  newDoc.mockResolvedValueOnce('mock doc id');
-
+function setUpTest() {
   const wrapper = mount(NewDoc, {
     global: {
       mocks: {
@@ -22,10 +20,24 @@ test('mock successful doc insertion', async () => {
       }
     }
   });
-  await wrapper.find('input[type="text"').setValue('mock insert title');
-  await wrapper.find('textarea').setValue('mock insert content');
+
+  return wrapper;
+}
+
+async function formData(wrapper, title, content) {
+  await wrapper.find('input[type="text"').setValue(title);
+  await wrapper.find('textarea').setValue(content);
   await wrapper.find('form').trigger('submit');
   await flushPromises();
+}
+
+test('mock successful doc insertion', async () => {
+  newDoc.mockResolvedValueOnce('mock doc id');
+
+  const wrapper = setUpTest();
+
+  await formData(wrapper, 'mock insert title', 'mock insert content');
+
   expect(newDoc).toHaveBeenCalledWith({
     title: 'mock insert title',
     content: 'mock insert content'
@@ -37,19 +49,10 @@ test('mock successful doc insertion', async () => {
 test('mock doc insertion failure', async () => {
   newDoc.mockRejectedValueOnce(new Error('Database error'));
 
-  const wrapper = mount(NewDoc, {
-    global: {
-      mocks: {
-        $router: {
-          push: mockPush
-        }
-      }
-    }
-  });
-  await wrapper.find('input[type="text"').setValue('mock insert title');
-  await wrapper.find('textarea').setValue('mock insert content');
-  await wrapper.find('form').trigger('submit');
-  await flushPromises();
+  const wrapper = setUpTest();
+
+  await formData(wrapper, 'mock insert title', 'mock insert content');
+
   expect(wrapper.find('.err').exists()).toBe(true);
   expect(newDoc).toHaveBeenCalled();
 });

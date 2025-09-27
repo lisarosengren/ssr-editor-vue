@@ -8,8 +8,6 @@ vi.mock('@/models/docs', () => ({
   getAll: vi.fn()
 }));
 
-const mockPush = vi.fn();
-
 test('that component renders list of doc links', async () => {
   getAll.mockResolvedValueOnce([
     { _id: '1234', title: 'Test doc 1'},

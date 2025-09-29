@@ -14,8 +14,8 @@
           const id = await newDoc(this.newDocData);
           this.$router.push(`/${ id }`)
           } catch (e) {
-            this.err = e;
             console.error(e)
+            this.err = true;
           }
           }
       }

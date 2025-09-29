@@ -35,12 +35,12 @@
 
     <label for="content">Innehåll</label>
     <textarea v-model="newDocData.content"></textarea>
-    
+
     <input type="submit" name="doit" value="Skapa">
-  
+
   </form>
 
-  
+
   <div v-if="err">
     <div id="hide" class="err">
       <p>Något har gått fel...</p>

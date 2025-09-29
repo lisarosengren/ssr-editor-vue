@@ -15,8 +15,7 @@
           this.$router.push(`/${ id }`)
           } catch (e) {
             this.err = e;
-            // console.error(e)
-            this.err = true;
+            console.error(e)
           }
           }
       }

@@ -45,7 +45,6 @@ export async function getOne(id) {
     const response = await fetch(`${baseURL}/${id}`);
 
     if (!response.ok) {
-        console.log(response);
         throw new Error("Database error");
     }
 

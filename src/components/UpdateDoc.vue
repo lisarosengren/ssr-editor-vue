@@ -4,11 +4,12 @@
   import { io } from "socket.io-client";
 
   const URL = import.meta.env.VITE_API_URL;
-  const socket = io(URL);
+  
 
   export default {
     data() {
       return {
+        socket: null,
         id: null,
         title: null,
         content: null,
@@ -21,20 +22,37 @@
       this.id = route.params.id;
       
       try {
+        this.socket = io(URL);
         const document = await getOne(this.id);
         this.title = document.title;
         this.content = document.content;
-        socket.emit("create", this.id);
-
-
-
+        this.socket.emit("create", this.id);
+        this.socket.on("title", (data) => {
+          this.title = data;
+        });
+        this.socket.on("content", (data) => {
+          this.content = data;
+        });        
        } catch (e) {
         console.error(e);
         this.$router.push('/fail')
       };
     },
+    beforeUnmount() { 
+      this.socket.disconnect();
+    },
     methods: {
-
+      // The method that is called when the user is typing in the field for title or content.
+      // The "what" tells if it's the title or the content that is being updated.
+      onInput(what) {
+        console.log("INPUT!")
+        let data = {
+          _id: this.id,
+          input: what === "title" ? this.title : this.content
+        }
+        this.socket.emit(what, data)
+        console.log(what)
+      }
       // This is an old one, for when the submit button was still alive.
       // async onSubmit() {
       //   try {
@@ -60,10 +78,10 @@
 <template>
 
   <label for="title">Titel</label>
-  <input type="text" v-model="title" />
+  <input type="text" v-model="title" @input="onInput('title')"/>
 
   <label for="content">Innehåll</label>
-  <textarea v-model="content"></textarea>
+  <textarea v-model="content" @input="onInput('content')"></textarea>
 
 <!--
 This is from when we had a button to save. Maybe we'll put in some error handling later...

@@ -1,7 +1,10 @@
 <script>
-  import { updateDoc, getOne } from '@/models/docs';
+  import { getOne } from '@/models/docs';
   import { useRoute } from 'vue-router';
-  import { socket } from '@/socket';
+  import { io } from "socket.io-client";
+
+  const URL = import.meta.env.VITE_API_URL;
+  const socket = io(URL);
 
   export default {
     data() {
@@ -22,7 +25,7 @@
         this.title = document.title;
         this.content = document.content;
         socket.emit("create", this.id);
-        
+
 
 
        } catch (e) {

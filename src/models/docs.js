@@ -78,8 +78,13 @@ export async function newDoc(newDocData) {
     return result.insertedId;
 }
 
+/**
+ * Sends a code document to an endpoint for execution.
+ * @param { string } codeString The content of a code document.
+ * @returns { string } The output/result of the executed code.
+ */
 export async function sendCode(codeString) {
-  console.log('calling docs function');
+  // console.log('calling docs function');
 
   try {
     const data = {

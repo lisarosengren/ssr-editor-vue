@@ -31,7 +31,16 @@
 <template>
   <ul>
     <li v-for="(entry) in allDocs" :key="entry._id">
-      <router-link :to="`/${ entry._id }`" @click="onClick">{{ entry.title }}</router-link>
+      <router-link
+        :to="{
+          name: 'DocView',
+          params: {
+            id: entry._id,
+            type: entry.type || 'text'
+          }
+        }"
+        @click="onClick">{{  entry.title  }}
+      </router-link>
     </li>
   </ul>
 </template>

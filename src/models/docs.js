@@ -78,5 +78,31 @@ export async function newDoc(newDocData) {
     return result.insertedId;
 }
 
-const docs = { getAll, updateDoc, getOne, newDoc }
+export async function sendCode(codeString) {
+  console.log('calling docs function');
+
+  try {
+    const data = {
+      code : btoa(codeString)
+    };
+
+    const response = await fetch("https://execjs.emilfolino.se/code", {
+      body: JSON.stringify(data),
+      headers: {
+          'content-type': 'application/json'
+      },
+      method: 'POST'
+    });
+
+    const result = await response.json();
+
+    const output = atob(result.data);
+    return output;
+  } catch (error) {
+    console.error('An error occurred: ', error);
+    throw new Error('Could not execute');
+  }
+}
+
+const docs = { getAll, updateDoc, getOne, newDoc, sendCode }
 export default docs;

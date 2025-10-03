@@ -4,7 +4,11 @@
   export default {
     data() {
       return {
-        newDocData: {},
+        newDocData: {
+          title: '',
+          content: '',
+          type: 'text'
+        },
         err: false
       };
     },
@@ -12,7 +16,7 @@
       async onSubmit() {
         try {
           const id = await newDoc(this.newDocData);
-          this.$router.push(`/${ id }`)
+          this.$router.push(`/${ id }/${ this.newDocData.type}`)
           } catch (e) {
             console.error(e)
             this.err = true;
@@ -36,7 +40,7 @@
     <label for="content">Innehåll</label>
     <textarea v-model="newDocData.content"></textarea>
 
-    <input type="submit" name="doit" value="Skapa">
+    <input type="submit" class="green" name="doit" value="Spara">
 
   </form>
 

@@ -40,7 +40,7 @@
     <label for="content">Innehåll</label>
     <textarea v-model="newDocData.content"></textarea>
 
-    <input type="submit" class="green" name="doit" value="Spara">
+    <input type="submit" name="doit" value="Spara">
 
   </form>
 

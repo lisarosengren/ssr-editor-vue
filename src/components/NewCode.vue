@@ -52,7 +52,7 @@
   <label for="editor">Innehåll</label>
   <div ref="editor" class="code"></div>
 
-  <input type="submit" class="green" value="Spara" @click="onSubmit" />
+  <input type="submit" value="Spara" @click="onSubmit" />
 
   <div v-if="err">
     <div id="hide" class="err">

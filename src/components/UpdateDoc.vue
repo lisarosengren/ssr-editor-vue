@@ -13,8 +13,6 @@
         id: null,
         title: null,
         content: null,
-        err: false,
-        update: false
       };
     },
     async mounted() {
@@ -45,13 +43,13 @@
       // The method that is called when the user is typing in the field for title or content.
       // The "what" tells if it's the title or the content that is being updated.
       onInput(what) {
-        console.log("INPUT!")
+        let type = what === "title" ? this.title : this.content;
+
         let data = {
-          _id: this.id,
-          input: what === "title" ? this.title : this.content
-        }
-        this.socket.emit(what, data)
-        console.log(what)
+            _id: this.id,
+            input: type
+          }
+          this.socket.emit(what, data)
       }
       // This is an old one, for when the submit button was still alive.
       // async onSubmit() {
@@ -78,7 +76,7 @@
 <template>
 
   <label for="title">Titel</label>
-  <input type="text" v-model="title" @input="onInput('title')"/>
+  <input type="text" v-model="title" @input="onInput('title')" />
 
   <label for="content">Innehåll</label>
   <textarea v-model="content" @input="onInput('content')"></textarea>

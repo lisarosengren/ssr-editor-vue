@@ -21,18 +21,18 @@
       try {
         const document = await getOne(this.id);
 
-        this.codeToUpdate.id = document._id;
-        this.codeToUpdate.title = document.title;
-        this.codeToUpdate.content = document.content;
+        this.id = document._id;
+        this.title = document.title;
+        this.content = document.content;
 
         this.editorView = new EditorView({
-          doc: this.codeToUpdate.content,
+          doc: this.content,
           extensions: [
             basicSetup,
             javascript(),
             EditorView.updateListener.of(update => {
               if (update.docChanged) {
-                this.codeToUpdate.content = update.state.doc.toString();
+                this.content = update.state.doc.toString();
               }
             })
           ],
@@ -67,7 +67,7 @@
 
   <form @submit.prevent="onSubmit">
     <label for="title">Titel</label>
-    <input type="text" v-model="codeToUpdate.title" />
+    <input type="text" v-model="this.title" />
 
     <label for="content">Innehåll</label>
     <div ref="editor" class="code"></div>

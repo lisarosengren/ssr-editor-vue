@@ -106,7 +106,7 @@
 
   <form @submit.prevent="onSubmit">
     <label for="title">Titel</label>
-    <input type="text" v-model="this.title" />
+    <input type="text" v-model="this.title" @input="onInput('title')" />
 
     <label for="content">Innehåll</label>
     <div ref="editor" class="code"></div>

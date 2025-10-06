@@ -1,8 +1,11 @@
 <script>
-  import { updateDoc, getOne, sendCode } from '@/models/docs';
+  import { getOne, sendCode } from '@/models/docs';
+  import { io } from "socket.io-client";
   import { basicSetup } from "codemirror";
   import { EditorView } from "@codemirror/view";
   import { javascript } from "@codemirror/lang-javascript";
+
+  const URL = import.meta.env.VITE_API_URL;
 
   export default {
     data() {
@@ -19,11 +22,18 @@
       this.id = this.$route.params.id;
 
       try {
+        this.socker = io(URL)
         const document = await getOne(this.id);
-
         this.id = document._id;
         this.title = document.title;
         this.content = document.content;
+        // The room
+        this.socket.emit("create", this.id);
+        // Listens to sockets with title updates. Updates the title. 
+        this.socket.on("title", (data) => {
+          this.title = data;
+        });
+
 
         this.editorView = new EditorView({
           doc: this.content,

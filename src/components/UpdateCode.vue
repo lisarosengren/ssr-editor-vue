@@ -48,15 +48,6 @@
       }
     },
     methods: {
-      async onSubmit() {
-        try {
-          await updateDoc(this.codeToUpdate);
-          setTimeout(() => {
-          }, 5000);
-          } catch (e) {
-            console.error(e)
-          }
-          },
       async executeCode() {
         console.log('calling execution');
         try {
@@ -84,8 +75,6 @@
 
     <label for="content">Innehåll</label>
     <div ref="editor" class="code"></div>
-
-    <input type="submit" name="doit" value="Uppdatera">
 
   </form>
 

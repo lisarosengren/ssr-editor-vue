@@ -8,7 +8,7 @@
     data() {
       return {
         codeToUpdate: {
-          _id: null,
+          id: null,
           title: null,
           content: null,
           type: null
@@ -25,7 +25,7 @@
       try {
         const document = await getOne(id);
 
-        this.codeToUpdate._id = document._id;
+        this.codeToUpdate.id = document._id;
         this.codeToUpdate.title = document.title;
         this.codeToUpdate.content = document.content;
 

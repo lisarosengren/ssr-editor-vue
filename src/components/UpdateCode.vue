@@ -7,16 +7,12 @@
   export default {
     data() {
       return {
-        codeToUpdate: {
-          id: null,
-          title: null,
-          content: null,
-          type: null
-        },
+        socket: null,
+        id: null,
+        title: null,
+        content: null,   
         output: '',
         editorView: null,
-        err: false,
-        update: false,
       };
     },
     async mounted() {

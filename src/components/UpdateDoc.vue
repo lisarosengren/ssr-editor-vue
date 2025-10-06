@@ -40,9 +40,9 @@
       this.socket.disconnect();
     },
     methods: {
-      // The method that is called when the user is typing in the field for title or content.
-      // The "what" tells if it's the title or the content that is being updated.
       onInput(what) {
+      // This method that is called when the user is typing in the field for title or content.
+      // The "what" tells if it's the title or the content that is being updated.
         let type = what === "title" ? this.title : this.content;
 
         let data = {
@@ -51,22 +51,8 @@
           }
           this.socket.emit(what, data)
       }
-      // This is an old one, for when the submit button was still alive.
-      // async onSubmit() {
-      //   try {
-      //     await updateDoc(this.docToUpdate);
-      //     this.err = false;
-      //     this.update = true;
-      //     setTimeout(() => {
-      //       this.update = false;
-      //     }, 5000);
-      //     } catch (e) {
-      //       console.error(e)
-      //       this.err = true;
-      //     }
-      //     }
-      }
-    };
+    }
+  };
 
 </script>
 
@@ -80,22 +66,6 @@
 
   <label for="content">Innehåll</label>
   <textarea v-model="content" @input="onInput('content')"></textarea>
-
-<!--
-This is from when we had a button to save. Maybe we'll put in some error handling later...
-
-  <div v-if="update">
-    <div id="hide" class="updated">
-      <p>Uppdaterat!</p>
-    </div>
-  </div>
-
-  <div v-if="err">
-    <div id="hide" class="err">
-      <p>Något har gått fel...</p>
-    </div>
-  </div>
--->
 
 </template>
 

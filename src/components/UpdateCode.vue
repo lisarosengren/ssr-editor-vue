@@ -51,14 +51,10 @@
       async onSubmit() {
         try {
           await updateDoc(this.codeToUpdate);
-          this.err = false;
-          this.update = true;
           setTimeout(() => {
-            this.update = false;
           }, 5000);
           } catch (e) {
             console.error(e)
-            this.err = true;
           }
           },
       async executeCode() {
@@ -95,18 +91,6 @@
 
   <button @click="executeCode">Skicka koden till efo</button>
   <pre>{{  output  }}</pre>
-
-  <div v-if="update">
-    <div id="hide" class="updated">
-      <p>Uppdaterat!</p>
-    </div>
-  </div>
-
-  <div v-if="err">
-    <div id="hide" class="err">
-      <p>Något har gått fel...</p>
-    </div>
-  </div>
 
 
 </template>

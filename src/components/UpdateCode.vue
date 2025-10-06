@@ -22,7 +22,7 @@
       this.id = this.$route.params.id;
 
       try {
-        this.socker = io(URL)
+        this.socket = io(URL)
         const document = await getOne(this.id);
         this.id = document._id;
         this.title = document.title;

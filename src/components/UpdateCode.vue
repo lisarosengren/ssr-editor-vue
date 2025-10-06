@@ -16,6 +16,7 @@
         content: null,   
         output: '',
         editorView: null,
+        fromSocket: false,
       };
     },
     async mounted() {
@@ -33,6 +34,15 @@
         this.socket.on("title", (data) => {
           this.title = data;
         });
+        this.socket.on("content", (data) => {
+          // Raises a flag that the update is from another user
+          this.fromSocket = true;
+          this.editorView.dispatch({
+            changes: {from: 0, to: this.editorView.state.doc.length, insert: data},
+            // Moves the cursor to the end of the document
+            selection: {anchor: data.length}
+          });      
+        });
 
 
         this.editorView = new EditorView({
@@ -43,6 +53,11 @@
             EditorView.updateListener.of(update => {
               if (update.docChanged) {
                 this.content = update.state.doc.toString();
+                if (!this.fromSocket) {
+                  this.onInput("content");
+                }
+                // Make sure the "other user" flag is not raised.
+                this.fromSocket = false;
               }
             })
           ],
@@ -52,6 +67,9 @@
         console.error(e);
         this.$router.push('/fail')
       }
+    },
+    beforeUnmount() { 
+      this.socket.disconnect();
     },
     methods: {
       async executeCode() {
@@ -63,9 +81,20 @@
           this.output = 'Någonting blev fel...';
           console.log(e);
         }
+      },
+      onInput(what) {
+      // This method that is called when the user is typing in the field for title or content.
+      // The "what" tells if it's the title or the content that is being updated.
+        let type = what === "title" ? this.title : this.content;
+
+        let data = {
+            _id: this.id,
+            input: type
+          }
+          this.socket.emit(what, data)
       }
-      }
-    };
+    },
+  };
 
 </script>
 

@@ -7,7 +7,7 @@
         newDocData: {
           title: '',
           content: '',
-          type: 'text'
+          type: null
         },
         err: false
       };
@@ -35,11 +35,16 @@
 
   <form @submit.prevent="onSubmit">
     <label for="title">Titel</label>
-    <input type="text" v-model="newDocData.title" />
-
-    <label for="content">Innehåll</label>
-    <textarea v-model="newDocData.content"></textarea>
-
+    <input type="text" v-model="newDocData.title" required />
+    <div class="radio">
+      <input class="radiobutton" type="radio" id="code-mode" value="code" name="type" v-model="type" required/>
+      <label for="type">code-mode</label>
+    </div>
+    <div class="radio">
+      <input class="radiobutton" type="radio" id="text" value="text" name="type" v-model="mode" />
+      <label for="type">text</label>  
+    </div>
+    
     <input type="submit" name="doit" value="Spara">
 
   </form>
@@ -54,6 +59,15 @@
 </template>
 
 <style scoped>
+.radio {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+.radiobutton {
+  margin: 0.7rem;
+  width: auto;
+}
 
 .err {
   background-color: rgb(235, 120, 120);

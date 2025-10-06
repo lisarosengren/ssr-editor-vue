@@ -1,6 +1,5 @@
 <script>
   import { getOne } from '@/models/docs';
-  import { useRoute } from 'vue-router';
   import { io } from "socket.io-client";
 
   const URL = import.meta.env.VITE_API_URL;
@@ -16,8 +15,7 @@
       };
     },
     async mounted() {
-      const route = useRoute();
-      this.id = route.params.id;
+      this.id = this.$route.params.id;
       
       try {
         this.socket = io(URL);

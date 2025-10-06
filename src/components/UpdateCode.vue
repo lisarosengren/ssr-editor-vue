@@ -16,10 +16,10 @@
       };
     },
     async mounted() {
-      const id = this.$route.params.id;
+      this.id = this.$route.params.id;
 
       try {
-        const document = await getOne(id);
+        const document = await getOne(this.id);
 
         this.codeToUpdate.id = document._id;
         this.codeToUpdate.title = document.title;

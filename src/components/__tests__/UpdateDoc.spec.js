@@ -14,7 +14,7 @@ vi.mock('vue-router', () => ({
   useRoute: vi.fn()
 }));
 
-test('mock doc insertion', async () => {
+test('mock doc update', async () => {
   useRoute.mockReturnValue({
     params: { id: 'mock id'}
   });
@@ -26,6 +26,19 @@ test('mock doc insertion', async () => {
   updateDoc.mockResolvedValueOnce();
 
   const wrapper = mount(UpdateDoc)
-  expect(wrapper.exists()).toBe(true)
   await flushPromises();
+
+  await wrapper.find('input[type="text"]').setValue('updated mock title');
+  await wrapper.find('textarea').setValue('updated mock content');
+
+  await wrapper.find('form').trigger('submit.prevent');
+  await flushPromises();
+
+  expect(updateDoc).toHaveBeenCalledWith({
+    _id: 'mock id',
+    title: 'updated mock title',
+    content: 'updated mock content'
+  });
+
+  expect(wrapper.find('.updated').exists()).toBe(true);
 });

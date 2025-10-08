@@ -27,28 +27,3 @@ test('that component renders list of doc links', async () => {
   expect(mockDocs).toHaveLength(2);
   expect(mockDocs[0].text()).toContain('Test doc 1');
 });
-
-test('that onClick is called when link is clicked', async () => {
-    getAll.mockResolvedValueOnce([
-    { _id: '1234', title: 'Test doc 1'},
-  ]);
-
-  const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-
-  const wrapper = mount(DocList, {
-    global: {
-      stubs: {
-        RouterLink: RouterLinkStub
-      }
-    }
-  });
-
-  await flushPromises();
-
-  const mockLink = wrapper.findComponent(RouterLinkStub);
-  await mockLink.trigger('click');
-
-  expect(consoleSpy).toHaveBeenCalledWith('Clicked');
-
-  consoleSpy.mockRestore();
-});

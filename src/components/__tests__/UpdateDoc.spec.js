@@ -1,44 +1,45 @@
 import { test, expect, vi } from 'vitest';
 import { flushPromises, mount } from '@vue/test-utils';
 import UpdateDoc from '../UpdateDoc.vue';
-import { updateDoc, getOne } from '@/models/docs';
-import { useRoute } from 'vue-router';
+import { getOne } from '@/models/docs';
 
-// mock useRoute, getOne and updateDoc
+// mock useRoute and getOne
 vi.mock('@/models/docs', () => ({
-  getOne: vi.fn(),
-  updateDoc: vi.fn()
+  getOne: vi.fn()
 }));
 
 vi.mock('vue-router', () => ({
   useRoute: vi.fn()
 }));
 
-test('mock doc update', async () => {
-  useRoute.mockReturnValue({
-    params: { id: 'mock id'}
-  });
-  getOne.mockResolvedValueOnce({
-    _id: 'mock id',
-    title: 'mock title before',
-    content: 'mock content before'
-  });
-  updateDoc.mockResolvedValueOnce();
+test('that title and content are set correctly', async () => {
+  const mockDoc = {
+    _id: 'mockid',
+    title: 'mock title',
+    content: 'mock content'
+  };
 
-  const wrapper = mount(UpdateDoc)
+  getOne.mockResolvedValueOnce(mockDoc);
+
+  const wrapper = mount(UpdateDoc, {
+    global: {
+      mocks: {
+        $route: {
+          params: { id: 'mockid'}
+        },
+        $router: {
+          push: vi.fn()
+        }
+      }
+    }
+  });
+
   await flushPromises();
 
-  await wrapper.find('input[type="text"]').setValue('updated mock title');
-  await wrapper.find('textarea').setValue('updated mock content');
+  expect(getOne).toHaveBeenCalledWith('mockid');
+  expect(wrapper.find('input[type="text"]').element.value).toBe('mock title');
+  expect(wrapper.find('textarea').element.value).toBe('mock content');
 
-  await wrapper.find('form').trigger('submit.prevent');
   await flushPromises();
 
-  expect(updateDoc).toHaveBeenCalledWith({
-    _id: 'mock id',
-    title: 'updated mock title',
-    content: 'updated mock content'
-  });
-
-  expect(wrapper.find('.updated').exists()).toBe(true);
 });

@@ -37,14 +37,14 @@
     <label for="title">Titel</label>
     <input type="text" v-model="newDocData.title" required />
     <div class="radio">
-      <input class="radiobutton" type="radio" id="code-mode" value="code" name="type" v-model="type" required/>
-      <label for="type">code-mode</label>
+      <input class="radiobutton" type="radio" id="code-mode" value="code" name="type" v-model="newDocData.type" required/>
+      <label for="code-mode">code-mode</label>
     </div>
     <div class="radio">
-      <input class="radiobutton" type="radio" id="text" value="text" name="type" v-model="mode" />
-      <label for="type">text</label>  
+      <input class="radiobutton" type="radio" id="text" value="text" name="type" v-model="newDocData.type" />
+      <label for="text">text</label>
     </div>
-    
+
     <input type="submit" name="doit" value="Spara">
 
   </form>

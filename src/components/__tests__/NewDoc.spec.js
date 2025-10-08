@@ -24,9 +24,9 @@ function setUpTest() {
   return wrapper;
 }
 
-async function formData(wrapper, title, content) {
-  await wrapper.find('input[type="text"').setValue(title);
-  await wrapper.find('textarea').setValue(content);
+async function formData(wrapper, title, type) {
+  await wrapper.find('input[type="text"]').setValue(title);
+  await wrapper.find('input[type="radio"]').setValue(type)
   await wrapper.find('form').trigger('submit');
   await flushPromises();
 }
@@ -36,14 +36,14 @@ test('mock successful doc insertion', async () => {
 
   const wrapper = setUpTest();
 
-  await formData(wrapper, 'mock insert title', 'mock insert content');
+  await formData(wrapper, 'mock insert title', 'code');
 
   expect(newDoc).toHaveBeenCalledWith({
     title: 'mock insert title',
-    content: 'mock insert content'
+    type: 'code'
   })
 
-  expect(mockPush).toHaveBeenCalledWith('/mock doc id');
+  expect(mockPush).toHaveBeenCalledWith('/mock doc id/code');
 });
 
 test('mock doc insertion failure', async () => {
@@ -51,7 +51,7 @@ test('mock doc insertion failure', async () => {
 
   const wrapper = setUpTest();
 
-  await formData(wrapper, 'mock insert title', 'mock insert content');
+  await formData(wrapper, 'mock insert title', 'code');
 
   expect(wrapper.find('.err').exists()).toBe(true);
   expect(newDoc).toHaveBeenCalled();

@@ -40,7 +40,7 @@
           this.editorView.dispatch({
             changes: {from: 0, to: this.editorView.state.doc.length, insert: data},
             // Moves the cursor to the end of the document
-            // selection: {anchor: data.length}
+            selection: {anchor: data.length}
           });      
         });
 

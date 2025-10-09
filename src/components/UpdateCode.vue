@@ -1,42 +1,63 @@
 <script>
-  import { updateDoc, getOne, sendCode } from '@/models/docs';
+  import { getOne, sendCode } from '@/models/docs';
+  import { io } from "socket.io-client";
   import { basicSetup } from "codemirror";
   import { EditorView } from "@codemirror/view";
   import { javascript } from "@codemirror/lang-javascript";
 
+  const URL = import.meta.env.VITE_API_URL;
+
   export default {
     data() {
       return {
-        codeToUpdate: {
-          _id: null,
-          title: null,
-          content: null,
-          type: null
-        },
+        socket: null,
+        id: null,
+        title: null,
+        content: null,   
         output: '',
         editorView: null,
-        err: false,
-        update: false,
+        fromSocket: false,
       };
     },
     async mounted() {
-      const id = this.$route.params.id;
+      this.id = this.$route.params.id;
 
       try {
-        const document = await getOne(id);
+        this.socket = io(URL)
+        const document = await getOne(this.id);
+        this.id = document._id;
+        this.title = document.title;
+        this.content = document.content;
+        // The room
+        this.socket.emit("create", this.id);
+        // Listens to sockets with title updates. Updates the title. 
+        this.socket.on("title", (data) => {
+          this.title = data;
+        });
+        this.socket.on("content", (data) => {
+          // Raises a flag that the update is from another user
+          this.fromSocket = true;
+          this.editorView.dispatch({
+            changes: {from: 0, to: this.editorView.state.doc.length, insert: data},
+            // Moves the cursor to the end of the document
+            selection: {anchor: data.length}
+          });      
+        });
 
-        this.codeToUpdate._id = document._id;
-        this.codeToUpdate.title = document.title;
-        this.codeToUpdate.content = document.content;
 
         this.editorView = new EditorView({
-          doc: this.codeToUpdate.content,
+          doc: this.content,
           extensions: [
             basicSetup,
             javascript(),
             EditorView.updateListener.of(update => {
               if (update.docChanged) {
-                this.codeToUpdate.content = update.state.doc.toString();
+                this.content = update.state.doc.toString();
+                if (!this.fromSocket) {
+                  this.onInput("content");
+                }
+                // Make sure the "other user" flag is not raised.
+                this.fromSocket = false;
               }
             })
           ],
@@ -47,20 +68,10 @@
         this.$router.push('/fail')
       }
     },
+    beforeUnmount() { 
+      this.socket.disconnect();
+    },
     methods: {
-      async onSubmit() {
-        try {
-          await updateDoc(this.codeToUpdate);
-          this.err = false;
-          this.update = true;
-          setTimeout(() => {
-            this.update = false;
-          }, 5000);
-          } catch (e) {
-            console.error(e)
-            this.err = true;
-          }
-          },
       async executeCode() {
         console.log('calling execution');
         try {
@@ -70,9 +81,20 @@
           this.output = 'Någonting blev fel...';
           console.log(e);
         }
+      },
+      onInput(what) {
+      // This method that is called when the user is typing in the field for title or content.
+      // The "what" tells if it's the title or the content that is being updated.
+        let type = what === "title" ? this.title : this.content;
+
+        let data = {
+            _id: this.id,
+            input: type
+          }
+          this.socket.emit(what, data)
       }
-      }
-    };
+    },
+  };
 
 </script>
 
@@ -84,29 +106,15 @@
 
   <form @submit.prevent="onSubmit">
     <label for="title">Titel</label>
-    <input type="text" v-model="codeToUpdate.title" />
+    <input type="text" v-model="this.title" @input="onInput('title')" />
 
     <label for="content">Innehåll</label>
     <div ref="editor" class="code"></div>
-
-    <input type="submit" name="doit" value="Uppdatera">
 
   </form>
 
   <button @click="executeCode">Skicka koden till efo</button>
   <pre>{{  output  }}</pre>
-
-  <div v-if="update">
-    <div id="hide" class="updated">
-      <p>Uppdaterat!</p>
-    </div>
-  </div>
-
-  <div v-if="err">
-    <div id="hide" class="err">
-      <p>Något har gått fel...</p>
-    </div>
-  </div>
 
 
 </template>

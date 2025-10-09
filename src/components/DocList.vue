@@ -18,7 +18,7 @@
     },
     methods: {
       onClick() {
-        console.log("Clicked")
+        // console.log("Clicked")
       }
     }
   };

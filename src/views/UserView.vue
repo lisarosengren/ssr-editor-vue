@@ -5,13 +5,20 @@
   export default {
     data() {
       return {
-        user: {},
-        documents: []
+        user: {
+          id : null,
+          email: ''
+        },
       };
     },
+    // components: {
+    //   DocList,
+    // },
     async mounted() {
+      console.log(this.user)
       try {
-        this.user.email = await getUser(localStorage.getItem('email'))
+        this.user = await getUser();
+        console.log(this.user);
       } catch (e) {
         console.log(e)
         this.$router.push('/fail')

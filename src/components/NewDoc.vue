@@ -6,7 +6,8 @@
       return {
         newDocData: {
           title: '',
-          type: null
+          type: null,
+          creator: ''
         },
         err: false
       };

@@ -22,7 +22,7 @@ export async function getAll() {
       throw new Error(response.status);
   }
   const result = await response.json();
-
+  console.log(result);
   return result;
 }
 
@@ -78,10 +78,10 @@ export async function getOne(id) {
  */
 export async function newDoc(newDocData) {
   const token = localStorage.getItem('token');
-
-  newDocData.userId = localStorage.getItem('userId');
-
-  const response = await fetch(`${baseURL}/`, {
+  console.log("öj");
+  newDocData.creator = localStorage.getItem('userId');
+  console.log(newDocData);
+  const response = await fetch(`${baseURL}/newdoc`, {
       body: JSON.stringify(newDocData),
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -96,7 +96,7 @@ export async function newDoc(newDocData) {
   }
 
   const result = await response.json()
-
+  console.log(result);
   return result.insertedId;
 }
 
@@ -185,12 +185,13 @@ export async function userLogin(userData) {
 /**
  * Gets a user from the database
  * @param {string} userEmail
- * @returns {object} result user
+ * @returns {object} result _id, email
  */
 export async function getUser() {
   const userEmail = localStorage.getItem('email')
   const token = localStorage.getItem('token');
-  const response = await fetch(`${baseURL}/user/user`, {
+  console.log("storage: ", userEmail, token);
+  const response = await fetch(`${baseURL}/user/home`, {
     body: JSON.stringify({ email: userEmail}),
     method: 'POST',
     headers: {
@@ -198,13 +199,13 @@ export async function getUser() {
       'Content-Type': 'application/json'
     }
   });
-  console.log(response)
+  console.log(response);
   if (!response.ok) {
       throw new Error("Failed to get user");
   }
 
   const result = await response.json();
-
+  console.log(result);
   return result;
 }
 

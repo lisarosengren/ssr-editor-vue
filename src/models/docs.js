@@ -1,14 +1,15 @@
 const baseURL = import.meta.env.VITE_API_URL;
 
 /**
- * Fetches all documents from the database
+ * Gets user id and token from local storage, fetches all documents from
+ * the database (that matches user id).
  * @returns {array} result Returns JSON response from the API
  */
 export async function getAll() {
   const token = localStorage.getItem('token');
-  const userId = localStorage.getItem('userId');
+  console.log("getting all");
   const response = await fetch(baseURL, {
-    body: JSON.stringify(userId),
+    body: JSON.stringify({userId: localStorage.getItem('userId')}),
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${token}`,
@@ -16,8 +17,6 @@ export async function getAll() {
     }
   }
   );
-  // fetch(baseURL).then(res => console.log(res));
-
   if (!response.ok) {
     console.log(response)
       throw new Error(response.status);
@@ -74,8 +73,8 @@ export async function getOne(id) {
 
 /**
  * Creates a new document in the database
- * @param {object} body the title and the docType of the new document
- * @returns {object} the response from the API
+ * @param {object} newDocData the title and the docType of the new document
+ * @returns {object} the response from the API and the newly created id.
  */
 export async function newDoc(newDocData) {
   const token = localStorage.getItem('token');
@@ -135,7 +134,7 @@ export async function sendCode(codeString) {
 /**
  * Creates a new user in the database
  * @param {object} body the email and password of the new user
- * @returns {object} the response from the API
+ * @returns {object} the newly created user id.
  */
 export async function newUser(newUserData) {
 
@@ -157,7 +156,7 @@ export async function newUser(newUserData) {
 /**
  * User login
  * @param {object} userData user email and password
- * sets jwt and user id in local storage
+ * sets jwt, user email and user id in local storage
  * @returns {object}
  */
 export async function userLogin(userData) {
@@ -178,6 +177,7 @@ export async function userLogin(userData) {
   const result = await response.json();
   localStorage.setItem('token', result.token);
   localStorage.setItem('email', result.email);
+  localStorage.setItem('userId', result._id);
   console.log(localStorage);
 
   return result.status;
@@ -187,9 +187,8 @@ export async function userLogin(userData) {
  * @param {string} userEmail
  * @returns {object} result user
  */
-export async function getUser(userEmail) {
-  console.log("getuser function, trying to send request")
-  console.log("user email: ", userEmail)
+export async function getUser() {
+  const userEmail = localStorage.getItem('email')
   const token = localStorage.getItem('token');
   const response = await fetch(`${baseURL}/user/user`, {
     body: JSON.stringify({ email: userEmail}),
@@ -205,7 +204,6 @@ export async function getUser(userEmail) {
   }
 
   const result = await response.json();
-
 
   return result;
 }

@@ -3,7 +3,6 @@
   import { io } from "socket.io-client";
 
   const URL = import.meta.env.VITE_API_URL;
-  
 
   export default {
     data() {
@@ -16,25 +15,29 @@
     },
     async mounted() {
       this.id = this.$route.params.id;
-      
+
       try {
-        this.socket = io(URL);
+        this.socket = io(URL, {
+          auth: {
+            token: localStorage.getItem('token')
+          }
+        });
         const document = await getOne(this.id);
         this.title = document.title;
         this.content = document.content;
-        this.socket.emit("create", this.id);
-        this.socket.on("title", (data) => {
+        this.socket.emit("create", this.id); // join a room
+        this.socket.on("title", (data) => { // listens for title update
           this.title = data;
         });
-        this.socket.on("content", (data) => {
+        this.socket.on("content", (data) => { // listens for content update
           this.content = data;
-        });        
+        });
        } catch (e) {
         console.error(e);
         this.$router.push('/fail')
       };
     },
-    beforeUnmount() { 
+    beforeUnmount() {
       this.socket.disconnect();
     },
     methods: {

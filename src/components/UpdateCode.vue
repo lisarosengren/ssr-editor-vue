@@ -13,7 +13,7 @@
         socket: null,
         id: null,
         title: null,
-        content: null,   
+        content: null,
         output: '',
         editorView: null,
         fromSocket: false,
@@ -23,14 +23,18 @@
       this.id = this.$route.params.id;
 
       try {
-        this.socket = io(URL)
+        this.socket = io(URL, {
+          auth: {
+            token: localStorage.getItem('token')
+          }
+        });
         const document = await getOne(this.id);
         this.id = document._id;
         this.title = document.title;
         this.content = document.content;
         // The room
         this.socket.emit("create", this.id);
-        // Listens to sockets with title updates. Updates the title. 
+        // Listens to sockets with title updates. Updates the title.
         this.socket.on("title", (data) => {
           this.title = data;
         });
@@ -41,7 +45,7 @@
             changes: {from: 0, to: this.editorView.state.doc.length, insert: data},
             // Moves the cursor to the end of the document
             selection: {anchor: data.length}
-          });      
+          });
         });
 
 
@@ -68,7 +72,7 @@
         this.$router.push('/fail')
       }
     },
-    beforeUnmount() { 
+    beforeUnmount() {
       this.socket.disconnect();
     },
     methods: {

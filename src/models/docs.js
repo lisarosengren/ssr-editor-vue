@@ -7,7 +7,6 @@ const baseURL = import.meta.env.VITE_API_URL;
  */
 export async function getAll() {
   const token = localStorage.getItem('token');
-  console.log("getting all");
   const response = await fetch(baseURL, {
     body: JSON.stringify({userId: localStorage.getItem('userId')}),
     method: 'POST',
@@ -18,11 +17,9 @@ export async function getAll() {
   }
   );
   if (!response.ok) {
-    console.log(response)
       throw new Error(response.status);
   }
   const result = await response.json();
-  console.log(result);
   return result;
 }
 
@@ -41,7 +38,6 @@ export async function updateDoc(docToUpdate) {
         method: 'PUT'
     });
     if (!response.ok) {
-        console.log(response);
         throw new Error("Database error");
     }
 }
@@ -78,9 +74,6 @@ export async function getOne(id) {
  */
 export async function newDoc(newDocData) {
   const token = localStorage.getItem('token');
-  console.log("öj");
-  newDocData.creator = localStorage.getItem('userId');
-  console.log(newDocData);
   const response = await fetch(`${baseURL}/newdoc`, {
       body: JSON.stringify(newDocData),
       headers: {
@@ -96,7 +89,6 @@ export async function newDoc(newDocData) {
   }
 
   const result = await response.json()
-  console.log(result);
   return result.insertedId;
 }
 
@@ -133,11 +125,10 @@ export async function sendCode(codeString) {
 
 /**
  * Creates a new user in the database
- * @param {object} body the email and password of the new user
- * @returns {object} the newly created user id.
+ * @param {object} body the email and password (and potentially invite token) of the new user
+ * @returns {object} the newly created user id and login token
  */
 export async function newUser(newUserData) {
-
     const response = await fetch(`${baseURL}/user/register`, {
         body: JSON.stringify(newUserData),
         headers: {
@@ -150,18 +141,16 @@ export async function newUser(newUserData) {
         throw new Error("Registration error");
     }
     const result = await response.json()
-
-    return result.insertedId;
+    localStorage.setItem('token', result.token);
+    return result;
 }
 /**
  * User login
- * @param {object} userData user email and password
- * sets jwt, user email and user id in local storage
+ * @param {object} userData user email and password and invite token if exists
+ * sets jwt in local storage
  * @returns {object}
  */
 export async function userLogin(userData) {
-  console.log("login function, trying to send request")
-  console.log("userData: ", userData)
   const response = await fetch(`${baseURL}/user/login`, {
     body: JSON.stringify(userData),
     headers: {
@@ -169,30 +158,47 @@ export async function userLogin(userData) {
     },
     method: 'POST'
   });
-  console.log(response)
   if (!response.ok) {
       throw new Error("Login error");
   }
 
   const result = await response.json();
   localStorage.setItem('token', result.token);
-  localStorage.setItem('email', result.email);
-  localStorage.setItem('userId', result._id);
-  console.log(localStorage);
-
+  console.log(result.message)
   return result.status;
 }
 /**
- * Gets a user from the database
- * @param {string} userEmail
+ * Gets user info from the database by matching email (or id)
  * @returns {object} result _id, email
  */
 export async function getUser() {
-  const userEmail = localStorage.getItem('email')
+  // const userEmail = localStorage.getItem('email')
   const token = localStorage.getItem('token');
-  console.log("storage: ", userEmail, token);
   const response = await fetch(`${baseURL}/user/home`, {
-    body: JSON.stringify({ email: userEmail}),
+    body: JSON.stringify(),
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    }
+  });
+  if (!response.ok) {
+      throw new Error("Failed to get user");
+  }
+
+  const result = await response.json();
+  return result;
+}
+
+/**
+ * sends a request to send an email with a link to register
+ * @param {string} email email address to send invitation to
+ * @param {string} docId document id
+ */
+export async function mailInvitation(inviteEmail, docId) {
+  const token = localStorage.getItem('token');
+  const response = await fetch(`${baseURL}/mail/invite`, {
+    body: JSON.stringify({ recipient: inviteEmail, docId: docId}),
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${token}`,
@@ -200,14 +206,7 @@ export async function getUser() {
     }
   });
   console.log(response);
-  if (!response.ok) {
-      throw new Error("Failed to get user");
-  }
-
-  const result = await response.json();
-  console.log(result);
-  return result;
 }
 
-const docs = { getAll, updateDoc, getOne, newDoc, sendCode, newUser, getUser }
+const docs = { getAll, updateDoc, getOne, newDoc, sendCode, newUser, getUser, mailInvitation }
 export default docs;

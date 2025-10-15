@@ -3,10 +3,15 @@
 
   export default {
     data() {
+      const inviteToken = this.$route.query.token;
+      if (inviteToken) {
+        localStorage.setItem('invited-token', inviteToken);
+      }
       return {
         newUserData: {
           email: '',
-          password: ''
+          password: '',
+          invitedToken: inviteToken
         },
         err: false
       };
@@ -14,8 +19,8 @@
     methods: {
       async onSubmit() {
         try {
-          const id = await newUser(this.newUserData);
-          console.log(id)
+          const user = await newUser(this.newUserData);
+          console.log(user);
           // this.$router.push(`/user/${ id }`)
           this.$router.push('/')
           } catch (e) {
@@ -35,9 +40,9 @@
 
   <form @submit.prevent="onSubmit">
     <label for="email">E-post</label>
-    <input id="email" name="email" v-model="newUserData.email" required />
+    <input id="email" name="email" v-model="newUserData.email"  />
     <label for="password">Lösenord</label>
-    <input id="password" name="password" v-model="newUserData.password" required />
+    <input id="password" name="password" v-model="newUserData.password"  />
     <input type="submit" name="doit" value="Spara">
   </form>
 

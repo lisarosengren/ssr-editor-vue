@@ -1,11 +1,10 @@
 <script>
   import { getAll } from '@/models/docs';
 
-
   export default {
     data() {
       return {
-        allDocs: []
+        allDocs: [],
       };
     },
     async mounted() {
@@ -29,6 +28,7 @@
 
 
 <template>
+  <h2>Mina dokument:</h2>
   <ul>
     <li v-for="(entry) in allDocs" :key="entry._id">
       <router-link

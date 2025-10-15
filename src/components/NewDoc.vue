@@ -7,7 +7,6 @@
         newDocData: {
           title: '',
           type: null,
-          creator: ''
         },
         err: false
       };

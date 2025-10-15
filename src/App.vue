@@ -12,8 +12,6 @@ import { RouterLink, RouterView } from 'vue-router'
       <nav>
         <RouterLink to="/login">Logga in befintlig användare</RouterLink>
         <RouterLink to="/register">Registrera ny användare</RouterLink>
-        <RouterLink to="/">Mina dokument</RouterLink>
-        <RouterLink to="/create">Nytt dokument</RouterLink>
       </nav>
     </div>
   </header>

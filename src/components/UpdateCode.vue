@@ -1,5 +1,5 @@
 <script>
-  import { getOne, sendCode } from '@/models/docs';
+  import { getOne, sendCode, mailInvitation } from '@/models/docs';
   import { io } from "socket.io-client";
   import { basicSetup } from "codemirror";
   import { EditorView } from "@codemirror/view";
@@ -96,7 +96,16 @@
             input: type
           }
           this.socket.emit(what, data)
-      }
+      },
+      async onSubmit() {
+        try {
+          const sentTo = await mailInvitation(this.mailInvite);
+          console.log("mailing: ", sentTo)
+          } catch (e) {
+            console.error(e)
+            this.err = true;
+          }
+          },
     },
   };
 
@@ -119,7 +128,11 @@
 
   <button @click="executeCode">Skicka koden till efo</button>
   <pre>{{  output  }}</pre>
-
+  <form @submit.prevent="onSubmit">
+    <label for="mailInvite">Skicka inbjudan att medverka:</label>
+    <input type="email" id="mailInvite" name="mailInvite" v-model="mailInvite" />
+    <input type="submit" name="doit" value="Skicka">
+  </form>
 
 </template>
 

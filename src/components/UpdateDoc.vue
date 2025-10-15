@@ -1,5 +1,5 @@
 <script>
-  import { getOne } from '@/models/docs';
+  import { getOne, mailInvitation } from '@/models/docs';
   import { io } from "socket.io-client";
 
   const URL = import.meta.env.VITE_API_URL;
@@ -11,6 +11,7 @@
         id: null,
         title: null,
         content: null,
+        mailInvite: ''
       };
     },
     async mounted() {
@@ -51,7 +52,17 @@
             input: type
           }
           this.socket.emit(what, data)
-      }
+      },
+      async onSubmit() {
+        console.log("send button!", this.mailInvite);
+        try {
+          const sentTo = await mailInvitation(this.mailInvite, this.id);
+          console.log("mailing: ", sentTo)
+          } catch (e) {
+            console.error(e)
+            this.err = true;
+          }
+          },
     }
   };
 
@@ -68,6 +79,11 @@
   <label for="content">Innehåll</label>
   <textarea v-model="content" @input="onInput('content')"></textarea>
 
+  <form @submit.prevent="onSubmit">
+    <label for="mailInvite">Skicka inbjudan att medverka:</label>
+    <input type="email" id="mailInvite" name="mailInvite" v-model="mailInvite" />
+    <input type="submit" name="doit" value="Skicka">
+  </form>
 </template>
 
 <style scoped>

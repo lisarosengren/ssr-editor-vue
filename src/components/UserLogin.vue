@@ -2,11 +2,17 @@
   import { userLogin } from '@/models/docs';
 
   export default {
+    emits: ['login-success'],
     data() {
+      const inviteToken = this.$route.query.token;
+      if (inviteToken) {
+        localStorage.setItem('invited-token', inviteToken);
+      }
       return {
         userData: {
           email: '',
-          password: ''
+          password: '',
+          inviteToken: inviteToken
         },
         err: false
       };
@@ -15,8 +21,9 @@
       async onSubmit() {
         try {
           const user = await userLogin(this.userData);
-          console.log("user entered: ", user)
-          this.$router.push('/user')
+          console.log("logging in: ", user);
+          this.$emit('login-success', user);
+          this.$router.push('/')
           } catch (e) {
             console.error(e)
             this.err = true;
@@ -34,9 +41,9 @@
 
   <form @submit.prevent="onSubmit">
     <label for="email">E-post</label>
-    <input id="email" name="email" v-model="userData.email" required />
+    <input id="email" name="email" v-model="userData.email"  />
     <label for="password">Lösenord</label>
-    <input id="password" name="password" v-model="userData.password" required />
+    <input id="password" name="password" v-model="userData.password"  />
     <input type="submit" name="doit" value="Logga in">
   </form>
 

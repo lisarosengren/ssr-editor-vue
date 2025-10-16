@@ -9,7 +9,9 @@
     },
     async mounted() {
       try {
-      this.allDocs = await getAll();
+      const result = await getAll();
+      this.allDocs = result.data.documentList;
+      console.log(result)
       } catch (e) {
         console.log(e)
         this.$router.push('/fail')
@@ -29,21 +31,10 @@
 
 <template>
   <h2>Mina dokument:</h2>
-  <p v-for="(entry) in allDocs" :key="entry._id">
-        <router-link
-        :to="{
-          name: 'DocView',
-          params: {
-            id: entry._id,
-            type: entry.type || 'text'
-          }
-        }"
-        @click="onClick">{{  entry.title  }}
-      </router-link>
-  </p>
   <ul>
     <li v-for="(entry) in allDocs" :key="entry._id">
       <router-link
+      v-if="entry && entry._id"
         :to="{
           name: 'DocView',
           params: {

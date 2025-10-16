@@ -14,15 +14,21 @@ export async function getAll() {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      query: '{documentList}'
+      query: '{ documentList { _id title } }'
     })
-  }
-  );
+  });
+
   if (!response.ok) {
-      throw new Error(response.status);
+    throw new Error(response.status);
   }
+
   const result = await response.json();
-  return result;
+
+  if (result.errors) {
+    throw new Error(response.errors);
+  }
+
+  return result.data.documentList;
 }
 
 /**

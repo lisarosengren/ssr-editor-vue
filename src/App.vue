@@ -1,5 +1,78 @@
 <script setup>
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterLink, RouterView, useRoute } from 'vue-router'
+import { ref, provide, onMounted, watch } from 'vue'
+import { getUser, checkInvite } from './models/docs'
+
+const route = useRoute()
+
+watch(
+  () => route.query.token,
+  (newToken) => {
+    if (newToken) {
+      console.log('found invite token', newToken)
+      localStorage.setItem('invite-token', newToken)
+    }
+  },
+  { immediate: true }
+)
+const user = ref(null)
+const loggedIn = ref(false)
+
+function logout() {
+  localStorage.removeItem('token')
+  localStorage.removeItem('invite-token')
+  user.value = null
+  loggedIn.value = false
+  window.location.href = '/'// full reload to reset
+}
+
+// provide = makes variables and functions available in other views (use inject)
+provide('user', user)
+provide('loggedIn', loggedIn)
+provide('logout', logout)
+
+onMounted(async () => {
+  const inviteToken = route.query.token;
+  const token = localStorage.getItem('token');
+  if (inviteToken) {
+    console.log("found invite token")
+    localStorage.setItem('invite-token', inviteToken);
+  }
+  // if (token) {
+  //   console.log("found token")
+  //   try {
+  //     if (inviteToken) {
+  //       const sameUser = await checkInvite()
+  //       if (!sameUser.loginUser) {
+  //         console.log("invited not same as logged in")
+  //         localStorage.removeItem('token')
+  //         return
+  //       }
+  //     }
+  //     const currentUser = await getUser()
+  //     if (currentUser) {
+  //       user.value = currentUser
+  //       loggedIn.value = true
+  //     }
+  //   } catch (e) {
+  //     console.log("invalid token", e)
+  //     localStorage.removeItem('token')
+  //   }
+  // }
+  if (token && inviteToken) {
+    const sameUser = await checkInvite();
+    console.log(sameUser);
+    if (!sameUser.loginUser) {
+      console.log("not same user");
+      localStorage.removeItem('token');
+    }
+  }
+  if (token) {
+    const currentUser = await getUser();
+    user.value = currentUser;
+    loggedIn.value = true;
+  }
+});
 </script>
 
 <template>
@@ -7,12 +80,16 @@ import { RouterLink, RouterView } from 'vue-router'
   <!--  <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" /> -->
 
     <div class="wrapper">
-      <h1>Bobcat Noir</h1>
+      <RouterLink to="/"><h1>Bobcat Noir</h1></RouterLink>
       <h2>ssr-editor</h2>
-      <nav>
+<!--      <nav>
         <RouterLink to="/login">Logga in befintlig användare</RouterLink>
         <RouterLink to="/register">Registrera ny användare</RouterLink>
-      </nav>
+      </nav> -->
+    </div>
+    <div v-if="loggedIn && user">
+      <p>inloggad som: {{  user.email }}</p>
+      <button @click="logout">logga ut</button>
     </div>
   </header>
 

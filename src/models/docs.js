@@ -7,13 +7,15 @@ const baseURL = import.meta.env.VITE_API_URL;
  */
 export async function getAll() {
   const token = localStorage.getItem('token');
-  const response = await fetch(baseURL, {
-    body: JSON.stringify({userId: localStorage.getItem('userId')}),
+  const response = await fetch(`${baseURL}/graphql`, {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'
-    }
+    },
+    body: JSON.stringify({
+      query: '{documentList}'
+    })
   }
   );
   if (!response.ok) {

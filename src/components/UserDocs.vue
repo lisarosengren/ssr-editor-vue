@@ -1,5 +1,6 @@
 <script>
   import DocList from './DocList.vue';
+  import { inviteDoc, acceptInvite } from '@/models/docs';
 
   export default {
     props: {
@@ -10,7 +11,8 @@
   },
     data() {
       return {
-        invites: '',
+        invite: '',
+        inviteLink: ''
       };
     },
     async mounted() {
@@ -19,7 +21,8 @@
         console.log("userdocs here")
       const inviteToken = localStorage.getItem('invite-token');
       if (inviteToken) {
-        this.invites = "link to document here"
+        console.log("there is an invite")
+        this.invite = await inviteDoc();
       }
       } catch (e) {
         console.log(e)
@@ -29,6 +32,26 @@
     methods: {
       onClick() {
         // console.log("Clicked")
+      },
+      async accept() {
+        try {
+          await acceptInvite({
+            userId: this.user._id,
+            docId: this.invite.invite.documentId
+          });
+          localStorage.removeItem('invite-token');
+
+          this.$router.push({
+            name: 'DocView',
+            params: {
+              id: this.invite.invite.documentId,
+              type: 'text'
+            }
+          });
+        } catch (err) {
+          console.log("Failed to accept, ", err);
+          this.$router.push('/fail');
+        }
       }
     },
     components: {
@@ -45,9 +68,10 @@
   <h1>Välkommen {{ user.email }}</h1>
   <RouterLink to="/create">Nytt dokument</RouterLink>
   <DocList />
-      <div>
-      <h3>invitations:</h3>
-      <p> {{ invites }}</p>
+      <div v-if="invite">
+      <h2>Du har en inbjudan:</h2>
+      <p> {{ invite.invite.inviter }} bjuder in dig att medverka i dokumentet {{  invite.invite.documentId }}</p>
+      <button @click="accept">Tacka ja och börja medverka (eller motverka)</button>
     </div>
 </template>
 

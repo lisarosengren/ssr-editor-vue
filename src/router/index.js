@@ -29,14 +29,9 @@ const router = createRouter({
       component: () => import('../views/FailView.vue'),
     },
     {
-      path: '/login',
-      name: 'LoginView',
-      component: () => import('../views/LoginView.vue'),
-    },
-    {
-      path: '/register',
-      name: 'RegisterView',
-      component: () => import('../views/RegisterView.vue'),
+      path: '/invite',
+      name: 'InviteView',
+      component: () => import('../views/InviteView.vue'),
     }
   ],
 })

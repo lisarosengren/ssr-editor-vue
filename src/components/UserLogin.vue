@@ -1,36 +1,54 @@
-<script>
-  import { userLogin } from '@/models/docs';
+<script setup>
+import { ref } from 'vue';
+import { getUser, userLogin } from '@/models/docs';
 
-  export default {
-    emits: ['login-success'],
-    data() {
-      const inviteToken = this.$route.query.token;
-      if (inviteToken) {
-        localStorage.setItem('invited-token', inviteToken);
-      }
-      return {
-        userData: {
-          email: '',
-          password: '',
-          inviteToken: inviteToken
-        },
-        err: false
-      };
-    },
-    methods: {
-      async onSubmit() {
-        try {
-          const user = await userLogin(this.userData);
-          console.log("logging in: ", user);
-          this.$emit('login-success', user);
-          this.$router.push('/')
-          } catch (e) {
-            console.error(e)
-            this.err = true;
-          }
-          },
-      }
-    };
+const emit = defineEmits(['login-success'])
+const userData = ref({
+  email: '',
+  password: ''
+})
+
+const err = ref(false)
+
+async function onSubmit() {
+  try {
+    const user = await userLogin(userData.value)
+    localStorage.setItem('token', user.token)
+    const currentUser = await getUser()
+    emit('login-success', currentUser)
+  } catch (e) {
+    console.error(e)
+    err.value = true
+  }
+}
+  // export default {
+  //   emits: ['login-success'],
+  //   data() {
+  //     return {
+  //       userData: {
+  //         email: '',
+  //         password: '',
+  //         inviteToken: localStorage.getItem('invite-token')
+  //       },
+  //       err: false
+  //     };
+  //   },
+  //   methods: {
+  //     async onSubmit() {
+  //       try {
+  //         const user = await userLogin(this.userData);
+  //         // localStorage.setItem('token', user.token);
+  //         const currentUser = await getUser();
+  //         console.log("logging in: ", user);
+  //         this.$emit('login-success', currentUser);
+  //         // this.$router.push('/')
+  //         } catch (e) {
+  //           console.error(e)
+  //           this.err = true;
+  //         }
+  //         },
+  //     }
+  //   };
 
 </script>
 

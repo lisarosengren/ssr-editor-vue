@@ -164,8 +164,9 @@ export async function userLogin(userData) {
 
   const result = await response.json();
   localStorage.setItem('token', result.token);
+  console.log("i have set a login token")
   console.log(result.message)
-  return result.status;
+  return result;
 }
 /**
  * Gets user info from the database by matching email (or id)
@@ -183,7 +184,8 @@ export async function getUser() {
     }
   });
   if (!response.ok) {
-      throw new Error("Failed to get user");
+      // throw new Error("Failed to get user");
+      console.log(response);
   }
 
   const result = await response.json();
@@ -208,5 +210,58 @@ export async function mailInvitation(inviteEmail, docId) {
   console.log(response);
 }
 
-const docs = { getAll, updateDoc, getOne, newDoc, sendCode, newUser, getUser, mailInvitation }
+export async function checkInvite() {
+  console.log("checking if invited user is logged in");
+  const inviteToken = localStorage.getItem('invite-token');
+  const token = localStorage.getItem('token');
+  const response = await fetch(`${baseURL}/user/compare`, {
+    body: JSON.stringify({ inviteToken: inviteToken}),
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    }
+  });
+  // console.log(response);
+  const result = await response.json();
+  console.log(result);
+  return result;
+}
+
+export async function inviteDoc() {
+  console.log("getting invite info");
+  const inviteToken = localStorage.getItem('invite-token');
+  const token = localStorage.getItem('token');
+  const response = await fetch(`${baseURL}/user/invite`, {
+    body: JSON.stringify({ inviteToken: inviteToken}),
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    }
+  });
+  console.log(response);
+  const result = await response.json();
+  console.log(result);
+  return result;
+}
+
+export async function acceptInvite(userId, docId) {
+  console.log("user wants to accept invite")
+  const token = localStorage.getItem('token');
+  const response = await fetch(`${baseURL}/update`, {
+    body: JSON.stringify({ userId: userId, _id: docId}),
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    }
+  });
+  console.log(response);
+  const result = await response.json();
+  console.log(result)
+  return result;
+    }
+
+const docs = { getAll, updateDoc, getOne, newDoc, sendCode, newUser, getUser, mailInvitation, inviteDoc, acceptInvite }
 export default docs;

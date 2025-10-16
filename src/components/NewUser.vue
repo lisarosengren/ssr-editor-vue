@@ -2,16 +2,13 @@
   import { newUser } from '@/models/docs';
 
   export default {
+    emits: ['register-success'],
     data() {
-      const inviteToken = this.$route.query.token;
-      if (inviteToken) {
-        localStorage.setItem('invited-token', inviteToken);
-      }
       return {
         newUserData: {
           email: '',
           password: '',
-          invitedToken: inviteToken
+          inviteToken: localStorage.getItem('invite-token')
         },
         err: false
       };
@@ -21,15 +18,16 @@
         try {
           const user = await newUser(this.newUserData);
           console.log(user);
-          // this.$router.push(`/user/${ id }`)
+          console.log("new user ", user)
+          this.$emit('register-success', user)
           this.$router.push('/')
           } catch (e) {
             console.error(e)
             this.err = true;
-          }
-          },
-      }
-    };
+        }
+      },
+    }
+  };
 
 </script>
 
@@ -43,7 +41,7 @@
     <input id="email" name="email" v-model="newUserData.email"  />
     <label for="password">Lösenord</label>
     <input id="password" name="password" v-model="newUserData.password"  />
-    <input type="submit" name="doit" value="Spara">
+    <input type="submit" name="doit" value="Registrera användare">
   </form>
 
 

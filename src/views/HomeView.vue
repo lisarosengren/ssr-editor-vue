@@ -47,8 +47,8 @@ function handleLogin(loggedInUser) {
   <main>
     <UserDocs v-if="loggedIn && user" :user="user" />
     <div v-else>
-      <button @click="login = true; register = false">Logga in</button>
-      <button @click="register = true; login = false">Registrera ny användare</button>
+      <button class="button" @click="login = true; register = false">Logga in</button>
+      <button class="button" @click="register = true; login = false">Registrera ny användare</button>
       <UserLogin v-if="login" @login-success="handleLogin" />
       <NewUser v-if="register" @register-success="handleLogin" />
     </div>

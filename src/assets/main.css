@@ -1,9 +1,10 @@
 @import './base.css';
 
 #app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+  /* max-width: 1280px; */
+  max-width: 100%;
+  margin: auto;
+  padding: 1rem;
   font-weight: normal;
 }
 
@@ -20,6 +21,7 @@ textarea {
     margin-bottom: 1.4rem;
     font-size: 1rem;
     padding: 1.4rem;
+    width: 100%;
 }
 
 .update-doc {
@@ -40,6 +42,13 @@ textarea {
   }
 }
 
+@media (min-width: 1024px) {
+  #app {
+    max-width: 80%;
+    margin: auto;
+    padding: 1rem;
+  }
+}
 /* @media (min-width: 1024px) {
   body {
     display: flex;

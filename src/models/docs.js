@@ -6,7 +6,9 @@ const baseURL = import.meta.env.VITE_API_URL;
  * @returns {array} result Returns JSON response from the API
  */
 export async function getAll() {
+  console.log("trying new getall")
   const token = localStorage.getItem('token');
+  console.log("token", token)
   const response = await fetch(`${baseURL}/graphql`, {
     method: 'POST',
     headers: {
@@ -17,13 +19,13 @@ export async function getAll() {
       query: '{ documentList { _id title } }'
     })
   });
-
+  console.log(response)
   if (!response.ok) {
     throw new Error(response.status);
   }
 
   const result = await response.json();
-
+  console.log(result.data.documentList)
   if (result.errors) {
     throw new Error(response.errors);
   }

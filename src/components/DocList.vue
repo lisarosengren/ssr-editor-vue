@@ -10,7 +10,8 @@
     async mounted() {
       try {
       const result = await getAll();
-      this.allDocs = result.data.documentList;
+      console.log("result from getall: ", result)
+      this.allDocs = result;
       console.log(result)
       } catch (e) {
         console.log(e)

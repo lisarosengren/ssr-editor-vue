@@ -65,7 +65,7 @@
 
 
 <template>
-  <h1>Välkommen {{ user.email }}</h1>
+  <!-- <h1>Välkommen {{ user.email }}</h1> -->
   <RouterLink to="/create">Nytt dokument</RouterLink>
   <DocList />
       <div v-if="invite">

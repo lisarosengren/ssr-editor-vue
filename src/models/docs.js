@@ -50,6 +50,7 @@ export async function updateDoc(docToUpdate) {
  * @returns {object} result the document data
  */
 export async function getOne(id) {
+  console.log("get one function called")
   const token = localStorage.getItem('token');
     const response = await fetch(`${baseURL}/${id}`, {
       method: 'GET',
@@ -58,7 +59,7 @@ export async function getOne(id) {
         'Content-Type': 'application/json'
     }
   });
-
+  console.log(response)
   if (!response.ok) {
       throw new Error("Database error");
   }

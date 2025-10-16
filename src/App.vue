@@ -76,27 +76,26 @@ onMounted(async () => {
 </script>
 
 <template>
-  <header>
+  <header class="column">
   <!--  <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" /> -->
 
-    <div class="wrapper">
-      <RouterLink to="/"><h1>Bobcat Noir</h1></RouterLink>
-      <h2>ssr-editor</h2>
+  <div class="left half appname">
+    <RouterLink to="/"><h1>Bobcat Noir</h1><h1>ssr-editor</h1></RouterLink>
 <!--      <nav>
-        <RouterLink to="/login">Logga in befintlig användare</RouterLink>
-        <RouterLink to="/register">Registrera ny användare</RouterLink>
-      </nav> -->
-    </div>
-    <div v-if="loggedIn && user">
-      <p>inloggad som: {{  user.email }}</p>
-      <button @click="logout">logga ut</button>
-    </div>
+      <RouterLink to="/login">Logga in befintlig användare</RouterLink>
+      <RouterLink to="/register">Registrera ny användare</RouterLink>
+    </nav> -->
+  </div>
+  <div v-if="loggedIn && user" class="right half">
+    <p>inloggad som: {{  user.email }}</p>
+    <button class="button" @click="logout">logga ut</button>
+  </div>
   </header>
 
   <RouterView />
 </template>
 
-<style scoped>
+<style>
 header {
   line-height: 1.5;
   max-height: 100vh;
@@ -108,13 +107,33 @@ header {
   margin: 0 auto 2rem;
 }
 
+.left {
+  text-align: left;
+  margin-left: 0;
+}
+.right {
+  text-align: right;
+  margin-right: 0;
+}
+.half {
+  width: 100%;
+}
+.appname {
+  display: none;
+}
+form > {
+  margin-bottom: 8px;
+}
 nav {
   width: 100%;
   font-size: 12px;
   text-align: center;
   margin-top: 2rem;
 }
-
+input[type=select] {
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
 nav a.router-link-exact-active {
   color: var(--color-text);
 }
@@ -133,6 +152,41 @@ nav a:first-of-type {
   border: 0;
 }
 
+.button {
+  display: inline-block;
+  padding: 15px 25px;
+  /* font-size: 24px; */
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  color: #fff;
+  background-color: #04AA6D;
+  border: none;
+  border-radius: 15px;
+  margin: 1.4rem;
+}
+
+.button:active {
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
+}
+
+
+@media (min-width: 1024px) {
+  header {
+    display: flex;
+    flex-direction: row;
+  }
+  .half {
+    width: 50%;
+  }
+  .right {
+    margin-right: 0;
+  }
+  .appname {
+    display:block
+  }
+}
 /* @media (min-width: 1024px) {
   header {
     display: flex;

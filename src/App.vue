@@ -32,6 +32,7 @@ provide('loggedIn', loggedIn)
 provide('logout', logout)
 
 onMounted(async () => {
+  console.log("user: ", user)
   const inviteToken = route.query.token;
   const token = localStorage.getItem('token');
   if (inviteToken) {
@@ -68,7 +69,9 @@ onMounted(async () => {
     }
   }
   if (token) {
+    console.log("token found, checking...")
     const currentUser = await getUser();
+    console.log(currentUser)
     user.value = currentUser;
     loggedIn.value = true;
   }

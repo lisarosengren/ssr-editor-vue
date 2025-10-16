@@ -141,6 +141,7 @@ export async function newUser(newUserData) {
         throw new Error("Registration error");
     }
     const result = await response.json()
+    console.log(result)
     localStorage.setItem('token', result.token);
     return result;
 }
@@ -150,22 +151,26 @@ export async function newUser(newUserData) {
  * sets jwt in local storage
  * @returns {object}
  */
-export async function userLogin(userData) {
+export async function userLogin(user) {
+  console.log("trying to log in user")
+  console.log(user)
   const response = await fetch(`${baseURL}/user/login`, {
-    body: JSON.stringify(userData),
+    body: JSON.stringify(user),
     headers: {
       'content-type': 'application/json'
     },
     method: 'POST'
   });
+  console.log(response)
   if (!response.ok) {
       throw new Error("Login error");
   }
 
   const result = await response.json();
+  console.log(result)
   localStorage.setItem('token', result.token);
   console.log("i have set a login token")
-  console.log(result.message)
+  console.log(result)// { token: , message:  }
   return result;
 }
 /**
@@ -175,9 +180,10 @@ export async function userLogin(userData) {
 export async function getUser() {
   // const userEmail = localStorage.getItem('email')
   const token = localStorage.getItem('token');
+  console.log("attempting to get user")
   const response = await fetch(`${baseURL}/user/home`, {
-    body: JSON.stringify(),
-    method: 'POST',
+    // body: JSON.stringify(),
+    method: 'GET',
     headers: {
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'

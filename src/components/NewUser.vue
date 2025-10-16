@@ -1,5 +1,5 @@
 <script>
-  import { newUser } from '@/models/docs';
+  import { newUser, userLogin } from '@/models/docs';
 
   export default {
     emits: ['register-success'],
@@ -16,10 +16,16 @@
     methods: {
       async onSubmit() {
         try {
-          const user = await newUser(this.newUserData);
-          console.log(user);
-          console.log("new user ", user)
-          this.$emit('register-success', user)
+          const newestUser = await newUser(this.newUserData);
+          console.log(newestUser);
+          console.log("new user ", newestUser)
+
+          const loginNewUser = await userLogin({
+            email: this.newUserData.email,
+            password: this.newUserData.password
+          });
+          localStorage.setItem('token', loginNewUser.token);
+          this.$emit('register-success', loginNewUser)
           this.$router.push('/')
           } catch (e) {
             console.error(e)

@@ -19,8 +19,10 @@ const user = ref(null)
 const loggedIn = ref(false)
 
 function logout() {
+  console.log("logging out")
   localStorage.removeItem('token')
   localStorage.removeItem('invite-token')
+  console.log("should be empty", localStorage)
   user.value = null
   loggedIn.value = false
   window.location.href = '/'// full reload to reset
@@ -39,27 +41,7 @@ onMounted(async () => {
     console.log("found invite token")
     localStorage.setItem('invite-token', inviteToken);
   }
-  // if (token) {
-  //   console.log("found token")
-  //   try {
-  //     if (inviteToken) {
-  //       const sameUser = await checkInvite()
-  //       if (!sameUser.loginUser) {
-  //         console.log("invited not same as logged in")
-  //         localStorage.removeItem('token')
-  //         return
-  //       }
-  //     }
-  //     const currentUser = await getUser()
-  //     if (currentUser) {
-  //       user.value = currentUser
-  //       loggedIn.value = true
-  //     }
-  //   } catch (e) {
-  //     console.log("invalid token", e)
-  //     localStorage.removeItem('token')
-  //   }
-  // }
+
   if (token && inviteToken) {
     const sameUser = await checkInvite();
     console.log(sameUser);
@@ -69,7 +51,7 @@ onMounted(async () => {
     }
   }
   if (token) {
-    console.log("token found, checking...")
+    console.log("token found, calling getUser")
     const currentUser = await getUser();
     console.log(currentUser)
     user.value = currentUser;

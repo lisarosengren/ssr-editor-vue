@@ -66,6 +66,10 @@ export async function getOne(id) {
         _id
         title
         content
+        users {
+          _id
+          email
+          }
       }
     }
   `
@@ -89,7 +93,7 @@ export async function getOne(id) {
   }
 
   const result = await response.json();
-  console.log(result)
+  console.log(result.data.document)
 
 
   return result.data.document;

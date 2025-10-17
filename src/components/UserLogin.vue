@@ -13,42 +13,17 @@ const err = ref(false)
 async function onSubmit() {
   try {
     const user = await userLogin(userData.value)
+    console.log("UserLogin here", user)
     localStorage.setItem('token', user.token)
+    console.log("Calling getuser to get currentUser")
     const currentUser = await getUser()
+    console.log("currentUser", currentUser)
     emit('login-success', currentUser)
   } catch (e) {
     console.error(e)
     err.value = true
   }
 }
-  // export default {
-  //   emits: ['login-success'],
-  //   data() {
-  //     return {
-  //       userData: {
-  //         email: '',
-  //         password: '',
-  //         inviteToken: localStorage.getItem('invite-token')
-  //       },
-  //       err: false
-  //     };
-  //   },
-  //   methods: {
-  //     async onSubmit() {
-  //       try {
-  //         const user = await userLogin(this.userData);
-  //         // localStorage.setItem('token', user.token);
-  //         const currentUser = await getUser();
-  //         console.log("logging in: ", user);
-  //         this.$emit('login-success', currentUser);
-  //         // this.$router.push('/')
-  //         } catch (e) {
-  //           console.error(e)
-  //           this.err = true;
-  //         }
-  //         },
-  //     }
-  //   };
 
 </script>
 

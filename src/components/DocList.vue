@@ -8,11 +8,12 @@
       };
     },
     async mounted() {
+      console.log("doclist here")
       try {
+        console.log("trying to getAll")
       const result = await getAll();
       console.log("result from getall: ", result)
       this.allDocs = result;
-      console.log(result)
       } catch (e) {
         console.log(e)
         this.$router.push('/fail')

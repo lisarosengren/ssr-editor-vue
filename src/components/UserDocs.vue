@@ -35,10 +35,14 @@
       },
       async accept() {
         try {
+          console.log("i accept")
+          console.log("userId: ", this.user._id)
+          console.log("docId: ", this.invite.invite.documentId)
           await acceptInvite({
             userId: this.user._id,
             docId: this.invite.invite.documentId
           });
+
           localStorage.removeItem('invite-token');
 
           this.$router.push({

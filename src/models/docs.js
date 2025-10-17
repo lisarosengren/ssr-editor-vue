@@ -283,13 +283,18 @@ export async function inviteDoc() {
   console.log(result);
   return result;
 }
-
-export async function acceptInvite(userId, docId) {
+/**
+ *
+ * @param {string} userId
+ * @param {string} docId
+ * @returns
+ */
+export async function acceptInvite(body) {
   console.log("user wants to accept invite")
   const token = localStorage.getItem('token');
-  const response = await fetch(`${baseURL}/update`, {
-    body: JSON.stringify({ userId: userId, _id: docId}),
-    method: 'POST',
+  const response = await fetch(`${baseURL}/adduser`, {
+    body: JSON.stringify(body),
+    method: 'PUT',
     headers: {
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'

@@ -8,24 +8,24 @@ const baseURL = import.meta.env.VITE_API_URL;
 export async function getAll() {
   console.log("trying new getall")
   const token = localStorage.getItem('token');
-  console.log("token", token)
+  // console.log("token", token)
   const response = await fetch(`${baseURL}/graphql`, {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify({
       query: '{ documentList { _id title } }'
     })
   });
-  console.log(response)
+  console.log("getall response", response)
   if (!response.ok) {
     throw new Error(response.status);
   }
 
   const result = await response.json();
-  console.log(result.data.documentList)
+  console.log("getall result.data.documentLIst", result.data.documentList)
   if (result.errors) {
     throw new Error(response.errors);
   }
@@ -60,12 +60,28 @@ export async function updateDoc(docToUpdate) {
 export async function getOne(id) {
   console.log("get one function called")
   const token = localStorage.getItem('token');
-    const response = await fetch(`${baseURL}/${id}`, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
+  const query = `
+    query GetDocument($id: ID!) {
+      document(_id: $id) {
+        _id
+        title
+        content
+      }
     }
+  `
+  const variables = { id };
+  const response = await fetch(`${baseURL}/graphql`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+      'Accept': 'application/graphql-response+json, application/json'
+    },
+    body: JSON.stringify({
+      query,
+      variables,
+      operationName: 'GetDocument'
+    }),
   });
   console.log(response)
   if (!response.ok) {
@@ -73,9 +89,10 @@ export async function getOne(id) {
   }
 
   const result = await response.json();
+  console.log(result)
 
 
-  return result;
+  return result.data.document;
 }
 
 /**
@@ -84,7 +101,9 @@ export async function getOne(id) {
  * @returns {object} the response from the API and the newly created id.
  */
 export async function newDoc(newDocData) {
+  console.log("calling save new doc")
   const token = localStorage.getItem('token');
+  console.log("token got ", token)
   const response = await fetch(`${baseURL}/newdoc`, {
       body: JSON.stringify(newDocData),
       headers: {
@@ -98,8 +117,8 @@ export async function newDoc(newDocData) {
       // console.log(response);
       throw new Error("Database error");
   }
-
   const result = await response.json()
+  console.log(result)
   return result.insertedId;
 }
 
@@ -140,6 +159,7 @@ export async function sendCode(codeString) {
  * @returns {object} the newly created user id and login token
  */
 export async function newUser(newUserData) {
+  console.log("new user called")
     const response = await fetch(`${baseURL}/user/register`, {
         body: JSON.stringify(newUserData),
         headers: {
@@ -152,7 +172,7 @@ export async function newUser(newUserData) {
         throw new Error("Registration error");
     }
     const result = await response.json()
-    console.log(result)
+    console.log("new user result", result)
     localStorage.setItem('token', result.token);
     return result;
 }
@@ -164,7 +184,8 @@ export async function newUser(newUserData) {
  */
 export async function userLogin(user) {
   console.log("trying to log in user")
-  console.log(user)
+  console.log("user", user)
+  console.log("this is body", JSON.stringify(user))
   const response = await fetch(`${baseURL}/user/login`, {
     body: JSON.stringify(user),
     headers: {
@@ -172,16 +193,15 @@ export async function userLogin(user) {
     },
     method: 'POST'
   });
-  console.log(response)
+  console.log("login response", response)
   if (!response.ok) {
       throw new Error("Login error");
   }
 
   const result = await response.json();
-  console.log(result)
   localStorage.setItem('token', result.token);
   console.log("i have set a login token")
-  console.log(result)// { token: , message:  }
+  console.log("login result", result)// { token: , message:  }
   return result;
 }
 /**
@@ -189,9 +209,9 @@ export async function userLogin(user) {
  * @returns {object} result _id, email
  */
 export async function getUser() {
-  // const userEmail = localStorage.getItem('email')
+  console.log("get user called")
   const token = localStorage.getItem('token');
-  console.log("attempting to get user")
+  console.log("attempting to get user- token", token)
   const response = await fetch(`${baseURL}/user/home`, {
     // body: JSON.stringify(),
     method: 'GET',
@@ -206,6 +226,7 @@ export async function getUser() {
   }
 
   const result = await response.json();
+  console.log("getuser result", result)
   return result;
 }
 

@@ -26,7 +26,7 @@
           });
           localStorage.setItem('token', loginNewUser.token);
           this.$emit('register-success', loginNewUser)
-          this.$router.push('/')
+          // this.$router.push('/')
           } catch (e) {
             console.error(e)
             this.err = true;

@@ -216,13 +216,16 @@ export async function getUser() {
   console.log("get user called")
   const token = localStorage.getItem('token');
   console.log("attempting to get user- token", token)
-  const response = await fetch(`${baseURL}/user/home`, {
+  const response = await fetch(`${baseURL}/graphql`, {
     // body: JSON.stringify(),
-    method: 'GET',
+    method: 'POST',
     headers: {
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'
-    }
+    },
+    body: JSON.stringify({
+      query: '{ user { _id email } }'
+    })
   });
   if (!response.ok) {
       // throw new Error("Failed to get user");

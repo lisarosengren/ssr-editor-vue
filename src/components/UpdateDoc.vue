@@ -23,13 +23,14 @@
             token: localStorage.getItem('token')
           }
         });
+        console.log("Vad får getOne för id?", this.id)
         const document = await getOne(this.id);
-        console.log(document)
+        console.log("Här är vad som ska in", document)
         this.title = document.title;
         this.content = document.content;
         this.socket.emit("create", this.id); // join a room
         this.socket.on("title", (data) => { // listens for title update
-          this.title = data;
+        this.title = data;
         });
         this.socket.on("content", (data) => { // listens for content update
           this.content = data;

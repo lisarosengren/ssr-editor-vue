@@ -33,24 +33,27 @@ export async function getAll() {
   return result.data.documentList;
 }
 
-/**
- * Updates a document
- * @param {object} docToUpdate Object with the properties _id, title and content
- * @returns {object} Returns the API response
- */
-export async function updateDoc(docToUpdate) {
 
-    const response = await fetch(`${baseURL}/update`, {
-        body: JSON.stringify(docToUpdate),
-        headers: {
-            'content-type': 'application/json'
-        },
-        method: 'PUT'
-    });
-    if (!response.ok) {
-        throw new Error("Database error");
-    }
-}
+
+//Den här används väl inte längre?
+// /**
+//  * Updates a document
+//  * @param {object} docToUpdate Object with the properties _id, title and content
+//  * @returns {object} Returns the API response
+//  */
+// export async function updateDoc(docToUpdate) {
+
+//     const response = await fetch(`${baseURL}/update`, {
+//         body: JSON.stringify(docToUpdate),
+//         headers: {
+//             'content-type': 'application/json'
+//         },
+//         method: 'PUT'
+//     });
+//     if (!response.ok) {
+//         throw new Error("Database error");
+//     }
+// }
 
 /**
  * Gets an entry from the database
@@ -300,28 +303,39 @@ export async function inviteDoc() {
   console.log(result);
   return result;
 }
+///// OBS! Här är det ett objekt, med bara ett innehåll.
 /**
  *
- * @param {string} userId
  * @param {string} docId
  * @returns
  */
 export async function acceptInvite(body) {
   console.log("user wants to accept invite")
   const token = localStorage.getItem('token');
-  const response = await fetch(`${baseURL}/adduser`, {
-    body: JSON.stringify(body),
-    method: 'PUT',
+  const query = `
+    mutation AddUser($docId: ID!) {
+      addUserToDoc(docId: $doc) {
+        acknowledged
+        }
+      }`
+  const response = await fetch(`${baseURL}/graphql`, {
+
+    method: 'POST',
     headers: {
       'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    }
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
+    body: JSON.stringify({
+      query,
+      variables: {
+        doc: body.docId
+      }
+    }),
   });
-  console.log(response);
   const result = await response.json();
-  console.log(result)
   return result;
     }
 
-const docs = { getAll, updateDoc, getOne, newDoc, sendCode, newUser, getUser, mailInvitation, inviteDoc, acceptInvite }
+const docs = { getAll, getOne, newDoc, sendCode, newUser, getUser, mailInvitation, inviteDoc, acceptInvite }
 export default docs;

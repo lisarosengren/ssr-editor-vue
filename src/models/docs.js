@@ -83,8 +83,7 @@ export async function getOne(id) {
     },
     body: JSON.stringify({
       query,
-      variables,
-      operationName: 'GetDocument'
+      variables
     }),
   });
   console.log(response)
@@ -107,23 +106,34 @@ export async function getOne(id) {
 export async function newDoc(newDocData) {
   console.log("calling save new doc")
   const token = localStorage.getItem('token');
+  const query = `
+    mutation AddDoc($title: String!, $type: String!) {
+      addDocument(title: $title, type: $type) {
+          acknowledged
+          insertedId
+          }
+      }`
+
   console.log("token got ", token)
-  const response = await fetch(`${baseURL}/newdoc`, {
-      body: JSON.stringify(newDocData),
+  console.log("newDocData", newDocData.title, newDocData.type)
+  const response = await fetch(`${baseURL}/graphql`, {
       headers: {
         'Authorization': `Bearer ${token}`,
-        'content-type': 'application/json'
+        'content-type': 'application/json',
+        Accept: 'application/json',
       },
-      method: 'POST'
+      method: 'POST',
+      body: JSON.stringify({
+        query,
+        variables: {
+          title: newDocData.title,
+          type: newDocData.type
+        }
+      })        
   });
-
-  if (!response.ok) {
-      // console.log(response);
-      throw new Error("Database error");
-  }
   const result = await response.json()
-  console.log(result)
-  return result.insertedId;
+  console.log("Funkar newDoc?", result.data.addDocument)
+  return result.data.addDocument
 }
 
 /**

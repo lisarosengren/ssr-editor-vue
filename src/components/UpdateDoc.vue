@@ -24,6 +24,7 @@
           }
         });
         const document = await getOne(this.id);
+        console.log(document)
         this.title = document.title;
         this.content = document.content;
         this.socket.emit("create", this.id); // join a room

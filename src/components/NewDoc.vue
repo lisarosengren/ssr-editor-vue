@@ -14,7 +14,7 @@
     methods: {
       async onSubmit() {
         try {
-          const id = await newDoc(this.newDocData);
+          const id = await newDoc(this.newDocData).insertedId;
           this.$router.push(`/${ id }/${ this.newDocData.type}`)
           } catch (e) {
             console.error(e)

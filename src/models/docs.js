@@ -33,24 +33,27 @@ export async function getAll() {
   return result.data.documentList;
 }
 
-/**
- * Updates a document
- * @param {object} docToUpdate Object with the properties _id, title and content
- * @returns {object} Returns the API response
- */
-export async function updateDoc(docToUpdate) {
 
-    const response = await fetch(`${baseURL}/update`, {
-        body: JSON.stringify(docToUpdate),
-        headers: {
-            'content-type': 'application/json'
-        },
-        method: 'PUT'
-    });
-    if (!response.ok) {
-        throw new Error("Database error");
-    }
-}
+
+//Den här används väl inte längre?
+// /**
+//  * Updates a document
+//  * @param {object} docToUpdate Object with the properties _id, title and content
+//  * @returns {object} Returns the API response
+//  */
+// export async function updateDoc(docToUpdate) {
+
+//     const response = await fetch(`${baseURL}/update`, {
+//         body: JSON.stringify(docToUpdate),
+//         headers: {
+//             'content-type': 'application/json'
+//         },
+//         method: 'PUT'
+//     });
+//     if (!response.ok) {
+//         throw new Error("Database error");
+//     }
+// }
 
 /**
  * Gets an entry from the database
@@ -66,6 +69,10 @@ export async function getOne(id) {
         _id
         title
         content
+        users {
+          _id
+          email
+          }
       }
     }
   `
@@ -79,8 +86,7 @@ export async function getOne(id) {
     },
     body: JSON.stringify({
       query,
-      variables,
-      operationName: 'GetDocument'
+      variables
     }),
   });
   console.log(response)
@@ -89,7 +95,7 @@ export async function getOne(id) {
   }
 
   const result = await response.json();
-  console.log(result)
+  console.log(result.data.document)
 
 
   return result.data.document;
@@ -103,23 +109,34 @@ export async function getOne(id) {
 export async function newDoc(newDocData) {
   console.log("calling save new doc")
   const token = localStorage.getItem('token');
+  const query = `
+    mutation AddDoc($title: String!, $type: String!) {
+      addDocument(title: $title, type: $type) {
+          acknowledged
+          insertedId
+          }
+      }`
+
   console.log("token got ", token)
-  const response = await fetch(`${baseURL}/newdoc`, {
-      body: JSON.stringify(newDocData),
+  console.log("newDocData", newDocData.title, newDocData.type)
+  const response = await fetch(`${baseURL}/graphql`, {
       headers: {
         'Authorization': `Bearer ${token}`,
-        'content-type': 'application/json'
+        'content-type': 'application/json',
+        Accept: 'application/json',
       },
-      method: 'POST'
+      method: 'POST',
+      body: JSON.stringify({
+        query,
+        variables: {
+          title: newDocData.title,
+          type: newDocData.type
+        }
+      })        
   });
-
-  if (!response.ok) {
-      // console.log(response);
-      throw new Error("Database error");
-  }
   const result = await response.json()
-  console.log(result)
-  return result.insertedId;
+  console.log("Funkar newDoc?", result.data.addDocument)
+  return result.data.addDocument
 }
 
 /**
@@ -212,13 +229,16 @@ export async function getUser() {
   console.log("get user called")
   const token = localStorage.getItem('token');
   console.log("attempting to get user- token", token)
-  const response = await fetch(`${baseURL}/user/home`, {
+  const response = await fetch(`${baseURL}/graphql`, {
     // body: JSON.stringify(),
-    method: 'GET',
+    method: 'POST',
     headers: {
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'
-    }
+    },
+    body: JSON.stringify({
+      query: '{ user { _id email } }'
+    })
   });
   if (!response.ok) {
       // throw new Error("Failed to get user");
@@ -283,28 +303,39 @@ export async function inviteDoc() {
   console.log(result);
   return result;
 }
+///// OBS! Här är det ett objekt, med bara ett innehåll.
 /**
  *
- * @param {string} userId
  * @param {string} docId
  * @returns
  */
 export async function acceptInvite(body) {
   console.log("user wants to accept invite")
   const token = localStorage.getItem('token');
-  const response = await fetch(`${baseURL}/adduser`, {
-    body: JSON.stringify(body),
-    method: 'PUT',
+  const query = `
+    mutation AddUser($docId: ID!) {
+      addUserToDoc(docId: $doc) {
+        acknowledged
+        }
+      }`
+  const response = await fetch(`${baseURL}/graphql`, {
+
+    method: 'POST',
     headers: {
       'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    }
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
+    body: JSON.stringify({
+      query,
+      variables: {
+        doc: body.docId
+      }
+    }),
   });
-  console.log(response);
   const result = await response.json();
-  console.log(result)
   return result;
     }
 
-const docs = { getAll, updateDoc, getOne, newDoc, sendCode, newUser, getUser, mailInvitation, inviteDoc, acceptInvite }
+const docs = { getAll, getOne, newDoc, sendCode, newUser, getUser, mailInvitation, inviteDoc, acceptInvite }
 export default docs;

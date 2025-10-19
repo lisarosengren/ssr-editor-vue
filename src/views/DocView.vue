@@ -16,6 +16,14 @@ export default {
     const type = this.$route.params.type;
 
     this.isCode = type === 'code';
+  },
+  watch: {
+    '$route.params.type': {
+      immediate: true,
+      handler(newType) {
+        this.isCode = newType === 'code';
+      }
+    }
   }
 };
 </script>

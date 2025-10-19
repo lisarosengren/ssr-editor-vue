@@ -11,38 +11,74 @@
         id: null,
         title: null,
         content: null,
-        mailInvite: ''
+        mailInvite: '',
+        err: false,
       };
     },
-    async mounted() {
-      this.id = this.$route.params.id;
+    watch: {
+      '$route.params.id': {
+        immediate: true,
+        async handler(newId) {
+          if (!newId) return;
 
-      try {
-        this.socket = io(URL, {
-          auth: {
-            token: localStorage.getItem('token')
+          this.id = newId;
+
+          try {
+            const document= await getOne(newId);
+            this.title = document.title;
+            this.content = document.content;
+
+            if (this.socket) {
+              this.socket.disconnect();
+            }
+            this.socket = io(URL, {
+              auth: { token: localStorage.getItem('token') }
+            });
+            this.socket.emit("create", newId);
+
+            this.socket.on("title", (data) => { this.title = data});
+            this.socket.on("content", (data) => { this.content = data});
+          } catch (e) {
+            console.error(e);
+            this.$router.push('/fail');
           }
-        });
-        console.log("Vad får getOne för id?", this.id)
-        const document = await getOne(this.id);
-        console.log("Här är vad som ska in", document)
-        this.title = document.title;
-        this.content = document.content;
-        this.socket.emit("create", this.id); // join a room
-        this.socket.on("title", (data) => { // listens for title update
-        this.title = data;
-        });
-        this.socket.on("content", (data) => { // listens for content update
-          this.content = data;
-        });
-       } catch (e) {
-        console.error(e);
-        this.$router.push('/fail')
-      };
+        }
+      }
     },
     beforeUnmount() {
-      this.socket.disconnect();
+      if (this.socket) {
+        this.socket.disconnect();
+      }
     },
+    // async mounted() {
+    //   this.id = this.$route.params.id;
+
+    //   try {
+    //     this.socket = io(URL, {
+    //       auth: {
+    //         token: localStorage.getItem('token')
+    //       }
+    //     });
+    //     console.log("Vad får getOne för id?", this.id)
+    //     const document = await getOne(this.id);
+    //     console.log("Här är vad som ska in", document)
+    //     this.title = document.title;
+    //     this.content = document.content;
+    //     this.socket.emit("create", this.id); // join a room
+    //     this.socket.on("title", (data) => { // listens for title update
+    //     this.title = data;
+    //     });
+    //     this.socket.on("content", (data) => { // listens for content update
+    //       this.content = data;
+    //     });
+    //    } catch (e) {
+    //     console.error(e);
+    //     this.$router.push('/fail')
+    //   };
+    // },
+    // beforeUnmount() {
+    //   this.socket.disconnect();
+    // },
     methods: {
       onInput(what) {
       // This method that is called when the user is typing in the field for title or content.

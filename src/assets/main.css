@@ -44,7 +44,6 @@ textarea {
 
 @media (min-width: 1024px) {
   #app {
-    max-width: 80%;
     margin: auto;
     padding: 1rem;
   }

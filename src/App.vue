@@ -30,6 +30,7 @@ watch(
 
 function handleLogin(loggedInUser) {
   user.value = loggedInUser;
+  console.log("after login", user.value);
   loggedIn.value = true;
   login.value = false;
   register.value = false;
@@ -74,9 +75,11 @@ onMounted(async () => {
   }
   if (token) {
     console.log("token found, calling getUser")
-    const currentUser = await getUser();
-    console.log(currentUser)
-    user.value = currentUser;
+    const currentUserObj = await getUser();
+    console.log("current user", currentUserObj.data.user)
+    user.value = currentUserObj.data.user;
+    console.log("user.value: ", user.value)
+    console.log("user.value.email", user.value.email)
     loggedIn.value = true;
   }
 });

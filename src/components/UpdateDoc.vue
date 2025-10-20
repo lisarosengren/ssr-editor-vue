@@ -11,7 +11,8 @@
         id: null,
         title: null,
         content: null,
-        mailInvite: ''
+        mailInvite: '',
+        document: null,
       };
     },
     async mounted() {
@@ -26,6 +27,7 @@
         console.log("Vad får getOne för id?", this.id)
         const document = await getOne(this.id);
         console.log("Här är vad som ska in", document)
+        this.document = document;
         this.title = document.title;
         this.content = document.content;
         this.socket.emit("create", this.id); // join a room
@@ -74,18 +76,27 @@
 
 
 <template>
+  <div class="editor">
+    <label for="title">Titel</label>
+    <input type="text" v-model="title" @input="onInput('title')" />
 
-  <label for="title">Titel</label>
-  <input type="text" v-model="title" @input="onInput('title')" />
+    <label for="content">Innehåll</label>
+    <textarea v-model="content" @input="onInput('content')"></textarea>
 
-  <label for="content">Innehåll</label>
-  <textarea v-model="content" @input="onInput('content')"></textarea>
+  </div>
+  <div class="right">
 
-  <form @submit.prevent="onSubmit">
-    <label for="mailInvite">Skicka inbjudan att medverka:</label>
-    <input type="email" id="mailInvite" name="mailInvite" v-model="mailInvite" />
-    <input type="submit" name="doit" value="Skicka">
-  </form>
+    <form @submit.prevent="onSubmit">
+      <label for="mailInvite">Skicka inbjudan att medverka:</label>
+      <input type="email" id="mailInvite" name="mailInvite" v-model="mailInvite" />
+      <input type="submit" name="doit" value="Skicka">
+    </form>
+    <div v-if="document && document.users" >
+      <h3>Detta dokument kan användas av:</h3>
+      <p v-for="(user) in document.users" :key="user.email">{{ user.email }}</p>
+    </div>
+
+  </div>
 </template>
 
 <style scoped>

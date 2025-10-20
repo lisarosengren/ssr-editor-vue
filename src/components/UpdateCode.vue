@@ -17,6 +17,7 @@
         output: '',
         editorView: null,
         fromSocket: false,
+        document: null,
       };
     },
     async mounted() {
@@ -29,6 +30,7 @@
           }
         });
         const document = await getOne(this.id);
+        this.document = document;
         this.id = document._id;
         this.title = document.title;
         this.content = document.content;
@@ -116,7 +118,7 @@
 
 <template>
 
-
+  <div class="editor">
   <form @submit.prevent="onSubmit">
     <label for="title">Titel</label>
     <input type="text" v-model="this.title" @input="onInput('title')" />
@@ -125,14 +127,21 @@
     <div ref="editor" class="code"></div>
 
   </form>
+  </div>
+  <div class="right">
+    <button @click="executeCode">Skicka koden till efo</button>
+    <pre>{{  output  }}</pre>
+    <form @submit.prevent="onSubmit">
+      <label for="mailInvite">Skicka inbjudan att medverka:</label>
+      <input type="email" id="mailInvite" name="mailInvite" v-model="mailInvite" />
+      <input type="submit" name="doit" value="Skicka">
+    </form>
+    <div v-if="document && document.users" >
+      <h3>Detta dokument kan användas av:</h3>
+      <p v-for="(user) in this.document.users" :key="user.email">{{ user.email }}</p>
+    </div>
+  </div>
 
-  <button @click="executeCode">Skicka koden till efo</button>
-  <pre>{{  output  }}</pre>
-  <form @submit.prevent="onSubmit">
-    <label for="mailInvite">Skicka inbjudan att medverka:</label>
-    <input type="email" id="mailInvite" name="mailInvite" v-model="mailInvite" />
-    <input type="submit" name="doit" value="Skicka">
-  </form>
 
 </template>
 

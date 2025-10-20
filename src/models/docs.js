@@ -132,7 +132,7 @@ export async function newDoc(newDocData) {
           title: newDocData.title,
           type: newDocData.type
         }
-      })        
+      })
   });
   const result = await response.json()
   console.log("Funkar newDoc?", result.data.addDocument)
@@ -300,7 +300,8 @@ export async function inviteDoc() {
   });
   console.log(response);
   const result = await response.json();
-  console.log(result);
+  console.log(result); // objekt invite (decoded token)
+  console.log(result.invite.documentId) // = id
   return result;
 }
 ///// OBS! Här är det ett objekt, med bara ett innehåll.
@@ -314,7 +315,7 @@ export async function acceptInvite(body) {
   const token = localStorage.getItem('token');
   const query = `
     mutation AddUser($docId: ID!) {
-      addUserToDoc(docId: $doc) {
+      addUserToDoc(docId: $docId) {
         acknowledged
         }
       }`
@@ -329,11 +330,14 @@ export async function acceptInvite(body) {
     body: JSON.stringify({
       query,
       variables: {
-        doc: body.docId
+        docId: body.docId
       }
     }),
   });
+  console.log(body.docId)
   const result = await response.json();
+  console.log("after acceptInvite - ", result)
+
   return result;
     }
 

@@ -117,7 +117,6 @@ onMounted(async () => {
       <RouterView />
     </div>
 
-    <div class="sidebar"></div>
 
   </main>
 
@@ -159,7 +158,7 @@ main {
   flex-direction: row;
 }
 .editor {
-  max-width: 100%;
+  width: 80%;
 }
 form > {
   margin-bottom: 8px;
@@ -232,7 +231,7 @@ nav a:first-of-type {
   width:20%;
   }
   .editor {
-    width: 60%;
+    width: 80%;
   }
 }
 /* @media (min-width: 1024px) {

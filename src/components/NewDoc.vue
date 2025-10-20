@@ -41,7 +41,7 @@
         <label for="type">Dokumenttyp</label>
         <select v-model="newDocData.type" id="type">
           <option>text</option>
-          <option>kod</option>
+          <option>code</option>
         </select>
     </div>
     <div>

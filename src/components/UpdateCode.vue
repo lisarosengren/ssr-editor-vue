@@ -128,7 +128,7 @@
 
   </form>
   </div>
-  <div class="right">
+  <div class="sidebar">
     <button @click="executeCode">Skicka koden till efo</button>
     <pre>{{  output  }}</pre>
     <form @submit.prevent="onSubmit">

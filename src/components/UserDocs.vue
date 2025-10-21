@@ -6,7 +6,8 @@
   export default {
     setup() {
       const userState = inject('userState');
-      return {userState };
+      const invite = inject('invite');
+      return {userState, invite };
     },
   //   props: {
   //   user: {
@@ -16,7 +17,7 @@
   // },
     data() {
       return {
-        invite: '',
+        // invite: '',
         inviteLink: ''
       };
     },

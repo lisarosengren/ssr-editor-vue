@@ -1,10 +1,12 @@
 <script setup>
 import { RouterLink, RouterView, useRoute } from 'vue-router'
 import { ref, provide, onMounted, watch, reactive } from 'vue'
-import { getUser, checkInvite } from './models/docs'
+import { getUser, checkInvite, inviteDoc } from './models/docs'
 import UserDocs from './components/UserDocs.vue'
 import UserLogin from './components/UserLogin.vue'
 import NewUser from './components/NewUser.vue'
+
+const route = useRoute()
 
 const userState = reactive({
   user: null,
@@ -12,37 +14,36 @@ const userState = reactive({
   inviteToken: null,
 });
 
-// const user = ref(null);
-// const loggedIn = ref(false);
-// const login = ref(false);
-// const register = ref(false);
 const login = ref(false);
 const register = ref(false);
+const invite = ref(null);
 
+provide('invite', invite);
 provide('userState', userState);
-// provide('user', user)
-// provide('loggedIn', loggedIn)
 
 
-const route = useRoute()
-
-// watch(
-//   () => route.query.token,
-//   (newToken) => {
-//     if (newToken) {
-//       console.log('found invite token', newToken)
-//       localStorage.setItem('invite-token', newToken)
-//     }
-//   },
-//   { immediate: true }
-// )
-
-function loginUser(loggedInUser) {
+async function loginUser(loggedInUser) {
   userState.user = loggedInUser;
   userState.loggedIn = true;
   console.log("after login", userState);
-  // login.value = false;
-  // register.value = false;
+
+  const inviteToken = localStorage.getItem('invite-token');
+  if (inviteToken) {
+    console.log("invite token found in login function, send to check");
+    const sameUser = await checkInvite();
+    if (!sameUser.sameUser) {
+      console.warn("invite is not for you!");
+      alert("Nej, va, den här inbjudan var inte till dig!");
+      logout();
+      return;
+    }
+    try {
+      invite.value = await inviteDoc();
+      console.log("invite after login ", invite.value);
+    } catch (err) {
+      console.error("failed to fefth", err);
+    }
+  }
 }
 
 function logout() {
@@ -55,14 +56,34 @@ function logout() {
   window.location.href = '/'// full reload to reset
 }
 
-// const user = ref(null)
-// const loggedIn = ref(false)
+watch(
+  () => route.query.token,
+  async (urlToken) => {
+    if (!urlToken) return;
+    console.log("found invite token", urlToken);
+    localStorage.setItem('invite-token', urlToken);
+    userState.inviteToken = urlToken;
 
-
-// provide = makes variables and functions available in other views (use inject)
-// provide('user', user)
-// provide('loggedIn', loggedIn)
-// provide('logout', logout)
+    const token = localStorage.getItem('token');
+    if (token) {
+      console.log("both token and invite, check");
+      const sameUser = await checkInvite();
+      console.log("checked invite result", sameUser)
+      if (sameUser.sameUser == false) {
+        console.log("not same");
+        logout();
+        return;
+      }
+      try {
+        invite.value = await inviteDoc();
+        console.log("invite - ", invite.value);
+      } catch (err) {
+        console.error("failed to fetch invite", err);
+      }
+    }
+  },
+  { immediate: true }
+);
 
 onMounted(async () => {
   console.log("user: ", userState.user)
@@ -78,27 +99,6 @@ onMounted(async () => {
     // console.log("user.value.email", user.value.email)
     userState.loggedIn = true;
 
-    watch(
-      () => route.query.token,
-      async (newToken) => {
-        if (!newToken) return;
-        console.log("found invite token", newToken);
-        localStorage.setItem('invite-token', newToken);
-        userState.inviteToken = newToken;
-
-        const token = localStorage.getItem('token');
-        if (token) {
-          console.log("both token and invite, check");
-          const sameUser = await checkInvite();
-          console.log("checked invite result", sameUser)
-          if (sameUser.loginUser == false) {
-            console.log("not same");
-            logout();
-          }
-        }
-      },
-      { immediate: true }
-    );
   // if (inviteToken) {
   //   console.log("found invite token")
   //   localStorage.setItem('invite-token', inviteToken);

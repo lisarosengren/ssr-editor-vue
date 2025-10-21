@@ -26,7 +26,7 @@ const router = createRouter({
     {
       path: '/fail',
       name: 'Fail',
-      component: () => import('../views/FailView.vue'),
+      component: () => import('../components/FailComponent.vue'),
     }
   ],
 })

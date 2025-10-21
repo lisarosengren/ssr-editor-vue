@@ -33,9 +33,8 @@
 
 <template>
   <h2>Mina dokument:</h2>
-  <ul>
-    <li v-for="(entry) in allDocs" :key="entry._id">
-      <router-link
+  <p v-for="(entry) in allDocs" :key="entry._id">
+    <router-link
       v-if="entry && entry._id"
         :to="{
           name: 'DocView',
@@ -45,9 +44,8 @@
           }
         }"
         @click="onClick">{{  entry.title  }}
-      </router-link>
-    </li>
-  </ul>
+    </router-link>
+  </p>
 </template>
 
 <style scoped>

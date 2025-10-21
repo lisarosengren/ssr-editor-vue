@@ -247,7 +247,7 @@ export async function getUser() {
 
   const result = await response.json();
   console.log("getuser result", result)
-  return result;
+  return result.data.user;
 }
 
 /**
@@ -282,7 +282,7 @@ export async function checkInvite() {
   });
   // console.log(response);
   const result = await response.json();
-  console.log(result);
+  console.log("result from checkinvite:", result);
   return result;
 }
 

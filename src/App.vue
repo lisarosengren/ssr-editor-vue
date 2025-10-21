@@ -37,27 +37,31 @@ onMounted(async () => {
   console.log("user: ", user)
   const inviteToken = route.query.token;
   const token = localStorage.getItem('token');
+  let sameUser = null;
+
   if (inviteToken) {
     console.log("found invite token")
     localStorage.setItem('invite-token', inviteToken);
   }
 
-  if (token && inviteToken) {
-    const sameUser = await checkInvite();
-    console.log(sameUser);
-    if (!sameUser.loginUser) {
-      console.log("not same user");
-      localStorage.removeItem('token');
-    }
-  }
   if (token) {
     console.log("token found, calling getUser")
     const currentUser = await getUser();
-    console.log(currentUser)
+    console.log("currentUser.data: ",currentUser.data)
     user.value = currentUser;
     loggedIn.value = true;
+    if (inviteToken) {
+      sameUser = await checkInvite();
+      console.log("checked invite result", sameUser)
+    }
+    if (!sameUser.loginUser) {
+      console.log("not same user loggin gout");
+      logout();
+    }
+
   }
-});
+
+  });
 </script>
 
 <template>

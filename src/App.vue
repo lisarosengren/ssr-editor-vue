@@ -31,7 +31,7 @@ async function loginUser(loggedInUser) {
   if (inviteToken) {
     console.log("invite token found in login function, send to check");
     const sameUser = await checkInvite();
-    if (!sameUser.sameUser) {
+    if (!sameUser) {
       console.warn("invite is not for you!");
       alert("Nej, va, den här inbjudan var inte till dig!");
       logout();

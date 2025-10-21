@@ -25,6 +25,7 @@ export async function getAll() {
   }
 
   const result = await response.json();
+  console.log("result", result)
   console.log("getall result.data.documentLIst", result.data.documentList)
   if (result.errors) {
     throw new Error(response.errors);
@@ -283,7 +284,8 @@ export async function checkInvite() {
   // console.log(response);
   const result = await response.json();
   console.log("result from checkinvite:", result);
-  return result;
+  console.log("is this sameUser", result.sameUser)
+  return result.sameUser;
 }
 
 export async function inviteDoc() {

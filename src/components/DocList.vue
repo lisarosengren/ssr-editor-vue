@@ -25,7 +25,9 @@
       }
     },
     methods: {
-      onClick() {
+      async onClick() {
+        const res = await getAll();
+        this.allDocs = res;
         // console.log("Clicked")
       }
     }

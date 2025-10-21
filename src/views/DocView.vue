@@ -1,8 +1,13 @@
 <script>
 import UpdateDoc from '@/components/UpdateDoc.vue';
 import UpdateCode from '@/components/UpdateCode.vue';
+import { inject } from 'vue';
 
 export default {
+    setup() {
+      const userState = inject('userState');
+      return {userState };
+    },
   components: {
     UpdateDoc,
     UpdateCode

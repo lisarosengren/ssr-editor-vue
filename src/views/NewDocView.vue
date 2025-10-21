@@ -1,7 +1,12 @@
 <script>
 import NewDoc from '@/components/NewDoc.vue';
+import { inject } from 'vue';
 
 export default {
+    setup() {
+      const userState = inject('userState');
+      return {userState };
+    },
   components: {
     NewDoc,
   }

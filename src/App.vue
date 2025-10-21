@@ -1,39 +1,48 @@
 <script setup>
 import { RouterLink, RouterView, useRoute } from 'vue-router'
-import { ref, provide, onMounted, watch } from 'vue'
+import { ref, provide, onMounted, watch, reactive } from 'vue'
 import { getUser, checkInvite } from './models/docs'
 import UserDocs from './components/UserDocs.vue'
 import UserLogin from './components/UserLogin.vue'
 import NewUser from './components/NewUser.vue'
 
-const user = ref(null);
-const loggedIn = ref(false);
+const userState = reactive({
+  user: null,
+  loggedIn: false,
+  inviteToken: null,
+});
+
+// const user = ref(null);
+// const loggedIn = ref(false);
+// const login = ref(false);
+// const register = ref(false);
 const login = ref(false);
 const register = ref(false);
 
-provide('user', user)
-provide('loggedIn', loggedIn)
+provide('userState', userState);
+// provide('user', user)
+// provide('loggedIn', loggedIn)
 
 
 const route = useRoute()
 
-watch(
-  () => route.query.token,
-  (newToken) => {
-    if (newToken) {
-      console.log('found invite token', newToken)
-      localStorage.setItem('invite-token', newToken)
-    }
-  },
-  { immediate: true }
-)
+// watch(
+//   () => route.query.token,
+//   (newToken) => {
+//     if (newToken) {
+//       console.log('found invite token', newToken)
+//       localStorage.setItem('invite-token', newToken)
+//     }
+//   },
+//   { immediate: true }
+// )
 
-function handleLogin(loggedInUser) {
-  user.value = loggedInUser;
-  console.log("after login", user.value);
-  loggedIn.value = true;
-  login.value = false;
-  register.value = false;
+function loginUser(loggedInUser) {
+  userState.user = loggedInUser;
+  userState.loggedIn = true;
+  console.log("after login", userState);
+  // login.value = false;
+  // register.value = false;
 }
 
 function logout() {
@@ -41,8 +50,8 @@ function logout() {
   localStorage.removeItem('token')
   localStorage.removeItem('invite-token')
   console.log("should be empty", localStorage)
-  user.value = null
-  loggedIn.value = false
+  userState.user = null
+  userState.loggedIn = false
   window.location.href = '/'// full reload to reset
 }
 
@@ -56,41 +65,59 @@ function logout() {
 // provide('logout', logout)
 
 onMounted(async () => {
-  console.log("user: ", user)
-  const inviteToken = route.query.token;
+  console.log("user: ", userState.user)
+  console.log("userState ", userState)
+  // const inviteToken = route.query.token;
   const token = localStorage.getItem('token');
-  let sameUser = null;
-
-  if (inviteToken) {
-    console.log("found invite token")
-    localStorage.setItem('invite-token', inviteToken);
-  }
-
-  if (token && inviteToken) {
-    console.log("both token and invite found")
-    const sameUser = await checkInvite();
-    console.log(sameUser);
-    if (sameUser.loginUser == false) {
-      console.log("not same user");
-      localStorage.removeItem('token');
-    }
-  }
   if (token) {
     console.log("token found, calling getUser")
-    const currentUserObj = await getUser();
-    console.log("current user", currentUserObj.data.user)
-    user.value = currentUserObj.data.user;
-    console.log("user.value: ", user.value)
-    console.log("user.value.email", user.value.email)
-    loggedIn.value = true;
-    if (inviteToken) {
-      sameUser = await checkInvite();
-      console.log("checked invite result", sameUser)
-    }
-    if (!sameUser.loginUser) {
-      console.log("not same user loggin gout");
-      logout();
-    }
+    const currentUser = await getUser();
+    console.log("current user", currentUser)
+    userState.user = currentUser;
+    console.log("userState: ", userState)
+    // console.log("user.value.email", user.value.email)
+    userState.loggedIn = true;
+
+    watch(
+      () => route.query.token,
+      async (newToken) => {
+        if (!newToken) return;
+        console.log("found invite token", newToken);
+        localStorage.setItem('invite-token', newToken);
+        userState.inviteToken = newToken;
+
+        const token = localStorage.getItem('token');
+        if (token) {
+          console.log("both token and invite, check");
+          const sameUser = await checkInvite();
+          console.log("checked invite result", sameUser)
+          if (sameUser.loginUser == false) {
+            console.log("not same");
+            logout();
+          }
+        }
+      },
+      { immediate: true }
+    );
+  // if (inviteToken) {
+  //   console.log("found invite token")
+  //   localStorage.setItem('invite-token', inviteToken);
+  // }
+
+  // if (token && inviteToken) {
+  //   console.log("both token and invite found")
+  //   const sameUser = await checkInvite();
+  //   console.log("return from checkinvite: ", sameUser);
+  // }
+    // if (inviteToken) {
+    //   console.log("token and invite, checking")
+    //   const sameUser = await checkInvite();
+    //   console.log("checked invite result", sameUser)
+    // }
+    // if (!sameUser.loginUser) {
+    //   console.log("not same user loggin gout");
+    //   logout();
+    // }
 
   }
 
@@ -108,20 +135,21 @@ onMounted(async () => {
       <RouterLink to="/register">Registrera ny användare</RouterLink>
     </nav> -->
   </div>
-  <div v-if="loggedIn && user" class="right half">
-    <p>inloggad som: {{  user.email }}</p>
+  <div v-if="userState.loggedIn && userState.user" class="right half">
+    <p>inloggad som: {{  userState.user.email }}</p>
     <button class="button" @click="logout">logga ut</button>
   </div>
   </header>
 
   <main>
     <div class="sidebar">
-        <UserDocs v-if="loggedIn && user" :user="user" />
+        <!--<UserDocs v-if="loggedIn && user" :user="user" />-->
+        <UserDocs v-if="userState.loggedIn" />
       <div v-else>
         <button class="button" @click="login = true; register = false">Logga in</button>
         <button class="button" @click="register = true; login = false">Registrera ny användare</button>
-        <UserLogin v-if="login" @login-success="handleLogin" />
-        <NewUser v-if="register" @register-success="handleLogin" />
+        <UserLogin v-if="login" @login-success="loginUser" />
+        <NewUser v-if="register" @register-success="loginUser" />
       </div>
     </div>
 

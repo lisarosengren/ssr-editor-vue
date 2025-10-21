@@ -16,7 +16,7 @@ export async function getAll() {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      query: '{ documentList { _id title } }'
+      query: '{ documentList { _id title type } }'
     })
   });
   console.log("getall response", response)

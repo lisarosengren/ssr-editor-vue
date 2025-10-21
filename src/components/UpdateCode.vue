@@ -4,10 +4,15 @@
   import { basicSetup } from "codemirror";
   import { EditorView } from "@codemirror/view";
   import { javascript } from "@codemirror/lang-javascript";
+  import { inject } from 'vue';
 
   const URL = import.meta.env.VITE_API_URL;
 
   export default {
+    setup() {
+      const userState = inject('userState');
+      return {userState };
+    },
     data() {
       return {
         socket: null,

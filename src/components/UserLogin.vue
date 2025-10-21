@@ -1,6 +1,10 @@
 <script setup>
 import { ref } from 'vue';
 import { getUser, userLogin } from '@/models/docs';
+import { inject } from 'vue';
+
+const userState = inject('userState');
+console.log("from UserLogin", userState.loggedIn);
 
 const emit = defineEmits(['login-success'])
 const userData = ref({
@@ -19,6 +23,8 @@ async function onSubmit() {
     const currentUser = await getUser()
     console.log("currentUser", currentUser)
     emit('login-success', currentUser)
+    userState.user = currentUser;
+    userState.loggedIn = true;
   } catch (e) {
     console.error(e)
     err.value = true

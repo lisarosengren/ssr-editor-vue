@@ -1,7 +1,12 @@
 <script>
   import { getAll } from '@/models/docs';
+  import { inject } from 'vue';
 
   export default {
+    setup() {
+      const userState = inject('userState');
+      return {userState };
+    },
     data() {
       return {
         allDocs: [],

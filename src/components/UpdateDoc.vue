@@ -1,10 +1,15 @@
 <script>
   import { getOne, mailInvitation } from '@/models/docs';
   import { io } from "socket.io-client";
+  import { inject } from 'vue';
 
   const URL = import.meta.env.VITE_API_URL;
 
   export default {
+    setup() {
+      const userState = inject('userState');
+      return {userState };
+    },
     data() {
       return {
         socket: null,

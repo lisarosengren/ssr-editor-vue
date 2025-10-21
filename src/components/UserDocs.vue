@@ -1,14 +1,19 @@
 <script>
   import DocList from './DocList.vue';
   import { inviteDoc, acceptInvite } from '@/models/docs';
+  import { inject } from 'vue';
 
   export default {
-    props: {
-    user: {
-      type: Object,
-      required: true
-    }
-  },
+    setup() {
+      const userState = inject('userState');
+      return {userState };
+    },
+  //   props: {
+  //   user: {
+  //     type: Object,
+  //     required: true
+  //   }
+  // },
     data() {
       return {
         invite: '',
@@ -20,6 +25,7 @@
         console.log(this.user)
         console.log("userdocs here")
       const inviteToken = localStorage.getItem('invite-token');
+      // const inviteToken = this.userState.inviteToken;
       if (inviteToken) {
         console.log("there is an invite")
         this.invite = await inviteDoc();

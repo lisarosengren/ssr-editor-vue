@@ -75,7 +75,10 @@ watch(
       console.log("both token and invite, check");
       const sameUser = await checkInvite();
       console.log("checked invite result", sameUser)
-      if (sameUser.sameUser == false) {
+      if (sameUser == false) {
+        alert(`You are trying to access an invite that was sent to another user.
+              Please log in with the correct user information.
+              Loggin you out.`);
         console.log("not same");
         logout();
         return;

@@ -70,6 +70,7 @@ export async function getOne(id) {
         _id
         title
         content
+        type
         users {
           _id
           email

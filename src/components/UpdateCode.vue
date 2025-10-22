@@ -4,14 +4,15 @@
   import { basicSetup } from "codemirror";
   import { EditorView } from "@codemirror/view";
   import { javascript } from "@codemirror/lang-javascript";
-  import { inject } from 'vue';
+  import { inject, ref } from 'vue';
 
   const URL = import.meta.env.VITE_API_URL;
 
   export default {
     setup() {
       const userState = inject('userState');
-      return {userState };
+      const formRef = ref(null);
+      return {userState, formRef };
     },
     data() {
       return {
@@ -177,6 +178,11 @@
           this.socket.emit(what, data)
       },
       async onSubmit() {
+        const form = this.formRef;
+        if (!form.checkValidity()) {
+          form.reportValidity();
+          return;
+        }
         try {
           const sentTo = await mailInvitation(this.mailInvite);
           console.log("mailing: ", sentTo)

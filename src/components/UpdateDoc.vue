@@ -83,11 +83,14 @@
             input: type
           }
         this.socket.emit(what, data)
-        clearTimeout(this.timeout); 
-        this.timeout = setTimeout(() => {
-          this.$emit('doc-created');
-          console.log("Nu borde listan uppdateras");
-        }, 4000);
+        if (what === "title") {
+          clearTimeout(this.timeout); 
+          this.timeout = setTimeout(() => {
+            this.$emit('doc-created');
+            console.log("Nu borde listan uppdateras");
+          }, 4000);
+        }
+
       },
       async onSubmit() {
         const form = this.formRef;

@@ -20,6 +20,7 @@
         mailInvite: '',
         err: false,
         document: null,
+        timeout: null
       };
     },
     watch: {
@@ -27,7 +28,6 @@
         immediate: true,
         async handler(newId) {
           if (!newId) return;
-          let timeout;
           this.id = newId;
 
           try {
@@ -46,8 +46,8 @@
 
             this.socket.on("title", (data) => {
               this.title = data;
-              clearTimeout(timeout); 
-              timeout = setTimeout(function() {
+              clearTimeout(this.timeout); 
+              this.timeout = setTimeout(function() {
                 this.$emit('doc-created');
                 console.log("Nu borde listan uppdateras");
               }, 4000);
@@ -76,7 +76,12 @@
             _id: this.id,
             input: type
           }
-          this.socket.emit(what, data)
+        this.socket.emit(what, data)
+        clearTimeout(this.timeout); 
+        this.timeout = setTimeout(function() {
+          this.$emit('doc-created');
+          console.log("Nu borde listan uppdateras");
+        }, 4000);
       },
       async onSubmit() {
         const form = this.formRef;

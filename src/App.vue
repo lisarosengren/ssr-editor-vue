@@ -1,7 +1,7 @@
 <script setup>
 import { RouterLink, RouterView, useRoute } from 'vue-router'
 import { ref, provide, onMounted, watch, reactive } from 'vue'
-import { getUser, checkInvite, inviteDoc } from './models/docs'
+import { getUser, checkInvite, inviteDoc, getAll } from './models/docs'
 import UserDocs from './components/UserDocs.vue'
 import UserLogin from './components/UserLogin.vue'
 import NewUser from './components/NewUser.vue'
@@ -17,15 +17,20 @@ const userState = reactive({
 const login = ref(false);
 const register = ref(false);
 const invite = ref(null);
+const documents = ref([]);
 
 provide('invite', invite);
 provide('userState', userState);
+provide('documents', documents);
 
+async function reloadDocs() {
+  documents.value = await getAll();
+}
 
 async function loginUser(loggedInUser) {
   userState.user = loggedInUser;
   userState.loggedIn = true;
-  console.log("after login", userState);
+  console.log("after login", userState.user);
 
   const inviteToken = localStorage.getItem('invite-token');
   if (inviteToken) {
@@ -120,7 +125,8 @@ onMounted(async () => {
     // }
 
   }
-
+  documents.value = await getAll();
+  console.log("did i get all?");
   });
 </script>
 
@@ -154,7 +160,7 @@ onMounted(async () => {
     </div>
 
     <div class="editor">
-      <RouterView />
+      <RouterView @doc-created="reloadDocs" />
     </div>
 
 

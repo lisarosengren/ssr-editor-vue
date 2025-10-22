@@ -130,7 +130,6 @@
           } catch (e) {
             this.errMail = true;
             console.error(e)
-
           }
           },
     },

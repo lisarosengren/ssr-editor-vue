@@ -4,20 +4,15 @@
   import { inject } from 'vue';
 
   export default {
+    emits: ['error'],
     setup() {
       const userState = inject('userState');
       const invite = inject('invite');
       return {userState, invite };
     },
-  //   props: {
-  //   user: {
-  //     type: Object,
-  //     required: true
-  //   }
-  // },
     data() {
       return {
-        // invite: '',
+        err: false,
         inviteLink: ''
       };
     },
@@ -26,14 +21,13 @@
         console.log(this.userState.user)
         console.log("userdocs here")
       const inviteToken = localStorage.getItem('invite-token');
-      // const inviteToken = this.userState.inviteToken;
       if (inviteToken) {
         console.log("there is an invite")
         this.invite = await inviteDoc();
       }
-      } catch (e) {
-        console.log(e)
-        this.$router.push('/fail')
+      } catch (err) {
+        console.log(err)
+        this.$emit('error', err)
       }
     },
     methods: {
@@ -42,9 +36,6 @@
       },
       async accept() {
         try {
-          console.log("i accept")
-          console.log("userId: ", this.userState.user._id)
-          console.log("docId: ", this.invite.invite.documentId)
           await acceptInvite({
             docId: this.invite.invite.documentId
           });
@@ -60,7 +51,7 @@
           });
         } catch (err) {
           console.log("Failed to accept, ", err);
-          this.$router.push('/fail');
+          this.err = true;
         }
       }
     },
@@ -78,10 +69,15 @@
   <!-- <h1>Välkommen {{ user.email }}</h1> -->
   <RouterLink to="/create">Nytt dokument</RouterLink>
   <DocList />
-      <div v-if="invite">
+    <div v-if="invite">
       <h2>Du har en inbjudan:</h2>
       <p> {{ invite.invite.inviter }} bjuder in dig att medverka i dokumentet {{  invite.invite.documentId }}</p>
       <button @click="accept">Tacka ja och börja medverka (eller motverka)</button>
+        <div v-if="err">
+          <div id="hide" class="err">
+          <p>Något har gått fel...</p>
+          </div>
+        </div>
     </div>
 </template>
 

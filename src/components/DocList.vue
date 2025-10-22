@@ -3,6 +3,7 @@
   import { inject } from 'vue';
 
   export default {
+    emits: ['doc-created'],
     setup() {
       const userState = inject('userState');
       const documents = inject('documents');
@@ -19,13 +20,11 @@
     // },
     methods: {
       async onClick() {
-        // const res = await getAll();
-        // this.allDocs = res;
+        this.$emit('doc-created');
         console.log("Clicked")
       }
-    // }
-  }
-};
+    }
+  };
 
 </script>
 

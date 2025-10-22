@@ -4,11 +4,14 @@
   import { inject } from 'vue';
 
   export default {
-    emits: ['error'],
+    emits: ['doc-created'],
     setup() {
       const userState = inject('userState');
       const invite = inject('invite');
       return {userState, invite };
+    },
+    created() {
+      this.errorState = inject('errorState');
     },
     data() {
       return {
@@ -27,7 +30,7 @@
       }
       } catch (err) {
         console.log(err)
-        this.$emit('error', err)
+        this.errorState.value = true;
       }
     },
     methods: {
@@ -69,7 +72,7 @@
 <template>
   <!-- <h1>Välkommen {{ user.email }}</h1> -->
   <RouterLink to="/create">Nytt dokument</RouterLink>
-  <DocList />
+  <DocList @doc-created="$emit('doc-created')"/>
     <div class="invite" v-if="invite">
       <h2>Du har en inbjudan:</h2>
       <h3>Användaren {{ invite.invite.inviter }} </h3>

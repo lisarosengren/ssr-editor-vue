@@ -215,7 +215,7 @@
     <div class="sidebar">
       <button @click="executeCode">Skicka koden till efo</button>
       <pre>{{  output  }}</pre>
-      <form @submit.prevent="onSubmit">
+      <form ref="formRef" @submit.prevent="onSubmit">
         <label for="mailInvite">Skicka inbjudan att medverka:</label>
         <input type="email" id="mailInvite" name="mailInvite" v-model="mailInvite" />
         <input type="submit" name="doit" value="Skicka">

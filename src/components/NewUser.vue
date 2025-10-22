@@ -14,7 +14,6 @@
           password: '',
           inviteToken: localStorage.getItem('invite-token')
         },
-        err: false
       };
     },
     methods: {
@@ -30,20 +29,14 @@
           });
           localStorage.setItem('token', loginNewUser.token);
           this.$emit('register-success', loginNewUser)
-          // this.$router.push('/')
           } catch (e) {
             console.error(e)
-            this.err = true;
         }
       },
     }
   };
 
 </script>
-
-
-
-
 <template>
 
   <form @submit.prevent="onSubmit">
@@ -53,13 +46,6 @@
     <input id="password" name="password" v-model="newUserData.password"  />
     <input type="submit" name="doit" value="Registrera användare">
   </form>
-
-
-  <div v-if="err">
-    <div id="hide" class="err">
-      <p>Något har gått fel...</p>
-    </div>
-  </div>
 
 </template>
 

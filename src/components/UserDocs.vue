@@ -4,11 +4,14 @@
   import { inject } from 'vue';
 
   export default {
-    emits: ['error', 'doc-created'],
+    emits: ['doc-created'],
     setup() {
       const userState = inject('userState');
       const invite = inject('invite');
       return {userState, invite };
+    },
+    created() {
+      this.errorState = inject('errorState');
     },
     data() {
       return {
@@ -27,7 +30,7 @@
       }
       } catch (err) {
         console.log(err)
-        this.$emit('error', err)
+        this.errorState.value = true;
       }
     },
     methods: {

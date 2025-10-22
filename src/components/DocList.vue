@@ -1,28 +1,29 @@
 <script>
-  import { getAll } from '@/models/docs';
+  // import { getAll } from '@/models/docs';
+  import { inject } from 'vue';
 
   export default {
-    emits: ['error'],
-    data() {
-      return {
-        allDocs: [],
-      };
+    setup() {
+      const userState = inject('userState');
+      const documents = inject('documents');
+      return {userState, documents };
     },
-    async mounted() {
-      console.log("doclist here")
-      try {
-        const result = await getAll();
-        this.allDocs = result;
-      } catch (e) {
-        console.log(e)
-        this.$emit('error', e);
-      }
-    },
-    methods: {
-      onClick() {
-        // console.log("Clicked")
-      }
-    }
+    // async mounted() {
+    //   try {
+    //     const result = await getAll();
+    //     this.allDocs = result;
+    //   } catch (e) {
+    //     console.log(e)
+    //     this.$emit('error', e);
+    //   }
+    // },
+    // methods: {
+    //   async onClick() {
+    //     // const res = await getAll();
+    //     // this.allDocs = res;
+    //     console.log("Clicked")
+    //   }
+    // }
   };
 
 </script>
@@ -32,9 +33,8 @@
 
 <template>
   <h2>Mina dokument:</h2>
-  <ul>
-    <li v-for="(entry) in allDocs" :key="entry._id">
-      <router-link
+  <p v-for="(entry) in documents" :key="entry._id">
+    <router-link
       v-if="entry && entry._id"
         :to="{
           name: 'DocView',
@@ -44,9 +44,8 @@
           }
         }"
         @click="onClick">{{  entry.title  }}
-      </router-link>
-    </li>
-  </ul>
+    </router-link>
+  </p>
 </template>
 
 <style scoped>

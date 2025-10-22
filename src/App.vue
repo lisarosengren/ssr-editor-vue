@@ -1,63 +1,137 @@
 <script setup>
 import { RouterLink, RouterView, useRoute } from 'vue-router'
-import { ref, provide, onMounted, watch } from 'vue'
-import { getUser, checkInvite } from './models/docs'
+import { ref, provide, onMounted, watch, reactive } from 'vue'
+import { getUser, checkInvite, inviteDoc, getAll } from './models/docs'
+import UserDocs from './components/UserDocs.vue'
+import UserLogin from './components/UserLogin.vue'
+import NewUser from './components/NewUser.vue'
 
 const route = useRoute()
 
-watch(
-  () => route.query.token,
-  (newToken) => {
-    if (newToken) {
-      console.log('found invite token', newToken)
-      localStorage.setItem('invite-token', newToken)
+const userState = reactive({
+  user: null,
+  loggedIn: false,
+  inviteToken: null,
+});
+
+const login = ref(false);
+const register = ref(false);
+const invite = ref(null);
+const documents = ref([]);
+
+provide('invite', invite);
+provide('userState', userState);
+provide('documents', documents);
+
+async function reloadDocs() {
+  documents.value = await getAll();
+}
+
+async function loginUser(loggedInUser) {
+  userState.user = loggedInUser;
+  userState.loggedIn = true;
+  await reloadDocs();
+  console.log("after login", userState.user);
+
+  const inviteToken = localStorage.getItem('invite-token');
+  if (inviteToken) {
+    console.log("invite token found in login function, send to check");
+    const sameUser = await checkInvite();
+    if (!sameUser) {
+      console.warn("invite is not for you!");
+      alert("Nej, va, den här inbjudan var inte till dig!");
+      logout();
+      return;
     }
-  },
-  { immediate: true }
-)
-const user = ref(null)
-const loggedIn = ref(false)
+    try {
+      invite.value = await inviteDoc();
+      console.log("invite after login ", invite.value);
+    } catch (err) {
+      console.error("failed to fefth", err);
+    }
+  }
+}
 
 function logout() {
   console.log("logging out")
   localStorage.removeItem('token')
   localStorage.removeItem('invite-token')
   console.log("should be empty", localStorage)
-  user.value = null
-  loggedIn.value = false
+  userState.user = null
+  userState.loggedIn = false
   window.location.href = '/'// full reload to reset
 }
 
-// provide = makes variables and functions available in other views (use inject)
-provide('user', user)
-provide('loggedIn', loggedIn)
-provide('logout', logout)
+watch(
+  () => route.query.token,
+  async (urlToken) => {
+    if (!urlToken) return;
+    console.log("found invite token", urlToken);
+    localStorage.setItem('invite-token', urlToken);
+    userState.inviteToken = urlToken;
+
+    const token = localStorage.getItem('token');
+    if (token) {
+      console.log("both token and invite, check");
+      const sameUser = await checkInvite();
+      console.log("checked invite result", sameUser)
+      if (sameUser == false) {
+        alert(`You are trying to access an invite that was sent to another user.
+              Please log in with the correct user information.
+              Loggin you out.`);
+        console.log("not same");
+        logout();
+        return;
+      }
+      try {
+        invite.value = await inviteDoc();
+        console.log("invite - ", invite.value);
+      } catch (err) {
+        console.error("failed to fetch invite", err);
+      }
+    }
+  },
+  { immediate: true }
+);
 
 onMounted(async () => {
-  console.log("user: ", user)
-  const inviteToken = route.query.token;
+  // console.log("user: ", userState.user)
+  // console.log("userState ", userState)
+  // const inviteToken = route.query.token;
   const token = localStorage.getItem('token');
-  if (inviteToken) {
-    console.log("found invite token")
-    localStorage.setItem('invite-token', inviteToken);
-  }
-
-  if (token && inviteToken) {
-    const sameUser = await checkInvite();
-    console.log(sameUser);
-    if (!sameUser.loginUser) {
-      console.log("not same user");
-      localStorage.removeItem('token');
-    }
-  }
   if (token) {
     console.log("token found, calling getUser")
     const currentUser = await getUser();
-    console.log(currentUser)
-    user.value = currentUser;
-    loggedIn.value = true;
+    console.log("current user", currentUser)
+    userState.user = currentUser;
+    console.log("userState: ", userState)
+    // console.log("user.value.email", user.value.email)
+    userState.loggedIn = true;
+
+  // if (inviteToken) {
+  //   console.log("found invite token")
+  //   localStorage.setItem('invite-token', inviteToken);
+  // }
+
+  // if (token && inviteToken) {
+  //   console.log("both token and invite found")
+  //   const sameUser = await checkInvite();
+  //   console.log("return from checkinvite: ", sameUser);
+  // }
+    // if (inviteToken) {
+    //   console.log("token and invite, checking")
+    //   const sameUser = await checkInvite();
+    //   console.log("checked invite result", sameUser)
+    // }
+    // if (!sameUser.loginUser) {
+    //   console.log("not same user loggin gout");
+    //   logout();
+    // }
+
+    documents.value = await getAll();
+    console.log("did i get all?");
   }
-});
+  });
 </script>
 
 <template>
@@ -71,13 +145,31 @@ onMounted(async () => {
       <RouterLink to="/register">Registrera ny användare</RouterLink>
     </nav> -->
   </div>
-  <div v-if="loggedIn && user" class="right half">
-    <p>inloggad som: {{  user.email }}</p>
+  <div v-if="userState.loggedIn && userState.user" class="right half">
+    <p>inloggad som: {{  userState.user.email }}</p>
     <button class="button" @click="logout">logga ut</button>
   </div>
   </header>
 
-  <RouterView />
+  <main>
+    <div class="sidebar">
+        <!--<UserDocs v-if="loggedIn && user" :user="user" />-->
+        <UserDocs v-if="userState.loggedIn" />
+      <div v-else>
+        <button class="button" @click="login = true; register = false">Logga in</button>
+        <button class="button" @click="register = true; login = false">Registrera ny användare</button>
+        <UserLogin v-if="login" @login-success="loginUser" />
+        <NewUser v-if="register" @register-success="loginUser" />
+      </div>
+    </div>
+
+    <div class="editor">
+      <RouterView @doc-created="reloadDocs" />
+    </div>
+
+
+  </main>
+
 </template>
 
 <style>
@@ -105,6 +197,18 @@ header {
 }
 .appname {
   display: none;
+}
+.sidebar {
+  display: flex;
+  flex-direction: row;
+  max-width:100%;
+}
+main {
+  display: flex;
+  flex-direction: row;
+}
+.editor {
+  width: 80%;
 }
 form > {
   margin-bottom: 8px;
@@ -170,6 +274,14 @@ nav a:first-of-type {
   }
   .appname {
     display:block
+  }
+  .sidebar {
+  display: flex;
+  flex-direction: column;
+  width:20%;
+  }
+  .editor {
+    width: 80%;
   }
 }
 /* @media (min-width: 1024px) {

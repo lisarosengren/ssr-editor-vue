@@ -1,25 +1,32 @@
 <script>
   import DocList from './DocList.vue';
   import { inviteDoc, acceptInvite } from '@/models/docs';
+  import { inject } from 'vue';
 
   export default {
-    props: {
-    user: {
-      type: Object,
-      required: true
-    }
-  },
+    setup() {
+      const userState = inject('userState');
+      const invite = inject('invite');
+      return {userState, invite };
+    },
+  //   props: {
+  //   user: {
+  //     type: Object,
+  //     required: true
+  //   }
+  // },
     data() {
       return {
-        invite: '',
+        // invite: '',
         inviteLink: ''
       };
     },
     async mounted() {
       try {
-        console.log(this.user)
+        console.log(this.userState.user)
         console.log("userdocs here")
       const inviteToken = localStorage.getItem('invite-token');
+      // const inviteToken = this.userState.inviteToken;
       if (inviteToken) {
         console.log("there is an invite")
         this.invite = await inviteDoc();
@@ -36,7 +43,7 @@
       async accept() {
         try {
           console.log("i accept")
-          console.log("userId: ", this.user._id)
+          console.log("userId: ", this.userState.user._id)
           console.log("docId: ", this.invite.invite.documentId)
           await acceptInvite({
             docId: this.invite.invite.documentId

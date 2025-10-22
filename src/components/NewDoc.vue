@@ -1,7 +1,13 @@
 <script>
   import { newDoc } from '@/models/docs';
+  import { inject } from 'vue';
 
   export default {
+    emits: ['doc-created'],
+    setup() {
+    const userState = inject('userState');
+    return {userState };
+    },
     data() {
       return {
         newDocData: {
@@ -16,7 +22,8 @@
         try {
           const res = await newDoc(this.newDocData);
           const id = res.insertedId;
-          console.log("Id:", id)
+          console.log("Id:", id);
+          this.$emit('doc-created');
           this.$router.push(`/${ id }/${ this.newDocData.type}`)
           } catch (e) {
             console.error(e)

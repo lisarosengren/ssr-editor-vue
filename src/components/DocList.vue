@@ -2,6 +2,7 @@
   import { getAll } from '@/models/docs';
 
   export default {
+    emits: ['error'],
     data() {
       return {
         allDocs: [],
@@ -10,13 +11,11 @@
     async mounted() {
       console.log("doclist here")
       try {
-        console.log("trying to getAll")
-      const result = await getAll();
-      console.log("result from getall: ", result)
-      this.allDocs = result;
+        const result = await getAll();
+        this.allDocs = result;
       } catch (e) {
         console.log(e)
-        this.$router.push('/fail')
+        this.$emit('error', e);
       }
     },
     methods: {

@@ -30,6 +30,7 @@ async function reloadDocs() {
 async function loginUser(loggedInUser) {
   userState.user = loggedInUser;
   userState.loggedIn = true;
+  await reloadDocs();
   console.log("after login", userState.user);
 
   const inviteToken = localStorage.getItem('invite-token');
@@ -91,8 +92,8 @@ watch(
 );
 
 onMounted(async () => {
-  console.log("user: ", userState.user)
-  console.log("userState ", userState)
+  // console.log("user: ", userState.user)
+  // console.log("userState ", userState)
   // const inviteToken = route.query.token;
   const token = localStorage.getItem('token');
   if (token) {
@@ -124,9 +125,9 @@ onMounted(async () => {
     //   logout();
     // }
 
+    documents.value = await getAll();
+    console.log("did i get all?");
   }
-  documents.value = await getAll();
-  console.log("did i get all?");
   });
 </script>
 

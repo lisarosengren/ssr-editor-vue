@@ -6,12 +6,14 @@
   const URL = import.meta.env.VITE_API_URL;
 
   export default {
-    emits: ['error'],
     setup() {
       const userState = inject('userState');
       const formRef = ref(null);
-      return {userState, formRef };
+      return {userState, formRef};
     },
+    created() {
+      this.errorState = inject('errorState');
+  },
     data() {
       return {
         socket: null,
@@ -33,10 +35,13 @@
 
           try {
             const document= await getOne(newId);
+            if (!document) {
+              throw new Error("Det gick fel!");
+            }
             this.document = document;
             this.title = document.title;
             this.content = document.content;
-
+            
             if (this.socket) {
               this.socket.disconnect();
             }
@@ -48,8 +53,8 @@
             this.socket.on("title", (data) => { this.title = data});
             this.socket.on("content", (data) => { this.content = data});
           } catch (e) {
+            this.errorState.value = true;
             console.error(e);
-            this.$emit('error', e);
           }
         }
       }

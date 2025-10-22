@@ -9,11 +9,13 @@
   const URL = import.meta.env.VITE_API_URL;
 
   export default {
-    emits: ['error'],
     setup() {
       const userState = inject('userState');
       const formRef = ref(null);
-      return {userState, formRef };
+      return {userState, formRef};
+    },
+    created() {
+      this.errorState = inject('errorState');
     },
     data() {
       return {
@@ -39,6 +41,9 @@
 
           try {
             const doc = await getOne(this.id);
+            if (!doc) {
+              throw new Error("Det gick fel!");
+            }
             this.document = doc;
             this.title = doc.title;
             this.content = doc.content;
@@ -89,7 +94,7 @@
             });
           } catch (e) {
             console.error(e);
-            this.$emit('error', e);
+            this.errorState.value = true;
           }
         }
       }

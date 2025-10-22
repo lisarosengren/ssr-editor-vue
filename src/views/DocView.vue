@@ -12,11 +12,6 @@ export default {
     UpdateDoc,
     UpdateCode
   },
-  methods: {
-    handleError(err) {
-      this.$emit('error', err);
-    }
-  },
   data() {
     return {
       isCode: false
@@ -40,7 +35,7 @@ export default {
 
 <template>
   <div class="update-doc">
-    <component :is="isCode ? 'UpdateCode' : 'UpdateDoc'" @error="handleError" />
+    <component :is="isCode ? 'UpdateCode' : 'UpdateDoc'"/>
   </div>
 </template>
 

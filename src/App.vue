@@ -24,10 +24,8 @@ const err = ref(false);
 provide('invite', invite);
 provide('userState', userState);
 provide('documents', documents);
+provide('errorState', err)
 
-function handleError(){
-  err.value = true;
-}
 function resetError(){
   err.value = false;
 }
@@ -163,7 +161,7 @@ onMounted(async () => {
   <main v-if="!err">
     <div class="sidebar">
         <!--<UserDocs v-if="loggedIn && user" :user="user" />-->
-        <UserDocs v-if="userState.loggedIn" @error="handleError"/>
+        <UserDocs v-if="userState.loggedIn"/>
       <div v-else>
         <button class="button" @click="login = true; register = false">Logga in</button>
         <button class="button" @click="register = true; login = false">Registrera ny användare</button>
@@ -173,7 +171,7 @@ onMounted(async () => {
     </div>
 
     <div class="editor">
-      <RouterView @doc-created="reloadDocs" @error="handleError"/>
+      <RouterView @doc-created="reloadDocs"/>
     </div>
   </main>
 

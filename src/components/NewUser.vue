@@ -60,10 +60,6 @@ async function onSubmit() {
   // };
 
 </script>
-
-
-
-
 <template>
 
   <form ref="formRef" @submit.prevent="onSubmit">
@@ -73,13 +69,6 @@ async function onSubmit() {
     <input id="password" name="password" type="password" v-model="newUserData.password" required />
     <input type="submit" name="doit" value="Registrera användare">
   </form>
-
-
- <!-- <div v-if="err">
-    <div id="hide" class="err">
-      <p>Något har gått fel...</p>
-    </div>
-  </div> -->
 
 </template>
 

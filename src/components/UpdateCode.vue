@@ -12,7 +12,10 @@
     setup() {
       const userState = inject('userState');
       const formRef = ref(null);
-      return {userState, formRef };
+      return {userState, formRef};
+    },
+    created() {
+      this.errorState = inject('errorState');
     },
     data() {
       return {
@@ -25,7 +28,7 @@
         editorView: null,
         fromSocket: false,
         document: null,
-        err: false
+        errMail: false,
       };
     },
     watch: {
@@ -38,6 +41,9 @@
 
           try {
             const doc = await getOne(this.id);
+            if (!doc) {
+              throw new Error("Det gick fel!");
+            }
             this.document = doc;
             this.title = doc.title;
             this.content = doc.content;
@@ -88,65 +94,11 @@
             });
           } catch (e) {
             console.error(e);
-            this.$router.push('/fail');
+            this.errorState.value = true;
           }
         }
       }
     },
-    // async mounted() {
-    //   this.id = this.$route.params.id;
-
-    //   try {
-    //     this.socket = io(URL, {
-    //       auth: {
-    //         token: localStorage.getItem('token')
-    //       }
-    //     });
-    //     const document = await getOne(this.id);
-    //     this.document = document;
-    //     this.id = document._id;
-        // this.title = document.title;
-        // this.content = document.content;
-        // // The room
-        // this.socket.emit("create", this.id);
-        // // Listens to sockets with title updates. Updates the title.
-        // this.socket.on("title", (data) => {
-        //   this.title = data;
-        // });
-        // this.socket.on("content", (data) => {
-        //   // Raises a flag that the update is from another user
-        //   this.fromSocket = true;
-        //   this.editorView.dispatch({
-        //     changes: {from: 0, to: this.editorView.state.doc.length, insert: data},
-        //     // Moves the cursor to the end of the document
-        //     selection: {anchor: data.length}
-        //   });
-        // });
-
-
-        // this.editorView = new EditorView({
-        //   doc: this.content,
-        //   extensions: [
-        //     basicSetup,
-        //     javascript(),
-        //     EditorView.updateListener.of(update => {
-        //       if (update.docChanged) {
-        //         this.content = update.state.doc.toString();
-        //         if (!this.fromSocket) {
-        //           this.onInput("content");
-        //         }
-        //         // Make sure the "other user" flag is not raised.
-        //         this.fromSocket = false;
-        //       }
-        //     })
-        //   ],
-        //   parent: this.$refs.editor
-        // });
-      //  } catch (e) {
-      //   console.error(e);
-      //   this.$router.push('/fail')
-      // }
-    // },
     beforeUnmount() {
       if (this.socket) {
       this.socket.disconnect();
@@ -167,7 +119,7 @@
         }
       },
       onInput(what) {
-      // This method that is called when the user is typing in the field for title or content.
+      // This method is called when the user is typing in the field for title or content.
       // The "what" tells if it's the title or the content that is being updated.
         let type = what === "title" ? this.title : this.content;
 
@@ -187,8 +139,8 @@
           const sentTo = await mailInvitation(this.mailInvite);
           console.log("mailing: ", sentTo)
           } catch (e) {
+            this.errMail = true;
             console.error(e)
-            this.err = true;
           }
           },
     },
@@ -215,15 +167,23 @@
     <div class="sidebar">
       <button @click="executeCode">Skicka koden till efo</button>
       <pre>{{  output  }}</pre>
+
+      <div v-if="document && document.users" >
+        <h3>Detta dokument kan användas av:</h3>
+        <p v-for="(user) in this.document.users" :key="user.email">{{ user.email }}</p>
+      </div>
       <form ref="formRef" @submit.prevent="onSubmit">
         <label for="mailInvite">Skicka inbjudan att medverka:</label>
         <input type="email" id="mailInvite" name="mailInvite" v-model="mailInvite" />
         <input type="submit" name="doit" value="Skicka">
       </form>
-      <div v-if="document && document.users" >
-        <h3>Detta dokument kan användas av:</h3>
-        <p v-for="(user) in this.document.users" :key="user.email">{{ user.email }}</p>
+      <div v-if="errMail">
+        <div id="hide" class="err">
+          <p>Något har gått fel...</p>
+        </div>
       </div>
+
+
     </div>
   </div>
 

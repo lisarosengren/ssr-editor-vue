@@ -28,7 +28,6 @@
         try {
           const res = await newDoc(this.newDocData);
           const id = res.insertedId;
-          console.log("Id:", id);
           this.$emit('doc-created');
           this.$router.push(`/${ id }/${ this.newDocData.type}`)
           } catch (e) {
@@ -62,18 +61,8 @@
       <input class="button" type="submit" name="doit" value="Spara">
 
     </div>
-<!--    <div class="radio">
-      <input class="radiobutton" type="radio" id="code-mode" value="code" name="type" v-model="newDocData.type" required/>
-      <label for="code-mode">code-mode</label>
-    </div>
-    <div class="radio">
-      <input class="radiobutton" type="radio" id="text" value="text" name="type" v-model="newDocData.type" />
-      <label for="text">text</label>
-    </div> -->
-
 
   </form>
-
 
   <div v-if="err">
     <div id="hide" class="err">

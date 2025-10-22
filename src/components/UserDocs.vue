@@ -41,6 +41,7 @@
           });
 
           localStorage.removeItem('invite-token');
+          console.log(localStorage)
 
           this.$router.push({
             name: 'DocView',
@@ -69,15 +70,16 @@
   <!-- <h1>Välkommen {{ user.email }}</h1> -->
   <RouterLink to="/create">Nytt dokument</RouterLink>
   <DocList />
-    <div v-if="invite">
+    <div class="invite" v-if="invite">
       <h2>Du har en inbjudan:</h2>
-      <p> {{ invite.invite.inviter }} bjuder in dig att medverka i dokumentet {{  invite.invite.documentId }}</p>
-      <button @click="accept">Tacka ja och börja medverka (eller motverka)</button>
-        <div v-if="err">
-          <div id="hide" class="err">
+      <h3>Användaren {{ invite.invite.inviter }} </h3>
+      <p>vill att du medverkar i ett dokument</p>
+      <button class="button" @click="accept">Acceptera?</button>
+      <div v-if="err">
+        <div id="hide" class="err">
           <p>Något har gått fel...</p>
-          </div>
         </div>
+      </div>
     </div>
 </template>
 
@@ -87,5 +89,8 @@ li {
 }
 .err {
   background-color: rgb(236, 109, 109);
+}
+.invite {
+  padding-top: 2rem;
 }
 </style>

@@ -4,7 +4,7 @@
   import { basicSetup } from "codemirror";
   import { EditorView } from "@codemirror/view";
   import { javascript } from "@codemirror/lang-javascript";
-  import { inject } from 'vue';
+  import { inject, ref } from 'vue';
 
   const URL = import.meta.env.VITE_API_URL;
 
@@ -12,7 +12,8 @@
     emits: ['error'],
     setup() {
       const userState = inject('userState');
-      return {userState };
+      const formRef = ref(null);
+      return {userState, formRef };
     },
     data() {
       return {
@@ -124,6 +125,11 @@
           this.socket.emit(what, data)
       },
       async onSubmit() {
+        const form = this.formRef;
+        if (!form.checkValidity()) {
+          form.reportValidity();
+          return;
+        }
         try {
           const sentTo = await mailInvitation(this.mailInvite);
           console.log("mailing: ", sentTo)
@@ -161,7 +167,7 @@
         <h3>Detta dokument kan användas av:</h3>
         <p v-for="(user) in this.document.users" :key="user.email">{{ user.email }}</p>
       </div>
-      <form @submit.prevent="onSubmit">
+      <form ref="formRef" @submit.prevent="onSubmit">
         <label for="mailInvite">Skicka inbjudan att medverka:</label>
         <input type="email" id="mailInvite" name="mailInvite" v-model="mailInvite" />
         <input type="submit" name="doit" value="Skicka">

@@ -186,11 +186,11 @@ export async function newUser(newUserData) {
         },
         method: 'POST'
     });
+    const result = await response.json()
     if (!response.ok) {
         // console.log(response);
-        throw new Error("Registration error");
+        throw new Error(result.message || "Registration error");
     }
-    const result = await response.json()
     console.log("new user result", result)
     localStorage.setItem('token', result.token);
     return result;
@@ -212,12 +212,14 @@ export async function userLogin(user) {
     },
     method: 'POST'
   });
-  console.log("login response", response)
-  if (!response.ok) {
-      throw new Error("Login error");
-  }
 
   const result = await response.json();
+  console.log("login response", response)
+  if (!response.ok) {
+      throw new Error(result.message || "Login error");
+      // console.log("response.status", response.status);
+      // return response.json();
+  }
   localStorage.setItem('token', result.token);
   console.log("i have set a login token")
   console.log("login result", result)// { token: , message:  }

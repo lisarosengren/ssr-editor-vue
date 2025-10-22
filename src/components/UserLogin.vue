@@ -6,15 +6,22 @@ import { inject } from 'vue';
 const userState = inject('userState');
 console.log("from UserLogin", userState.loggedIn);
 
-const emit = defineEmits(['login-success'])
+const emit = defineEmits(['login-success']);
+const formRef = ref(null);
+
 const userData = ref({
   email: '',
   password: ''
 })
 
-const err = ref(false)
+// const err = ref(false)
 
 async function onSubmit() {
+  const form = formRef.value;
+  if (!form.checkValidity()) {
+    form.reportValidity()
+    return;
+  }
   try {
     const user = await userLogin(userData.value)
     console.log("UserLogin here", user)
@@ -26,8 +33,10 @@ async function onSubmit() {
     userState.user = currentUser;
     userState.loggedIn = true;
   } catch (e) {
-    console.error(e)
-    err.value = true
+    console.log("e", e)
+    // err.value = true
+    localStorage.removeItem('token')
+    alert(`${e.message}`)
   }
 }
 
@@ -38,20 +47,20 @@ async function onSubmit() {
 
 <template>
 
-  <form @submit.prevent="onSubmit">
+  <form ref="formRef" @submit.prevent="onSubmit">
     <label for="email">E-post</label>
-    <input id="email" name="email" v-model="userData.email"  />
+    <input id="email" name="email" type="email" v-model="userData.email" required placeholder="example@example.com" />
     <label for="password">Lösenord</label>
-    <input id="password" name="password" v-model="userData.password"  />
+    <input id="password" name="password" type="password" v-model="userData.password" required />
     <input type="submit" name="doit" value="Logga in">
   </form>
 
 
-  <div v-if="err">
+  <!-- <div v-if="err">
     <div id="hide" class="err">
       <p>Något har gått fel...</p>
     </div>
-  </div>
+  </div> -->
 
 </template>
 

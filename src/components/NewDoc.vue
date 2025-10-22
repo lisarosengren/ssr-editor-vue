@@ -1,12 +1,13 @@
 <script>
   import { newDoc } from '@/models/docs';
-  import { inject } from 'vue';
+  import { inject, ref } from 'vue';
 
   export default {
     emits: ['doc-created'],
     setup() {
     const userState = inject('userState');
-    return {userState };
+    const formRef = ref(null);
+    return {userState, formRef };
     },
     data() {
       return {
@@ -19,6 +20,11 @@
     },
     methods: {
       async onSubmit() {
+        const form = this.formRef;
+        if (!form.checkValidity()) {
+          form.reportValidity();
+          return;
+        }
         try {
           const res = await newDoc(this.newDocData);
           const id = res.insertedId;
@@ -41,12 +47,13 @@
 <template>
 
 
-  <form @submit.prevent="onSubmit">
+  <form ref="formRef" @submit.prevent="onSubmit">
     <div class="form">
         <label for="title">Titel</label>
         <input type="text" v-model="newDocData.title" id="title" required />
         <label for="type">Dokumenttyp</label>
-        <select v-model="newDocData.type" id="type">
+        <select v-model="newDocData.type" id="type" required>
+          <option disabled value="">Välj:</option>
           <option>text</option>
           <option>code</option>
         </select>

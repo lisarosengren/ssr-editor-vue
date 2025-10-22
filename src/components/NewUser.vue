@@ -1,7 +1,11 @@
 <script>
   import { newUser, userLogin } from '@/models/docs';
-
+  import { inject } from 'vue';
   export default {
+    setup() {
+      const userState = inject('userState');
+      return {userState };
+    },
     emits: ['register-success'],
     data() {
       return {

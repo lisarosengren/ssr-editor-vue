@@ -161,7 +161,7 @@ onMounted(async () => {
   <main v-if="!err">
     <div class="sidebar">
         <!--<UserDocs v-if="loggedIn && user" :user="user" />-->
-        <UserDocs v-if="userState.loggedIn"/>
+        <UserDocs v-if="userState.loggedIn" @doc-created="reloadDocs"/>
       <div v-else>
         <button class="button" @click="login = true; register = false">Logga in</button>
         <button class="button" @click="register = true; login = false">Registrera ny användare</button>

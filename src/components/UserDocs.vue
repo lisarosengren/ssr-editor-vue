@@ -4,7 +4,7 @@
   import { inject } from 'vue';
 
   export default {
-    emits: ['error'],
+    emits: ['error', 'doc-created'],
     setup() {
       const userState = inject('userState');
       const invite = inject('invite');
@@ -69,7 +69,7 @@
 <template>
   <!-- <h1>Välkommen {{ user.email }}</h1> -->
   <RouterLink to="/create">Nytt dokument</RouterLink>
-  <DocList />
+  <DocList @doc-created="$emit('doc-created')"/>
     <div class="invite" v-if="invite">
       <h2>Du har en inbjudan:</h2>
       <h3>Användaren {{ invite.invite.inviter }} </h3>

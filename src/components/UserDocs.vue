@@ -23,7 +23,7 @@
     },
     async mounted() {
       try {
-        console.log(this.user)
+        console.log(this.userState.user)
         console.log("userdocs here")
       const inviteToken = localStorage.getItem('invite-token');
       // const inviteToken = this.userState.inviteToken;
@@ -43,7 +43,7 @@
       async accept() {
         try {
           console.log("i accept")
-          console.log("userId: ", this.user._id)
+          console.log("userId: ", this.userState.user._id)
           console.log("docId: ", this.invite.invite.documentId)
           await acceptInvite({
             docId: this.invite.invite.documentId

@@ -35,7 +35,7 @@ export default {
 
 <template>
   <div class="update-doc">
-    <component :is="isCode ? 'UpdateCode' : 'UpdateDoc'" />
+    <component @doc-created="$emit('doc-created')" :is="isCode ? UpdateCode : UpdateDoc" />
   </div>
 </template>
 

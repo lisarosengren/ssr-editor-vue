@@ -97,7 +97,7 @@ export async function getOne(id) {
   }
 
   const result = await response.json();
-  console.log(result.data.document)
+  console.log("getOne:", result.data.document)
 
 
   return result.data.document;

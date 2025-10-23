@@ -1,6 +1,6 @@
 <script>
   import DocList from './DocList.vue';
-  import { inviteDoc, acceptInvite } from '@/models/docs';
+  import { inviteDoc, acceptInvite, getOne } from '@/models/docs';
   import { inject } from 'vue';
 
   export default {
@@ -43,13 +43,13 @@
           await acceptInvite({
             docId: this.invite.invite.documentId
           });
-
-
+          console.log("accepted, fetching doc");
+          const inviteDocument = await getOne(this.invite.invite.documentId);
           this.$router.push({
             name: 'DocView',
             params: {
-              id: this.invite.invite.documentId,
-              type: 'text'
+              id: inviteDocument._id,
+              type: inviteDocument.type
             }
           });
           console.log("trying to remove")

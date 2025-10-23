@@ -181,18 +181,19 @@
   <div class="document">
 
     <div class="editor">
-    <form @submit.prevent="onSubmit">
-      <label for="title">Titel</label>
-      <input type="text" v-model="title" @input="onInput('title')" />
+      <form @submit.prevent="onSubmit">
+        <label for="title">Titel</label>
+        <input type="text" v-model="title" @input="onInput('title')" />
 
-      <label for="content">Innehåll</label>
-      <div ref="editor" class="code"></div>
+        <label for="content">Innehåll</label>
+        <div ref="editor" class="code"></div>
 
-    </form>
-    </div>
-    <div class="sidebar">
+      </form>
       <button @click="executeCode">Skicka koden till efo</button>
       <pre>{{  output  }}</pre>
+    </div>
+    <div class="sidebar">
+
 
       <div v-if="document && document.users" >
         <h3>Detta dokument kan användas av:</h3>

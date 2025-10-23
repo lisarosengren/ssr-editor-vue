@@ -6,6 +6,7 @@
   const URL = import.meta.env.VITE_API_URL;
 
   export default {
+    emits: ['doc-created'],
     setup() {
       const userState = inject('userState');
       const formRef = ref(null);
@@ -41,7 +42,7 @@
             this.document = document;
             this.title = document.title;
             this.content = document.content;
-            
+
             if (this.socket) {
               this.socket.disconnect();
             }
@@ -57,7 +58,13 @@
             console.error(e);
           }
         }
-      }
+      },
+      'title': {
+        'title'() {
+          console.log("title changed");
+          this.$emit('doc-created');
+        }
+      },
     },
     beforeUnmount() {
       if (this.socket) {
@@ -125,7 +132,7 @@
           <p>Något har gått fel...</p>
         </div>
       </div>
-      
+
 
     </div>
   </div>

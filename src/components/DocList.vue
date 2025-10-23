@@ -17,13 +17,13 @@
     //     this.$emit('error', e);
     //   }
     // },
-    // methods: {
-    //   async onClick() {
-    //     // const res = await getAll();
-    //     // this.allDocs = res;
-    //     console.log("Clicked")
-    //   }
-    // }
+    methods: {
+      async onClick() {
+        // const res = await getAll();
+        // this.allDocs = res;
+        console.log("Clicked")
+      }
+    }
   };
 
 </script>

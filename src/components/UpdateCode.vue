@@ -140,7 +140,6 @@
             clearTimeout(this.timeout);
             this.timeout = setTimeout(() => {
               this.$emit('doc-created');
-              console.log("Nu borde listan uppdateras");
             }, 4000);
         }
       },
@@ -153,19 +152,18 @@
         console.log("send button!", this.mailInvite);
         this.errMail = false;
         this.sentMail = false;
-        if (this.messageTimeout) {
-          clearTimeout(this.messageTimeout);
-        }
         try {
           const sentTo = await mailInvitation(this.mailInvite, this.id);
           console.log("mailing: ", sentTo)
           this.sentMail = true;
+          clearTimeout(this.messageTimeout);
           this.messageTimeout = setTimeout(() => {
             this.sentMail = false;
           }, 3000)
         } catch (e) {
             this.errMail = true;
             console.error(e)
+            clearTimeout(this.messageTimeout);
             this.messageTimeout = setTimeout(() => {
               this.errMail = false;
             }, 4000);

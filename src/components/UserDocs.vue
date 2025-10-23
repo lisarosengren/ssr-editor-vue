@@ -8,10 +8,8 @@
     setup() {
       const userState = inject('userState');
       const invite = inject('invite');
-      return {userState, invite };
-    },
-    created() {
-      this.errorState = inject('errorState');
+      const errorState = inject('errorState'); 
+      return {userState, invite, errorState };
     },
     data() {
       return {
@@ -43,7 +41,6 @@
           await acceptInvite({
             docId: this.invite.invite.documentId
           });
-          console.log("accepted, fetching doc");
           const inviteDocument = await getOne(this.invite.invite.documentId);
           this.$router.push({
             name: 'DocView',
@@ -52,10 +49,9 @@
               type: inviteDocument.type
             }
           });
-          console.log("trying to remove")
           this.invite = null;
           localStorage.removeItem('invite-token');
-          console.log(localStorage)
+          this.$emit('doc-created')
         } catch (err) {
           console.log("Failed to accept, ", err);
           this.err = true;

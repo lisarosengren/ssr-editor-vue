@@ -31,6 +31,7 @@
         errMail: false,
         sentMail: false,
         messageTimeout: null,
+        timeout: null
       };
     },
     watch: {
@@ -61,6 +62,11 @@
 
             this.socket.on("title", (data) => {
               this.title = data;
+              clearTimeout(this.timeout);
+              this.timeout = setTimeout(() => {
+                this.$emit('doc-created');
+                console.log("Nu borde listan uppdateras");
+              }, 4000);
             });
 
             this.socket.on("content", (data) => {
@@ -130,6 +136,13 @@
             input: type
           }
           this.socket.emit(what, data)
+          if (what === "title") {
+            clearTimeout(this.timeout);
+            this.timeout = setTimeout(() => {
+              this.$emit('doc-created');
+              console.log("Nu borde listan uppdateras");
+            }, 4000);
+        }
       },
       async onSubmit() {
         const form = this.formRef;

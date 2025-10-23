@@ -5,6 +5,7 @@ import { getUser, checkInvite, inviteDoc, getAll } from './models/docs'
 import UserDocs from './components/UserDocs.vue'
 import UserLogin from './components/UserLogin.vue'
 import NewUser from './components/NewUser.vue'
+import FailComponent from './components/FailComponent.vue'
 
 const route = useRoute()
 
@@ -18,10 +19,16 @@ const login = ref(false);
 const register = ref(false);
 const invite = ref(null);
 const documents = ref([]);
+const err = ref(false);
 
 provide('invite', invite);
 provide('userState', userState);
 provide('documents', documents);
+provide('errorState', err)
+
+function resetError(){
+  err.value = false;
+}
 
 async function reloadDocs() {
   documents.value = await getAll();
@@ -151,10 +158,10 @@ onMounted(async () => {
   </div>
   </header>
 
-  <main>
+  <main v-if="!err">
     <div class="sidebar">
         <!--<UserDocs v-if="loggedIn && user" :user="user" />-->
-        <UserDocs v-if="userState.loggedIn" />
+        <UserDocs v-if="userState.loggedIn" @doc-created="reloadDocs"/>
       <div v-else>
         <button class="button" @click="login = true; register = false">Logga in</button>
         <button class="button" @click="register = true; login = false">Registrera ny användare</button>
@@ -164,9 +171,12 @@ onMounted(async () => {
     </div>
 
     <div class="editor">
-      <RouterView @doc-created="reloadDocs" />
+      <RouterView @doc-created="reloadDocs"/>
     </div>
+  </main>
 
+  <main v-else>
+    <FailComponent @back="resetError"/>
 
   </main>
 

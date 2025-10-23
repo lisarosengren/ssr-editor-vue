@@ -4,20 +4,18 @@
   import { inject } from 'vue';
 
   export default {
+    emits: ['doc-created'],
     setup() {
       const userState = inject('userState');
       const invite = inject('invite');
       return {userState, invite };
     },
-  //   props: {
-  //   user: {
-  //     type: Object,
-  //     required: true
-  //   }
-  // },
+    created() {
+      this.errorState = inject('errorState');
+    },
     data() {
       return {
-        // invite: '',
+        err: false,
         inviteLink: ''
       };
     },
@@ -26,14 +24,13 @@
         console.log(this.userState.user)
         console.log("userdocs here")
       const inviteToken = localStorage.getItem('invite-token');
-      // const inviteToken = this.userState.inviteToken;
       if (inviteToken) {
         console.log("there is an invite")
         this.invite = await inviteDoc();
       }
-      } catch (e) {
-        console.log(e)
-        this.$router.push('/fail')
+      } catch (err) {
+        console.log(err)
+        this.errorState.value = true;
       }
     },
     methods: {
@@ -42,9 +39,6 @@
       },
       async accept() {
         try {
-          console.log("i accept")
-          console.log("userId: ", this.userState.user._id)
-          console.log("docId: ", this.invite.invite.documentId)
           await acceptInvite({
             docId: this.invite.invite.documentId
           });
@@ -61,7 +55,7 @@
           });
         } catch (err) {
           console.log("Failed to accept, ", err);
-          this.$router.push('/fail');
+          this.err = true;
         }
       }
     },
@@ -78,18 +72,26 @@
 <template>
   <!-- <h1>Välkommen {{ user.email }}</h1> -->
   <RouterLink to="/create">Nytt dokument</RouterLink>
-  <DocList />
-      <div class="invite" v-if="invite">
+  <DocList @doc-created="$emit('doc-created')"/>
+    <div class="invite" v-if="invite">
       <h2>Du har en inbjudan:</h2>
       <h3>Användaren {{ invite.invite.inviter }} </h3>
       <p>vill att du medverkar i ett dokument</p>
       <button class="button" @click="accept">Acceptera?</button>
+      <div v-if="err">
+        <div id="hide" class="err">
+          <p>Något har gått fel...</p>
+        </div>
+      </div>
     </div>
 </template>
 
 <style scoped>
 li {
   list-style-type: none;
+}
+.err {
+  background-color: rgb(236, 109, 109);
 }
 .invite {
   padding-top: 2rem;

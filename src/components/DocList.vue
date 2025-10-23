@@ -3,32 +3,24 @@
   import { inject } from 'vue';
 
   export default {
+    emits: ['doc-created'],
     setup() {
       const userState = inject('userState');
       const documents = inject('documents');
       return {userState, documents };
     },
-    // data() {
-    //   return {
-    //     allDocs: [], // save point
-    //   };
+    // async mounted() {
+    //   try {
+    //     const result = await getAll();
+    //     this.allDocs = result;
+    //   } catch (e) {
+    //     console.log(e)
+    //     this.$emit('error', e);
+    //   }
     // },
-    async mounted() {
-      console.log("doclist here")
-      // try {
-      //   console.log("trying to getAll")
-      // const result = await getAll();
-      // console.log("result from getall: ", result)
-      // this.allDocs = result;
-      // } catch (e) {
-      //   console.log(e)
-      //   this.$router.push('/fail')
-      // }
-    },
     methods: {
       async onClick() {
-        // const res = await getAll();
-        // this.allDocs = res;
+        this.$emit('doc-created');
         console.log("Clicked")
       }
     }

@@ -9,8 +9,11 @@
     setup() {
       const userState = inject('userState');
       const formRef = ref(null);
-      return {userState, formRef };
+      return {userState, formRef};
     },
+    created() {
+      this.errorState = inject('errorState');
+  },
     data() {
       return {
         socket: null,
@@ -18,7 +21,7 @@
         title: null,
         content: null,
         mailInvite: '',
-        err: false,
+        errMail: false,
         document: null,
       };
     },
@@ -32,10 +35,13 @@
 
           try {
             const document= await getOne(newId);
+            if (!document) {
+              throw new Error("Det gick fel!");
+            }
             this.document = document;
             this.title = document.title;
             this.content = document.content;
-
+            
             if (this.socket) {
               this.socket.disconnect();
             }
@@ -47,8 +53,8 @@
             this.socket.on("title", (data) => { this.title = data});
             this.socket.on("content", (data) => { this.content = data});
           } catch (e) {
+            this.errorState.value = true;
             console.error(e);
-            this.$router.push('/fail');
           }
         }
       }
@@ -58,35 +64,6 @@
         this.socket.disconnect();
       }
     },
-    // async mounted() {
-    //   this.id = this.$route.params.id;
-
-    //   try {
-    //     this.socket = io(URL, {
-    //       auth: {
-    //         token: localStorage.getItem('token')
-    //       }
-    //     });
-    //     console.log("Vad får getOne för id?", this.id)
-    //     const document = await getOne(this.id);
-    //     console.log("Här är vad som ska in", document)
-    //     this.title = document.title;
-    //     this.content = document.content;
-    //     this.socket.emit("create", this.id); // join a room
-    //     this.socket.on("title", (data) => { // listens for title update
-    //     this.title = data;
-    //     });
-    //     this.socket.on("content", (data) => { // listens for content update
-    //       this.content = data;
-    //     });
-    //    } catch (e) {
-    //     console.error(e);
-    //     this.$router.push('/fail')
-    //   };
-    // },
-    // beforeUnmount() {
-    //   this.socket.disconnect();
-    // },
     methods: {
       onInput(what) {
       // This method that is called when the user is typing in the field for title or content.
@@ -110,8 +87,8 @@
           const sentTo = await mailInvitation(this.mailInvite, this.id);
           console.log("mailing: ", sentTo)
           } catch (e) {
+            this.errMail = true;
             console.error(e)
-            this.err = true;
           }
           },
     }
@@ -134,16 +111,21 @@
 
     </div>
     <div class="sidebar">
-
+      <div v-if="document && document.users" >
+        <h3>Detta dokument kan användas av:</h3>
+        <p v-for="(user) in document.users" :key="user.email">{{ user.email }}</p>
+      </div>
       <form ref="formRef" @submit.prevent="onSubmit">
         <label for="mailInvite">Skicka inbjudan att medverka:</label>
         <input type="email" id="mailInvite" name="mailInvite" v-model="mailInvite" />
         <input type="submit" name="doit" value="Skicka">
       </form>
-      <div v-if="document && document.users" >
-        <h3>Detta dokument kan användas av:</h3>
-        <p v-for="(user) in document.users" :key="user.email">{{ user.email }}</p>
+      <div v-if="errMail">
+        <div id="hide" class="err">
+          <p>Något har gått fel...</p>
+        </div>
       </div>
+      
 
     </div>
   </div>

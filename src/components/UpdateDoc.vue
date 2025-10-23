@@ -23,8 +23,10 @@
         content: null,
         mailInvite: '',
         errMail: false,
+        sentMail: false,
         document: null,
-        timeout: null
+        timeout: null,
+        messageTimeout: null,
       };
     },
     watch: {
@@ -106,12 +108,24 @@
           return;
         }
         console.log("send button!", this.mailInvite);
+        this.errMail = false;
+        this.sentMail = false;
+        if (this.messageTimeout) {
+          clearTimeout(this.messageTimeout);
+        }
         try {
           const sentTo = await mailInvitation(this.mailInvite, this.id);
-          console.log("mailing: ", sentTo)
+          console.log("mailing: ", sentTo);
+          this.sentMail = true;
+          this.messageTimeout = setTimeout(() => {
+            this.sentMail = false;
+          }, 3000)
           } catch (e) {
             this.errMail = true;
             console.error(e)
+            this.messageTimeout = setTimeout(() => {
+              this.errMail = false;
+            }, 4000);
           }
           },
     }
@@ -144,9 +158,12 @@
         <input type="submit" name="doit" value="Skicka">
       </form>
       <div v-if="errMail">
-        <div id="hide" class="err">
+        <div class="err">
           <p>Något har gått fel...</p>
         </div>
+      </div>
+      <div v-if="sentMail" class="updated">
+        <p>Inbjudan skickad!</p>
       </div>
 
 

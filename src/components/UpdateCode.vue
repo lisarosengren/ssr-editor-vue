@@ -136,7 +136,7 @@
           return;
         }
         try {
-          const sentTo = await mailInvitation(this.mailInvite);
+          const sentTo = await mailInvitation(this.mailInvite, this.id);
           console.log("mailing: ", sentTo)
           } catch (e) {
             this.errMail = true;

@@ -24,6 +24,7 @@
         mailInvite: '',
         errMail: false,
         document: null,
+        timeout: null
       };
     },
     watch: {
@@ -31,7 +32,6 @@
         immediate: true,
         async handler(newId) {
           if (!newId) return;
-
           this.id = newId;
 
           try {
@@ -51,7 +51,14 @@
             });
             this.socket.emit("create", newId);
 
-            this.socket.on("title", (data) => { this.title = data});
+            this.socket.on("title", (data) => {
+              this.title = data;
+              clearTimeout(this.timeout); 
+              this.timeout = setTimeout(() => {
+                this.$emit('doc-created');
+                console.log("Nu borde listan uppdateras");
+              }, 4000);
+            });
             this.socket.on("content", (data) => { this.content = data});
           } catch (e) {
             this.errorState.value = true;
@@ -71,6 +78,7 @@
         this.socket.disconnect();
       }
     },
+
     methods: {
       onInput(what) {
       // This method that is called when the user is typing in the field for title or content.
@@ -81,7 +89,15 @@
             _id: this.id,
             input: type
           }
-          this.socket.emit(what, data)
+        this.socket.emit(what, data)
+        if (what === "title") {
+          clearTimeout(this.timeout); 
+          this.timeout = setTimeout(() => {
+            this.$emit('doc-created');
+            console.log("Nu borde listan uppdateras");
+          }, 4000);
+        }
+
       },
       async onSubmit() {
         const form = this.formRef;

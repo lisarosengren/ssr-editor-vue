@@ -29,6 +29,8 @@
         fromSocket: false,
         document: null,
         errMail: false,
+        sentMail: false,
+        messageTimeout: null,
         timeout: null
       };
     },
@@ -57,10 +59,10 @@
             });
 
             this.socket.emit("create", this.id);
-            
+
             this.socket.on("title", (data) => {
               this.title = data;
-              clearTimeout(this.timeout); 
+              clearTimeout(this.timeout);
               this.timeout = setTimeout(() => {
                 this.$emit('doc-created');
                 console.log("Nu borde listan uppdateras");
@@ -135,10 +137,9 @@
           }
           this.socket.emit(what, data)
           if (what === "title") {
-            clearTimeout(this.timeout); 
+            clearTimeout(this.timeout);
             this.timeout = setTimeout(() => {
               this.$emit('doc-created');
-              console.log("Nu borde listan uppdateras");
             }, 4000);
         }
       },
@@ -148,16 +149,28 @@
           form.reportValidity();
           return;
         }
+        console.log("send button!", this.mailInvite);
+        this.errMail = false;
+        this.sentMail = false;
         try {
-          const sentTo = await mailInvitation(this.mailInvite);
+          const sentTo = await mailInvitation(this.mailInvite, this.id);
           console.log("mailing: ", sentTo)
-          } catch (e) {
+          this.sentMail = true;
+          clearTimeout(this.messageTimeout);
+          this.messageTimeout = setTimeout(() => {
+            this.sentMail = false;
+          }, 3000)
+        } catch (e) {
             this.errMail = true;
             console.error(e)
+            clearTimeout(this.messageTimeout);
+            this.messageTimeout = setTimeout(() => {
+              this.errMail = false;
+            }, 4000);
           }
-          },
-    },
-  };
+        },
+    }
+};
 
 </script>
 
@@ -170,7 +183,7 @@
     <div class="editor">
     <form @submit.prevent="onSubmit">
       <label for="title">Titel</label>
-      <input type="text" v-model="this.title" @input="onInput('title')" />
+      <input type="text" v-model="title" @input="onInput('title')" />
 
       <label for="content">Innehåll</label>
       <div ref="editor" class="code"></div>
@@ -183,7 +196,7 @@
 
       <div v-if="document && document.users" >
         <h3>Detta dokument kan användas av:</h3>
-        <p v-for="(user) in this.document.users" :key="user.email">{{ user.email }}</p>
+        <p v-for="(user) in document.users" :key="user.email">{{ user.email }}</p>
       </div>
       <form ref="formRef" @submit.prevent="onSubmit">
         <label for="mailInvite">Skicka inbjudan att medverka:</label>
@@ -191,10 +204,14 @@
         <input type="submit" name="doit" value="Skicka">
       </form>
       <div v-if="errMail">
-        <div id="hide" class="err">
+        <div class="err">
           <p>Något har gått fel...</p>
         </div>
       </div>
+      <div v-if="sentMail" class="updated">
+        <p>Inbjudan skickad!</p>
+      </div>
+
 
 
     </div>

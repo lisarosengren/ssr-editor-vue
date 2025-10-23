@@ -97,7 +97,7 @@ export async function getOne(id) {
   }
 
   const result = await response.json();
-  console.log(result.data.document)
+  console.log("getOne:", result.data.document)
 
 
   return result.data.document;
@@ -244,12 +244,13 @@ export async function getUser() {
       query: '{ user { _id email } }'
     })
   });
+
+  const result = await response.json();
   if (!response.ok) {
       // throw new Error("Failed to get user");
       console.log(response);
+      console.log(result)
   }
-
-  const result = await response.json();
   console.log("getuser result", result)
   return result.data.user;
 }
@@ -269,7 +270,15 @@ export async function mailInvitation(inviteEmail, docId) {
       'Content-Type': 'application/json'
     }
   });
-  console.log(response);
+  console.log("mailInvitation response:", response);
+  if (!response.ok) {
+    const errorData = await response.json();
+    console.log("failure", errorData);
+    throw new Error(errorData.message);
+  }
+  const result = await response.json();
+  console.log("mailINvitation result", result);
+  return result;
 }
 
 export async function checkInvite() {
@@ -339,7 +348,7 @@ export async function acceptInvite(body) {
       }
     }),
   });
-  console.log(body.docId)
+  console.log("accept invite here - body.docId", body.docId)
   const result = await response.json();
   console.log("after acceptInvite - ", result)
 

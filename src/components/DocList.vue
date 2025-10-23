@@ -20,6 +20,8 @@
     // },
     methods: {
       async onClick() {
+        // const res = await getAll();
+        // this.allDocs = res;
         this.$emit('doc-created');
         console.log("Clicked")
       }

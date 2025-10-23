@@ -6,6 +6,7 @@
   const URL = import.meta.env.VITE_API_URL;
 
   export default {
+    emits: ['doc-created'],
     setup() {
       const userState = inject('userState');
       const formRef = ref(null);
@@ -22,8 +23,10 @@
         content: null,
         mailInvite: '',
         errMail: false,
+        sentMail: false,
         document: null,
-        timeout: null
+        timeout: null,
+        messageTimeout: null,
       };
     },
     watch: {
@@ -41,7 +44,7 @@
             this.document = document;
             this.title = document.title;
             this.content = document.content;
-            
+
             if (this.socket) {
               this.socket.disconnect();
             }
@@ -52,7 +55,7 @@
 
             this.socket.on("title", (data) => {
               this.title = data;
-              clearTimeout(this.timeout); 
+              clearTimeout(this.timeout);
               this.timeout = setTimeout(() => {
                 this.$emit('doc-created');
                 console.log("Nu borde listan uppdateras");
@@ -64,7 +67,13 @@
             console.error(e);
           }
         }
-      }
+      },
+      // 'title': {
+      //   'title'() {
+      //     console.log("title changed");
+      //     this.$emit('doc-created');
+      //   }
+      // },
     },
     beforeUnmount() {
       if (this.socket) {
@@ -84,7 +93,7 @@
           }
         this.socket.emit(what, data)
         if (what === "title") {
-          clearTimeout(this.timeout); 
+          clearTimeout(this.timeout);
           this.timeout = setTimeout(() => {
             this.$emit('doc-created');
             console.log("Nu borde listan uppdateras");
@@ -99,12 +108,24 @@
           return;
         }
         console.log("send button!", this.mailInvite);
+        this.errMail = false;
+        this.sentMail = false;
+        if (this.messageTimeout) {
+          clearTimeout(this.messageTimeout);
+        }
         try {
           const sentTo = await mailInvitation(this.mailInvite, this.id);
-          console.log("mailing: ", sentTo)
+          console.log("mailing: ", sentTo);
+          this.sentMail = true;
+          this.messageTimeout = setTimeout(() => {
+            this.sentMail = false;
+          }, 3000)
           } catch (e) {
             this.errMail = true;
             console.error(e)
+            this.messageTimeout = setTimeout(() => {
+              this.errMail = false;
+            }, 4000);
           }
           },
     }
@@ -137,11 +158,14 @@
         <input type="submit" name="doit" value="Skicka">
       </form>
       <div v-if="errMail">
-        <div id="hide" class="err">
+        <div class="err">
           <p>Något har gått fel...</p>
         </div>
       </div>
-      
+      <div v-if="sentMail" class="updated">
+        <p>Inbjudan skickad!</p>
+      </div>
+
 
     </div>
   </div>

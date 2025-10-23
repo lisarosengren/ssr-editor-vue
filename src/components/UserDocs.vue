@@ -1,6 +1,6 @@
 <script>
   import DocList from './DocList.vue';
-  import { inviteDoc, acceptInvite } from '@/models/docs';
+  import { inviteDoc, acceptInvite, getOne } from '@/models/docs';
   import { inject } from 'vue';
 
   export default {
@@ -8,10 +8,8 @@
     setup() {
       const userState = inject('userState');
       const invite = inject('invite');
-      return {userState, invite };
-    },
-    created() {
-      this.errorState = inject('errorState');
+      const errorState = inject('errorState'); 
+      return {userState, invite, errorState };
     },
     data() {
       return {
@@ -38,21 +36,22 @@
         // console.log("Clicked")
       },
       async accept() {
+        console.log("this.invite.invite:", this.invite.invite.documentId)
         try {
           await acceptInvite({
             docId: this.invite.invite.documentId
           });
-
-          localStorage.removeItem('invite-token');
-          console.log(localStorage)
-
+          const inviteDocument = await getOne(this.invite.invite.documentId);
           this.$router.push({
             name: 'DocView',
             params: {
-              id: this.invite.invite.documentId,
-              type: 'text'
+              id: inviteDocument._id,
+              type: inviteDocument.type
             }
           });
+          this.invite = null;
+          localStorage.removeItem('invite-token');
+          this.$emit('doc-created')
         } catch (err) {
           console.log("Failed to accept, ", err);
           this.err = true;

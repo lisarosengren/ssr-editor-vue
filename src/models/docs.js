@@ -270,7 +270,15 @@ export async function mailInvitation(inviteEmail, docId) {
       'Content-Type': 'application/json'
     }
   });
-  console.log(response);
+  console.log("mailInvitation response:", response);
+  if (!response.ok) {
+    const errorData = await response.json();
+    console.log("failure", errorData);
+    throw new Error(errorData.message);
+  }
+  const result = await response.json();
+  console.log("mailINvitation result", result);
+  return result;
 }
 
 export async function checkInvite() {

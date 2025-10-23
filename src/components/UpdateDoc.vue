@@ -53,7 +53,7 @@
 
             this.socket.on("title", (data) => {
               this.title = data;
-              clearTimeout(this.timeout); 
+              clearTimeout(this.timeout);
               this.timeout = setTimeout(() => {
                 this.$emit('doc-created');
                 console.log("Nu borde listan uppdateras");
@@ -66,12 +66,12 @@
           }
         }
       },
-      'title': {
-        'title'() {
-          console.log("title changed");
-          this.$emit('doc-created');
-        }
-      },
+      // 'title': {
+      //   'title'() {
+      //     console.log("title changed");
+      //     this.$emit('doc-created');
+      //   }
+      // },
     },
     beforeUnmount() {
       if (this.socket) {
@@ -91,7 +91,7 @@
           }
         this.socket.emit(what, data)
         if (what === "title") {
-          clearTimeout(this.timeout); 
+          clearTimeout(this.timeout);
           this.timeout = setTimeout(() => {
             this.$emit('doc-created');
             console.log("Nu borde listan uppdateras");

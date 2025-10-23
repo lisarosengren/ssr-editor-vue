@@ -244,12 +244,13 @@ export async function getUser() {
       query: '{ user { _id email } }'
     })
   });
+
+  const result = await response.json();
   if (!response.ok) {
       // throw new Error("Failed to get user");
       console.log(response);
+      console.log(result)
   }
-
-  const result = await response.json();
   console.log("getuser result", result)
   return result.data.user;
 }
@@ -339,7 +340,7 @@ export async function acceptInvite(body) {
       }
     }),
   });
-  console.log(body.docId)
+  console.log("accept invite here - body.docId", body.docId)
   const result = await response.json();
   console.log("after acceptInvite - ", result)
 

@@ -38,13 +38,12 @@
         // console.log("Clicked")
       },
       async accept() {
+        console.log("this.invite.invite:", this.invite.invite.documentId)
         try {
           await acceptInvite({
             docId: this.invite.invite.documentId
           });
 
-          localStorage.removeItem('invite-token');
-          console.log(localStorage)
 
           this.$router.push({
             name: 'DocView',
@@ -53,6 +52,10 @@
               type: 'text'
             }
           });
+          console.log("trying to remove")
+          this.invite = null;
+          localStorage.removeItem('invite-token');
+          console.log(localStorage)
         } catch (err) {
           console.log("Failed to accept, ", err);
           this.err = true;

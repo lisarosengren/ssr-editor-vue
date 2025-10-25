@@ -35,6 +35,7 @@ async function reloadDocs() {
   documents.value = await getAll();
 }
 
+
 async function loginUser(loggedInUser) {
   userState.user = loggedInUser;
   userState.loggedIn = true;
@@ -171,9 +172,9 @@ onMounted(async () => {
       <div v-else>
         <div class="center">
           <button v-if="buttons" class="button" @click="login = true; register = false; buttons = false">Logga in</button>
-          <button v-if="buttons" class="button" @click="register = true; login = false; buttons = false">Registrera ny användare</button>
-          <UserLogin v-if="login" @changed-mind="buttons = true; login = false; register = false" @login-success="loginUser" />
-          <NewUser v-if="register" @register-success="loginUser" />
+          <button v-if="buttons" class="button" @click="register = true; login = false; buttons = false">Skapa konto</button>
+          <UserLogin v-if="login" @changed-mind="register = true; login = false;" @login-success="loginUser" />
+          <NewUser v-if="register" @changed-mind="register = false; login = true;" @register-success="loginUser" />
         </div>
       </div>
 

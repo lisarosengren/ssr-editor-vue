@@ -50,7 +50,7 @@ async function onSubmit() {
         <label for="password">Lösenord: </label><br>
         <input id="password" name="password" type="password" v-model="userData.password" required /><br>
         <input type="submit" name="doit" value="Logga in">
-        <p @click="$emit('changed-mind')" class="register-login-link">Registrera</p>
+        <p @click="$emit('changed-mind')" class="register-login-link">Skapa konto</p>
     </fieldset>
   </form>
 </template>

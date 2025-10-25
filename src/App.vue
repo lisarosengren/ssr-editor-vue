@@ -20,6 +20,7 @@ const register = ref(false);
 const invite = ref(null);
 const documents = ref([]);
 const err = ref(false);
+let buttons = ref(true);
 
 provide('invite', invite);
 provide('userState', userState);
@@ -67,6 +68,7 @@ function logout() {
   userState.user = null
   userState.loggedIn = false
   window.location.href = '/'// full reload to reset
+  buttons.value = false;
 }
 
 watch(
@@ -146,7 +148,7 @@ onMounted(async () => {
   <!--  <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" /> -->
 
   <div class="left half appname">
-    <RouterLink to="/"><h1>Bobcat Noir</h1><h1>ssr-editor</h1></RouterLink>
+    <RouterLink to="/"><h1 class="header">Bobcat Noir</h1><h2>ssr-editor</h2></RouterLink>
 <!--      <nav>
       <RouterLink to="/login">Logga in befintlig användare</RouterLink>
       <RouterLink to="/register">Registrera ny användare</RouterLink>
@@ -168,8 +170,8 @@ onMounted(async () => {
       <RouterView class="editor" v-if="userState.loggedIn" @doc-created="reloadDocs"/>
       <div v-else>
         <div class="center">
-          <button class="button" @click="login = true; register = false">Logga in</button>
-          <button class="button" @click="register = true; login = false">Registrera ny användare</button>
+          <button v-if="buttons" class="button" @click="login = true; register = false; buttons = false">Logga in</button>
+          <button v-if="buttons" class="button" @click="register = true; login = false; buttons = false">Registrera ny användare</button>
           <UserLogin v-if="login" @login-success="loginUser" />
           <NewUser v-if="register" @register-success="loginUser" />
         </div>
@@ -188,9 +190,20 @@ onMounted(async () => {
 
 <style>
 header {
-  line-height: 1.5;
-  max-height: 100vh;
-  margin-bottom: 2rem;
+  margin-bottom: 7em;
+  border-bottom: #04AA6D 1px solid;
+}
+
+.header {
+  font-size: 4em;
+  margin-left: 0.2em;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+h2 {
+  margin-top: 0;
+  margin-left: 0.7em;
 }
 
 .logo {

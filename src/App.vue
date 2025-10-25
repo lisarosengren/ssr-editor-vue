@@ -148,7 +148,7 @@ onMounted(async () => {
   <!--  <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" /> -->
 
   <div class="left half appname">
-    <RouterLink to="/"><h1 class="header">Bobcat Noir</h1><h2>ssr-editor</h2></RouterLink>
+    <RouterLink @click="buttons = true; login = false; register = false" to="/"><h1 class="header">Bobcat Noir</h1><h2>ssr-editor</h2></RouterLink>
 <!--      <nav>
       <RouterLink to="/login">Logga in befintlig användare</RouterLink>
       <RouterLink to="/register">Registrera ny användare</RouterLink>
@@ -172,7 +172,7 @@ onMounted(async () => {
         <div class="center">
           <button v-if="buttons" class="button" @click="login = true; register = false; buttons = false">Logga in</button>
           <button v-if="buttons" class="button" @click="register = true; login = false; buttons = false">Registrera ny användare</button>
-          <UserLogin v-if="login" @login-success="loginUser" />
+          <UserLogin v-if="login" @changed-mind="buttons = true; login = false; register = false" @login-success="loginUser" />
           <NewUser v-if="register" @register-success="loginUser" />
         </div>
       </div>
@@ -186,12 +186,33 @@ onMounted(async () => {
 
   </main>
 
+  <footer>
+    <p class="footer">Ett JSramverkprojekt av Emma och Lisa</p>
+  </footer>
+
 </template>
 
 <style>
 header {
   margin-bottom: 7em;
   border-bottom: #04AA6D 1px solid;
+}
+
+footer {
+  margin-top: 2.8em;
+  border-top: #04AA6D 1px solid;
+  margin-bottom: 0;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+
+.footer p {
+  padding-bottom: 0;
 }
 
 .header {

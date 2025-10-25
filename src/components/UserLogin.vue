@@ -6,7 +6,7 @@ import { inject } from 'vue';
 const userState = inject('userState');
 console.log("from UserLogin", userState.loggedIn);
 
-const emit = defineEmits(['login-success']);
+const emit = defineEmits(['login-success', 'changed-mind']);
 const formRef = ref(null);
 
 const userData = ref({
@@ -50,7 +50,7 @@ async function onSubmit() {
         <label for="password">Lösenord: </label><br>
         <input id="password" name="password" type="password" v-model="userData.password" required /><br>
         <input type="submit" name="doit" value="Logga in">
-        <p class="register-login-link">Registrera</p>
+        <p @click="$emit('changed-mind')" class="register-login-link">Registrera</p>
     </fieldset>
   </form>
 </template>

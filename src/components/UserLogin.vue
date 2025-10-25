@@ -39,30 +39,24 @@ async function onSubmit() {
 
 </script>
 
-
-
-
 <template>
 
-  <form ref="formRef" @submit.prevent="onSubmit">
-    <label for="email">E-post</label>
-    <input id="email" name="email" type="email" v-model="userData.email" required placeholder="example@example.com" />
-    <label for="password">Lösenord</label>
-    <input id="password" name="password" type="password" v-model="userData.password" required />
-    <input type="submit" name="doit" value="Logga in">
+  <form class="login-register" ref="formRef" @submit.prevent="onSubmit">
+    <fieldset>
+      <legend>Logga in</legend>
+        <label for="email">E-post: </label><br>
+        <input id="email" name="email" type="email" v-model="userData.email" required placeholder="example@example.com" />
+        <br>
+        <label for="password">Lösenord: </label><br>
+        <input id="password" name="password" type="password" v-model="userData.password" required /><br>
+        <input type="submit" name="doit" value="Logga in">
+        <p class="register-login-link">Registrera</p>
+    </fieldset>
   </form>
 </template>
 
 <style scoped>
-.radio {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-}
-.radiobutton {
-  margin: 0.7rem;
-  width: auto;
-}
+
 
 
 </style>

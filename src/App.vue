@@ -159,20 +159,24 @@ onMounted(async () => {
   </header>
 
   <main v-if="!err">
-    <div class="sidebar">
+    <div v-if="userState.loggedIn" class="sidebar">
         <!--<UserDocs v-if="loggedIn && user" :user="user" />-->
-        <UserDocs v-if="userState.loggedIn" @doc-created="reloadDocs"/>
-      <div v-else>
-        <button class="button" @click="login = true; register = false">Logga in</button>
-        <button class="button" @click="register = true; login = false">Registrera ny användare</button>
-        <UserLogin v-if="login" @login-success="loginUser" />
-        <NewUser v-if="register" @register-success="loginUser" />
-      </div>
+        <UserDocs @doc-created="reloadDocs"/>
     </div>
 
-    <div class="editor">
-      <RouterView @doc-created="reloadDocs"/>
-    </div>
+    <!--<div class="editor">-->
+      <RouterView class="editor" v-if="userState.loggedIn" @doc-created="reloadDocs"/>
+      <div v-else>
+        <div class="center">
+          <button class="button" @click="login = true; register = false">Logga in</button>
+          <button class="button" @click="register = true; login = false">Registrera ny användare</button>
+          <UserLogin v-if="login" @login-success="loginUser" />
+          <NewUser v-if="register" @register-success="loginUser" />
+        </div>
+      </div>
+
+
+   <!-- </div>-->
   </main>
 
   <main v-else>
@@ -213,10 +217,10 @@ header {
   flex-direction: row;
   max-width:100%;
 }
-main {
+/* main {
   display: flex;
   flex-direction: row;
-}
+} */
 .editor {
   width: 80%;
 }
@@ -262,13 +266,20 @@ nav a:first-of-type {
   background-color: #04AA6D;
   border: none;
   border-radius: 15px;
-  margin: 1.4rem;
+  margin: 0 auto;
+  margin-top: 1.4rem;
+  width: 30%;
 }
 
+button:hover {
+  border: solid 2px #011a11;
+}
+
+/* 
 .button:active {
   box-shadow: 0 5px #666;
   transform: translateY(4px);
-}
+} */
 
 
 @media (min-width: 1024px) {

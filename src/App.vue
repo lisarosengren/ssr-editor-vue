@@ -210,6 +210,7 @@ footer {
   position: absolute;
   bottom: 0;
   width: 100%;
+  color: rgb(0, 91, 60);
 }
 
 .footer p {

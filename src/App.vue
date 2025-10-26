@@ -20,6 +20,7 @@ const register = ref(false);
 const invite = ref(null);
 const documents = ref([]);
 const err = ref(false);
+let buttons = ref(true);
 
 provide('invite', invite);
 provide('userState', userState);
@@ -33,6 +34,7 @@ function resetError(){
 async function reloadDocs() {
   documents.value = await getAll();
 }
+
 
 async function loginUser(loggedInUser) {
   userState.user = loggedInUser;
@@ -67,6 +69,7 @@ function logout() {
   userState.user = null
   userState.loggedIn = false
   window.location.href = '/'// full reload to reset
+  buttons.value = false;
 }
 
 watch(
@@ -146,7 +149,7 @@ onMounted(async () => {
   <!--  <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" /> -->
 
   <div class="left half appname">
-    <RouterLink to="/"><h1>Bobcat Noir</h1><h1>ssr-editor</h1></RouterLink>
+    <RouterLink @click="buttons = true; login = false; register = false" to="/"><h1 class="header">Bobcat Noir</h1><h2>ssr-editor</h2></RouterLink>
 <!--      <nav>
       <RouterLink to="/login">Logga in befintlig användare</RouterLink>
       <RouterLink to="/register">Registrera ny användare</RouterLink>
@@ -159,20 +162,24 @@ onMounted(async () => {
   </header>
 
   <main v-if="!err">
-    <div class="sidebar">
+    <div v-if="userState.loggedIn" class="sidebar">
         <!--<UserDocs v-if="loggedIn && user" :user="user" />-->
-        <UserDocs v-if="userState.loggedIn" @doc-created="reloadDocs"/>
-      <div v-else>
-        <button class="button" @click="login = true; register = false">Logga in</button>
-        <button class="button" @click="register = true; login = false">Registrera ny användare</button>
-        <UserLogin v-if="login" @login-success="loginUser" />
-        <NewUser v-if="register" @register-success="loginUser" />
-      </div>
+        <UserDocs @doc-created="reloadDocs"/>
     </div>
 
-    <div class="editor">
-      <RouterView @doc-created="reloadDocs"/>
-    </div>
+    <!--<div class="editor">-->
+      <RouterView class="editor" v-if="userState.loggedIn" @doc-created="reloadDocs"/>
+      <div v-else>
+        <div class="center">
+          <button v-if="buttons" class="button" @click="login = true; register = false; buttons = false">Logga in</button>
+          <button v-if="buttons" class="button" @click="register = true; login = false; buttons = false">Skapa konto</button>
+          <UserLogin v-if="login" @changed-mind="register = true; login = false;" @login-success="loginUser" />
+          <NewUser v-if="register" @changed-mind="register = false; login = true;" @register-success="loginUser" />
+        </div>
+      </div>
+
+
+   <!-- </div>-->
   </main>
 
   <main v-else>
@@ -180,13 +187,45 @@ onMounted(async () => {
 
   </main>
 
+  <footer>
+    <p class="footer">Ett JSramverkprojekt av Emma och Lisa</p>
+  </footer>
+
 </template>
 
 <style>
 header {
-  line-height: 1.5;
-  max-height: 100vh;
-  margin-bottom: 2rem;
+  margin-bottom: 7em;
+  border-bottom: #04AA6D 1px solid;
+}
+
+footer {
+  margin-top: 2.8em;
+  border-top: #04AA6D 1px solid;
+  margin-bottom: 0;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+
+.footer p {
+  padding-bottom: 0;
+}
+
+.header {
+  font-size: 4em;
+  margin-left: 0.2em;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+h2 {
+  margin-top: 0;
+  margin-left: 0.7em;
 }
 
 .logo {
@@ -213,10 +252,10 @@ header {
   flex-direction: row;
   max-width:100%;
 }
-main {
+/* main {
   display: flex;
   flex-direction: row;
-}
+} */
 .editor {
   width: 80%;
 }
@@ -262,13 +301,20 @@ nav a:first-of-type {
   background-color: #04AA6D;
   border: none;
   border-radius: 15px;
-  margin: 1.4rem;
+  margin: 0 auto;
+  margin-top: 1.4rem;
+  width: 30%;
 }
 
+button:hover {
+  border: solid 2px #011a11;
+}
+
+/* 
 .button:active {
   box-shadow: 0 5px #666;
   transform: translateY(4px);
-}
+} */
 
 
 @media (min-width: 1024px) {

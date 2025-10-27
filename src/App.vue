@@ -260,7 +260,7 @@ nav a:first-of-type {
 }
 
 .button:hover {
-  border: solid 2px #011a11;
+  color: #000;
 }
  .logout {
   margin-top: 0.7rem;

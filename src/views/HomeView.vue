@@ -10,7 +10,7 @@
 <template>
   <div class="home">
     <h2>Välkommen!</h2>
-    <p>Det här är Lisas och Emmas jsrmaverk-projekt.</p>
+    <p>Det här är Lisas och Emmas jsramverk-projekt.</p>
     </div>
 </template>
 

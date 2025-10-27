@@ -186,10 +186,10 @@
         <input type="text" v-model="title" @input="onInput('title')" />
 
         <label for="content">Innehåll</label>
-        <div ref="editor" class="code"></div>
+        <div ref="editor" class="writebox"></div>
 
       </form>
-      <button @click="executeCode">Skicka koden till efo</button>
+      <button class="button" @click="executeCode">Skicka koden till efo</button>
       <pre>{{  output  }}</pre>
     </div>
     <div class="sidebar">
@@ -202,7 +202,7 @@
       <form ref="formRef" @submit.prevent="onSubmit">
         <label for="mailInvite">Skicka inbjudan att medverka:</label>
         <input type="email" id="mailInvite" name="mailInvite" v-model="mailInvite" />
-        <input type="submit" name="doit" value="Skicka">
+        <input type="submit" name="doit" value="Skicka" class="button">
       </form>
       <div v-if="errMail">
         <div class="err">
@@ -246,6 +246,11 @@
 .sidebar {
   width: 25%;
   padding-left: 2rem;
+}
+.writebox {
+  height: 600px;
+  box-shadow: 10px 10px 5px lightgrey;
+  border: 1px solid lightgrey;
 }
 
 </style>

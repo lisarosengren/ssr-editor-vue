@@ -9,11 +9,16 @@ const formRef = ref(null);
 const newUserData = ref({
   email: '',
   password: '',
+  passwordRepeat: '',
   inviteToken: localStorage.getItem('invite-token')
 });
 
 async function onSubmit() {
   const form = formRef.value;
+  if (newUserData.value.password != newUserData.value.passwordRepeat) {
+    alert("Passwords are not matching!");
+    return;
+  }
   if (!form.checkValidity()) {
     form.reportValidity();
     return;
@@ -51,6 +56,9 @@ async function onSubmit() {
       <br>
       <label for="password">Lösenord:</label><br>
       <input id="password" name="password" type="password" v-model="newUserData.password" required />
+      <br>
+      <label for="passwordRepeat">Upprepa lösenord:</label><br>
+      <input id="passwordRepeat" name="passwordRepeat" type="password" v-model="newUserData.passwordRepeat" required />
       <br>
       <input class="register" type="submit" name="doit" value="Skapa">
       <p class="logging-in">*Du kommer att loggas in automatiskt</p>

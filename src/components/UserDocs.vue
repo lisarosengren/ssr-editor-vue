@@ -74,8 +74,7 @@
   <DocList @doc-created="$emit('doc-created')"/>
     <div class="invite" v-if="invite">
       <h2>Du har en inbjudan:</h2>
-      <h3>Användaren: {{ invite.invite.inviter }} </h3>
-      <p>vill att du medverkar i ett dokument</p>
+      <p>Användaren <span class="bold">{{ invite.invite.inviter }}</span> vill att du medverkar i ett dokument.</p>
       <button class="button" @click="accept">Acceptera?</button>
       <div v-if="err">
         <div id="hide" class="err">
@@ -93,13 +92,24 @@ li {
   background-color: rgb(236, 109, 109);
 }
 .invite {
-  padding-top: 2rem;
+  margin-top: 2.8em;
+  border-top: 2px solid #04AA6D;;
+  padding-top: 1.4em;
 }
+
+.bold {
+  font-weight: bold;
+}
+
 
 .create {
   margin: 0;
   min-width: 50%;
   max-width: 100%;
+}
+
+.create:hover {
+  background-color: #04AA6D;
 }
 
 

@@ -8,7 +8,7 @@
     setup() {
       const userState = inject('userState');
       const invite = inject('invite');
-      const errorState = inject('errorState'); 
+      const errorState = inject('errorState');
       return {userState, invite, errorState };
     },
     data() {
@@ -103,7 +103,7 @@ li {
 
 
 .create {
-  margin: 0;
+  /* margin: 0; */
   min-width: 50%;
   max-width: 100%;
 }

@@ -35,7 +35,7 @@
 
 <template>
   <h2>Mina dokument:</h2>
-  <p v-for="(entry) in documents" :key="entry._id">
+  <li v-for="(entry) in documents" :key="entry._id">
     <router-link
       v-if="entry && entry._id"
         :to="{
@@ -47,12 +47,17 @@
         }"
         @click="onClick">{{  entry.title  }}
     </router-link>
-  </p>
+  </li>
 </template>
 
 <style scoped>
 li {
   list-style-type: none;
-
 }
+
+h2 {
+  margin-left: 0;
+  margin-top: 1.4em;
+}
+
 </style>

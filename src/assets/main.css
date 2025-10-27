@@ -9,6 +9,12 @@
   padding-left: 1em;
   padding-right: 1em;
   height: 100%;
+  min-height: 100vh;
+}
+
+main {
+  min-height: 100%;
+  padding-bottom: 3.6em;
 }
 
 html {
@@ -16,6 +22,7 @@ html {
   margin: 0;
   padding: 0;
   height: 100%;
+  min-height: 100vh;
 }
 
 body {
@@ -23,7 +30,6 @@ body {
   padding: 0;
   height: 100%;
 }
-
 
 fieldset {
   border: 1px solid hsla(160, 100%, 37%, 1);

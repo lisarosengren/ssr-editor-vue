@@ -76,26 +76,21 @@ watch(
   () => route.query.token,
   async (urlToken) => {
     if (!urlToken) return;
-    console.log("found invite token", urlToken);
     localStorage.setItem('invite-token', urlToken);
     userState.inviteToken = urlToken;
 
     const token = localStorage.getItem('token');
     if (token) {
-      console.log("both token and invite, check");
       const sameUser = await checkInvite();
-      console.log("checked invite result", sameUser)
       if (sameUser == false) {
         alert(`You are trying to access an invite that was sent to another user.
               Please log in with the correct user information.
               Loggin you out.`);
-        console.log("not same");
         logout();
         return;
       }
       try {
         invite.value = await inviteDoc();
-        console.log("invite - ", invite.value);
       } catch (err) {
         console.error("failed to fetch invite", err);
       }
@@ -105,41 +100,13 @@ watch(
 );
 
 onMounted(async () => {
-  // console.log("user: ", userState.user)
-  // console.log("userState ", userState)
-  // const inviteToken = route.query.token;
   const token = localStorage.getItem('token');
   if (token) {
-    console.log("token found, calling getUser")
     const currentUser = await getUser();
-    console.log("current user", currentUser)
     userState.user = currentUser;
-    console.log("userState: ", userState)
-    // console.log("user.value.email", user.value.email)
     userState.loggedIn = true;
 
-  // if (inviteToken) {
-  //   console.log("found invite token")
-  //   localStorage.setItem('invite-token', inviteToken);
-  // }
-
-  // if (token && inviteToken) {
-  //   console.log("both token and invite found")
-  //   const sameUser = await checkInvite();
-  //   console.log("return from checkinvite: ", sameUser);
-  // }
-    // if (inviteToken) {
-    //   console.log("token and invite, checking")
-    //   const sameUser = await checkInvite();
-    //   console.log("checked invite result", sameUser)
-    // }
-    // if (!sameUser.loginUser) {
-    //   console.log("not same user loggin gout");
-    //   logout();
-    // }
-
     documents.value = await getAll();
-    console.log("did i get all?");
   }
   });
 </script>
@@ -156,14 +123,13 @@ onMounted(async () => {
     </nav> -->
   </div>
   <div v-if="userState.loggedIn && userState.user" class="right half">
-    <p>inloggad som: {{  userState.user.email }}</p>
-    <button class="button" @click="logout">logga ut</button>
+    <p>inloggad som: <br>{{  userState.user.email }}</p>
+    <button class="button logout" @click="logout">logga ut</button>
   </div>
   </header>
 
   <main v-if="!err">
-    <div v-if="userState.loggedIn" class="sidebar">
-        <!--<UserDocs v-if="loggedIn && user" :user="user" />-->
+    <div v-if="userState.loggedIn" class="sidebar left">
         <UserDocs @doc-created="reloadDocs"/>
     </div>
 
@@ -195,25 +161,27 @@ onMounted(async () => {
 
 <style>
 header {
-  margin-bottom: 7em;
+  margin-bottom: 3.6em;
   border-bottom: #04AA6D 1px solid;
 }
 
 footer {
   margin-top: 2.8em;
+  margin-left: 1em;
+  margin-right: 1em;
   border-top: #04AA6D 1px solid;
   margin-bottom: 0;
   left: 0;
   bottom: 0;
   width: 100%;
   text-align: center;
-  position: absolute;
-  bottom: 0;
   width: 100%;
+  color: rgb(0, 91, 60);
+  position: relative;
 }
 
-.footer p {
-  padding-bottom: 0;
+.footer {
+  padding-bottom: 0.7em;
 }
 
 .header {
@@ -252,10 +220,7 @@ h2 {
   flex-direction: row;
   max-width:100%;
 }
-/* main {
-  display: flex;
-  flex-direction: row;
-} */
+
 .editor {
   width: 80%;
 }
@@ -306,15 +271,12 @@ nav a:first-of-type {
   width: 30%;
 }
 
-button:hover {
+.button:hover {
   border: solid 2px #011a11;
 }
-
-/* 
-.button:active {
-  box-shadow: 0 5px #666;
-  transform: translateY(4px);
-} */
+ .logout {
+  margin-top: 0.7rem;
+ }
 
 
 @media (min-width: 1024px) {

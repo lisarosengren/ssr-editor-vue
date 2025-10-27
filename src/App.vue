@@ -128,7 +128,7 @@ onMounted(async () => {
   </div>
   </header>
 
-  <main v-if="!err">
+  <main :class="{ main: userState.loggedIn }" v-if="!err">
     <div v-if="userState.loggedIn" class="sidebar left">
         <UserDocs @doc-created="reloadDocs"/>
     </div>

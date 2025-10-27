@@ -154,9 +154,9 @@
         <h3>Detta dokument kan användas av:</h3>
         <p v-for="(user) in document.users" :key="user.email">{{ user.email }}</p>
       </div>
-      <form ref="formRef" @submit.prevent="onSubmit">
+      <form class="invite" ref="formRef" @submit.prevent="onSubmit">
         <label for="mailInvite">Skicka inbjudan att medverka:</label>
-        <input type="email" id="mailInvite" name="mailInvite" v-model="mailInvite" />
+        <input type="email" id="mailInvite" name="mailInvite" v-model="mailInvite" placeholder="example@example.com"/>
         <input type="submit" name="doit" value="Skicka" class="button">
       </form>
       <div v-if="errMail">
@@ -174,6 +174,11 @@
 </template>
 
 <style scoped>
+
+.invite {
+  border-top: 1px solid #04AA6D;
+  padding-top: 1.4em;
+}
 
 .updated {
   background-color: rgb(53, 217, 53);

@@ -196,11 +196,13 @@
 
 
       <div v-if="document && document.users" >
-        <h3>Detta dokument kan användas av:</h3>
-        <p v-for="(user) in document.users" :key="user.email">{{ user.email }}</p>
+        <p class="bold">Kan användas av:</p>
+        <ul>
+          <li v-for="(user) in document.users" :key="user.email">{{ user.email }}</li>
+        </ul>
       </div>
-      <form ref="formRef" @submit.prevent="onSubmit">
-        <label for="mailInvite">Skicka inbjudan att medverka:</label>
+      <form class="invite" ref="formRef" @submit.prevent="onSubmit">
+        <label for="mailInvite">Bjud in till medverkan:</label><br><br>
         <input type="email" id="mailInvite" name="mailInvite" v-model="mailInvite" />
         <input type="submit" name="doit" value="Skicka" class="button">
       </form>
@@ -222,6 +224,20 @@
 </template>
 
 <style scoped>
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.invite {
+  border-top: 1px solid #04AA6D;
+  padding-top: 1.4em;
+}
 
 .updated {
   background-color: rgb(53, 217, 53);

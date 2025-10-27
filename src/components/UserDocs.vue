@@ -28,7 +28,7 @@
       }
       } catch (err) {
         console.log(err)
-        this.errorState.value = true;
+        this.errorState = true;
       }
     },
     methods: {
@@ -73,9 +73,9 @@
   <RouterLink class="button create" to="/create">Nytt dokument</RouterLink>
   <DocList @doc-created="$emit('doc-created')"/>
     <div class="invite" v-if="invite">
-      <h2>Du har en inbjudan:</h2>
+      <p class="bold">Du har en inbjudan:</p>
       <p>Användaren <span class="bold">{{ invite.invite.inviter }}</span> vill att du medverkar i ett dokument.</p>
-      <button class="button" @click="accept">Acceptera?</button>
+      <button class="button create" @click="accept">Acceptera?</button>
       <div v-if="err">
         <div id="hide" class="err">
           <p>Något har gått fel...</p>
@@ -93,7 +93,7 @@ li {
 }
 .invite {
   margin-top: 2.8em;
-  border-top: 2px solid #04AA6D;;
+  border-top: 1px solid #04AA6D;;
   padding-top: 1.4em;
 }
 
@@ -111,6 +111,7 @@ li {
 .create:hover {
   background-color: #04AA6D;
 }
+
 
 
 </style>

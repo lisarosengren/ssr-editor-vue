@@ -182,8 +182,8 @@
 
     <div class="editor">
       <form @submit.prevent="onSubmit">
-        <label for="title">Titel</label>
-        <input type="text" v-model="title" @input="onInput('title')" />
+        <label for="title">Titel</label><br>
+        <input type="text" v-model="title" @input="onInput('title')" /><br>
 
         <label for="content">Innehåll</label>
         <div ref="editor" class="writebox"></div>
@@ -203,7 +203,7 @@
       </div>
       <form class="invite" ref="formRef" @submit.prevent="onSubmit">
         <label for="mailInvite">Bjud in till medverkan:</label><br><br>
-        <input type="email" id="mailInvite" name="mailInvite" v-model="mailInvite" />
+        <input type="email" id="mailInvite" name="mailInvite" v-model="mailInvite" placeholder="example@example.com"/>
         <input type="submit" name="doit" value="Skicka" class="button">
       </form>
       <div v-if="errMail">

@@ -15,6 +15,8 @@
 main {
   min-height: 100%;
   padding-bottom: 3.6em;
+  display: flex;
+  flex-direction: row;
 }
 
 html {
@@ -77,6 +79,11 @@ textarea {
     padding: 0.35rem;
 }
 
+.editor {
+  display: flex;
+  flex-direction: column;
+}
+
 .update-doc {
     display: flex;
     flex-direction: column;
@@ -88,7 +95,7 @@ textarea {
     background-color: hsla(160, 100%, 37%, 0.2);
   }
 }
-/* 
+/*
 @media (min-width: 1024px) {
   #app {
     margin: auto;

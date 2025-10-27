@@ -181,13 +181,11 @@
   <div class="document">
 
     <div class="editor">
-      <form @submit.prevent="onSubmit">
+      
         <label for="title">Titel</label><br>
         <input type="text" v-model="title" @input="onInput('title')" /><br>
-
         <div ref="editor" class="writebox"></div>
 
-      </form>
       <button class="button" @click="executeCode">Skicka koden till efo</button>
       <pre>{{  output  }}</pre>
     </div>

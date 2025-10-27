@@ -221,6 +221,10 @@ h2 {
   max-width:100%;
 }
 
+.sidebar .left {
+  padding-right: 1em;
+}
+
 .editor {
   width: 80%;
 }
@@ -237,9 +241,6 @@ input[type=select] {
   padding: 1rem;
   margin-bottom: 1rem;
 }
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
 
 nav a.router-link-exact-active:hover {
   background-color: transparent;
@@ -248,7 +249,6 @@ nav a.router-link-exact-active:hover {
 nav a {
   display: inline-block;
   padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
 }
 
 nav a:first-of-type {
@@ -258,7 +258,6 @@ nav a:first-of-type {
 .button {
   display: inline-block;
   padding: 15px 25px;
-  /* font-size: 24px; */
   cursor: pointer;
   text-align: center;
   text-decoration: none;

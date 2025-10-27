@@ -129,8 +129,7 @@ onMounted(async () => {
   </header>
 
   <main v-if="!err">
-    <div v-if="userState.loggedIn" class="sidebar">
-        <!--<UserDocs v-if="loggedIn && user" :user="user" />-->
+    <div v-if="userState.loggedIn" class="sidebar left">
         <UserDocs @doc-created="reloadDocs"/>
     </div>
 
@@ -162,7 +161,7 @@ onMounted(async () => {
 
 <style>
 header {
-  margin-bottom: 7em;
+  margin-bottom: 3.6em;
   border-bottom: #04AA6D 1px solid;
 }
 
@@ -178,6 +177,7 @@ footer {
   text-align: center;
   width: 100%;
   color: rgb(0, 91, 60);
+  position: relative;
 }
 
 .footer {

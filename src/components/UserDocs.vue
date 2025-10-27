@@ -70,11 +70,11 @@
 
 <template>
   <!-- <h1>Välkommen {{ user.email }}</h1> -->
-  <RouterLink to="/create">Nytt dokument</RouterLink>
+  <RouterLink class="button create" to="/create">Nytt dokument</RouterLink>
   <DocList @doc-created="$emit('doc-created')"/>
     <div class="invite" v-if="invite">
       <h2>Du har en inbjudan:</h2>
-      <h3>Användaren {{ invite.invite.inviter }} </h3>
+      <h3>Användaren: {{ invite.invite.inviter }} </h3>
       <p>vill att du medverkar i ett dokument</p>
       <button class="button" @click="accept">Acceptera?</button>
       <div v-if="err">
@@ -95,4 +95,12 @@ li {
 .invite {
   padding-top: 2rem;
 }
+
+.create {
+  margin: 0;
+  min-width: 50%;
+  max-width: 100%;
+}
+
+
 </style>

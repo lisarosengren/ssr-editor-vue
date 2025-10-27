@@ -179,10 +179,6 @@ footer {
   /* position: relative; */
 }
 
-/* .footer {
-  padding-bottom: 0.7em;
-} */
-
 .header {
   font-size: 4em;
   margin-left: 0.2em;
@@ -214,11 +210,6 @@ h2 {
 .appname {
   display: none;
 }
-/* .sidebar {
-  display: flex;
-  flex-direction: row;
-  max-width:100%;
-} */
 
 .sidebar .left {
   padding-right: 1em;
@@ -265,8 +256,7 @@ nav a:first-of-type {
   border: none;
   border-radius: 15px;
   margin: 0 auto;
-  margin-top: 1.4rem;
-  width: 30%;
+  margin-bottom: 1.4rem;
 }
 
 .button:hover {

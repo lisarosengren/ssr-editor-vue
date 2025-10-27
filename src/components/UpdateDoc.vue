@@ -143,7 +143,6 @@
       <label for="title">Titel</label>
       <input type="text" v-model="title" @input="onInput('title')" />
 
-      <label for="content">Innehåll</label>
       <textarea v-model="content" @input="onInput('content')" class="writebox" ></textarea>
       <button class="button">Spara*</button>
       <p><i>*Knappen ovan är av typen "Emotional support button" och fyller ingen funktion mer än som stöd för den som vill ha en "spara-knapp".</i></p>

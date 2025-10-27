@@ -214,11 +214,11 @@ h2 {
 .appname {
   display: none;
 }
-.sidebar {
+/* .sidebar {
   display: flex;
   flex-direction: row;
   max-width:100%;
-}
+} */
 
 .sidebar .left {
   padding-right: 1em;

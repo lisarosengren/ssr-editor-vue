@@ -210,6 +210,10 @@ ul {
   width: 75%;
   padding-right: 2rem;
 }
+
+textarea {
+  resize: none;
+}
 .sidebar {
   width: 25%;
   padding-left: 2rem;

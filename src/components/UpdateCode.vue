@@ -185,7 +185,6 @@
         <label for="title">Titel</label>
         <input type="text" v-model="title" @input="onInput('title')" />
 
-        <label for="content">Innehåll</label>
         <div ref="editor" class="writebox"></div>
 
       </form>
@@ -251,6 +250,7 @@
   height: 600px;
   box-shadow: 10px 10px 5px lightgrey;
   border: 1px solid lightgrey;
+  margin-bottom: 2rem;
 }
 
 </style>

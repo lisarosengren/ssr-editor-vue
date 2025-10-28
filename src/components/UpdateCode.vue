@@ -187,13 +187,16 @@
   <div class="document">
 
     <div class="editor">
-      
+
         <label for="title">Titel</label><br>
         <input type="text" v-model="title" @input="onInput('title')" /><br>
         <div ref="editor" class="writebox"></div>
 
       <button class="button" @click="executeCode">Skicka koden till efo</button>
-      <pre>{{  output  }}</pre>
+      <div v-if="output" class="center">
+        <p>Svar från efo:</p>
+        <pre>{{  output  }}</pre>
+      </div>
     </div>
     <div class="sidebar">
 

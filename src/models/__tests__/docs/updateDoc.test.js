@@ -1,4 +1,4 @@
-/* eslint-disable no-undef */
+// /* eslint-disable no-undef */
 
 // import { test, describe, expect, vi } from "vitest";
 // import { updateDoc } from "@/models/docs";
@@ -8,7 +8,7 @@
 //     vi.restoreAllMocks();
 // });
 //     test('Test that no error is thrown when response is ok', async () =>{
-        
+
 //         const docToUpdate = {
 //             _id: "68d0fb6182a1de187f427d65",
 //             title: "test title",

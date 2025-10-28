@@ -51,9 +51,9 @@
 
   <form ref="formRef" @submit.prevent="onSubmit">
     <div class="form">
-        <label for="title">Titel</label>
-        <input type="text" v-model="newDocData.title" id="title" required />
-        <label for="type">Dokumenttyp</label>
+        <label for="title">Titel: </label>
+        <input type="text" v-model="newDocData.title" id="title" required /><br>
+        <label for="type">Dokumenttyp: </label>
         <select v-model="newDocData.type" id="type" required>
           <option disabled value="">Välj:</option>
           <option>text</option>

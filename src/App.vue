@@ -40,12 +40,10 @@ async function loginUser(loggedInUser) {
   userState.user = loggedInUser;
   userState.loggedIn = true;
   await reloadDocs();
-  console.log("after login", userState.user);
 
   const inviteToken = localStorage.getItem('invite-token');
 
   if (inviteToken) {
-    console.log("invite token found in login function, send to check");
     const sameUser = await checkInvite();
 
     if (!sameUser) {
@@ -64,10 +62,8 @@ async function loginUser(loggedInUser) {
 }
 
 function logout() {
-  console.log("logging out")
   localStorage.removeItem('token')
   localStorage.removeItem('invite-token')
-  console.log("should be empty", localStorage)
   userState.user = null
   userState.loggedIn = false
   window.location.href = '/'// full reload to reset
@@ -119,14 +115,10 @@ onMounted(async () => {
 
 <template>
   <header class="column">
-  <!--  <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" /> -->
 
   <div class="left half appname">
     <RouterLink @click="buttons = true; login = false; register = false" to="/"><h1 class="header">Bobcat Noir</h1><h2>ssr-editor</h2></RouterLink>
-<!--      <nav>
-      <RouterLink to="/login">Logga in befintlig användare</RouterLink>
-      <RouterLink to="/register">Registrera ny användare</RouterLink>
-    </nav> -->
+
   </div>
   <div v-if="userState.loggedIn && userState.user" class="right half">
     <p>inloggad som: <br>{{  userState.user.email }}</p>
@@ -139,7 +131,6 @@ onMounted(async () => {
         <UserDocs @doc-created="reloadDocs"/>
     </div>
 
-    <!--<div class="editor">-->
       <RouterView class="editor" v-if="userState.loggedIn" @doc-created="reloadDocs"/>
       <div v-else>
         <div class="center">
@@ -151,12 +142,12 @@ onMounted(async () => {
       </div>
 
 
-   <!-- </div>-->
   </main>
 
   <main v-else>
-    <FailComponent @back="resetError"/>
-
+    <div class="center">
+      <FailComponent  @back="resetError"/>
+    </div>
   </main>
 
   <footer>
@@ -175,14 +166,8 @@ footer {
   margin-left: 1em;
   margin-right: 1em;
   border-top: #04AA6D 1px solid;
-  /* margin-bottom: 0; */
-  /* left: 0; */
-  /* bottom: 0; */
-  /* width: 100%; */
   text-align: center;
-  /* width: 100%; */
   color: rgb(0, 91, 60);
-  /* position: relative; */
 }
 
 .header {
@@ -296,30 +281,5 @@ nav a:first-of-type {
     width: 80%;
   }
 }
-/* @media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
 
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
-} */
 </style>

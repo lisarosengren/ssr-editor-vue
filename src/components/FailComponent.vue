@@ -1,5 +1,6 @@
 <script setup>
 const emit = defineEmits(['back' ]);
+
 </script>
 <template>
 <h1>Åh nej!</h1>

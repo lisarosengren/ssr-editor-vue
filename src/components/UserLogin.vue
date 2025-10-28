@@ -4,6 +4,7 @@ import { getUser, userLogin } from '@/models/docs';
 import { inject } from 'vue';
 
 const userState = inject('userState');
+
 console.log("from UserLogin", userState.loggedIn);
 
 const emit = defineEmits(['login-success', 'changed-mind']);
@@ -18,14 +19,17 @@ const userData = ref({
 
 async function onSubmit() {
   const form = formRef.value;
+
   if (!form.checkValidity()) {
     form.reportValidity()
     return;
   }
   try {
     const user = await userLogin(userData.value)
+
     localStorage.setItem('token', user.token)
     const currentUser = await getUser()
+
     emit('login-success', currentUser)
     userState.user = currentUser;
     userState.loggedIn = true;

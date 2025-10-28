@@ -9,6 +9,7 @@
       const userState = inject('userState');
       const invite = inject('invite');
       const errorState = inject('errorState');
+
       return {userState, invite, errorState };
     },
     data() {
@@ -22,6 +23,7 @@
         console.log(this.userState.user)
         console.log("userdocs here")
       const inviteToken = localStorage.getItem('invite-token');
+
       if (inviteToken) {
         console.log("there is an invite")
         this.invite = await inviteDoc();
@@ -42,6 +44,7 @@
             docId: this.invite.invite.documentId
           });
           const inviteDocument = await getOne(this.invite.invite.documentId);
+
           this.$router.push({
             name: 'DocView',
             params: {

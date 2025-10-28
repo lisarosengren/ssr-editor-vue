@@ -43,9 +43,11 @@ async function loginUser(loggedInUser) {
   console.log("after login", userState.user);
 
   const inviteToken = localStorage.getItem('invite-token');
+
   if (inviteToken) {
     console.log("invite token found in login function, send to check");
     const sameUser = await checkInvite();
+
     if (!sameUser) {
       console.warn("invite is not for you!");
       alert("Nej, va, den här inbjudan var inte till dig!");
@@ -80,8 +82,10 @@ watch(
     userState.inviteToken = urlToken;
 
     const token = localStorage.getItem('token');
+
     if (token) {
       const sameUser = await checkInvite();
+
       if (sameUser == false) {
         alert(`You are trying to access an invite that was sent to another user.
               Please log in with the correct user information.
@@ -101,8 +105,10 @@ watch(
 
 onMounted(async () => {
   const token = localStorage.getItem('token');
+
   if (token) {
     const currentUser = await getUser();
+
     userState.user = currentUser;
     userState.loggedIn = true;
 

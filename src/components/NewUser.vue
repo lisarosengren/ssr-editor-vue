@@ -14,12 +14,14 @@ const newUserData = ref({
 
 async function onSubmit() {
   const form = formRef.value;
+
   if (!form.checkValidity()) {
     form.reportValidity();
     return;
   }
   try {
     const newestUser = await newUser(newUserData.value);
+
     console.log(newestUser);
     console.log("new user ", newestUser)
 
@@ -27,8 +29,10 @@ async function onSubmit() {
       email: newUserData.value.email,
       password: newUserData.value.password
     });
+
     localStorage.setItem('token', loginNewUser.token);
     const currentUser = await getUser();
+
     emit('register-success', currentUser);
     userState.user = currentUser;
     userState.loggedIn = true

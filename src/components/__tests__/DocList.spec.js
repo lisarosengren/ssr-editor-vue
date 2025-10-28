@@ -21,9 +21,11 @@ test('that component renders list of doc links', async () => {
       }
     }
   });
+
   await flushPromises();
 
   const mockDocs = wrapper.findAll('li');
+
   expect(mockDocs).toHaveLength(2);
   expect(mockDocs[0].text()).toContain('Test doc 1');
 });

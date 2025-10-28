@@ -7,6 +7,7 @@
     setup() {
     const userState = inject('userState');
     const formRef = ref(null);
+
     return {userState, formRef };
     },
     data() {
@@ -21,6 +22,7 @@
     methods: {
       async onSubmit() {
         const form = this.formRef;
+
         if (!form.checkValidity()) {
           form.reportValidity();
           return;
@@ -28,6 +30,7 @@
         try {
           const res = await newDoc(this.newDocData);
           const id = res.insertedId;
+
           this.$emit('doc-created');
           this.$router.push(`/${ id }/${ this.newDocData.type}`)
           } catch (e) {

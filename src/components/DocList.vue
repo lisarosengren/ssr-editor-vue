@@ -7,6 +7,7 @@
     setup() {
       const userState = inject('userState');
       const documents = inject('documents');
+
       return {userState, documents };
     },
     // async mounted() {

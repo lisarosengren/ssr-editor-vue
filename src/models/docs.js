@@ -19,12 +19,14 @@ export async function getAll() {
       query: '{ documentList { _id title type } }'
     })
   });
+
   console.log("getall response", response)
   if (!response.ok) {
     throw new Error(response.status);
   }
 
   const result = await response.json();
+
   console.log("result", result)
   console.log("getall result.data.documentLIst", result.data.documentList)
   if (result.errors) {
@@ -91,12 +93,14 @@ export async function getOne(id) {
       variables
     }),
   });
+
   console.log(response)
   if (!response.ok) {
       throw new Error("Database error");
   }
 
   const result = await response.json();
+
   console.log("getOne:", result.data.document)
 
 
@@ -137,6 +141,7 @@ export async function newDoc(newDocData) {
       })
   });
   const result = await response.json()
+
   console.log("Funkar newDoc?", result.data.addDocument)
   return result.data.addDocument
 }
@@ -165,6 +170,7 @@ export async function sendCode(codeString) {
     const result = await response.json();
 
     const output = atob(result.data);
+
     return output;
   } catch (error) {
     console.error('An error occurred: ', error);
@@ -187,6 +193,7 @@ export async function newUser(newUserData) {
         method: 'POST'
     });
     const result = await response.json()
+
     if (!response.ok) {
         // console.log(response);
         throw new Error(result.message || "Registration error");
@@ -214,6 +221,7 @@ export async function userLogin(user) {
   });
 
   const result = await response.json();
+
   console.log("login response", response)
   if (!response.ok) {
       throw new Error(result.message || "Login error");
@@ -232,6 +240,7 @@ export async function userLogin(user) {
 export async function getUser() {
   console.log("get user called")
   const token = localStorage.getItem('token');
+
   console.log("attempting to get user- token", token)
   const response = await fetch(`${baseURL}/graphql`, {
     // body: JSON.stringify(),
@@ -246,6 +255,7 @@ export async function getUser() {
   });
 
   const result = await response.json();
+
   if (!response.ok) {
       // throw new Error("Failed to get user");
       console.log(response);
@@ -270,13 +280,16 @@ export async function mailInvitation(inviteEmail, docId) {
       'Content-Type': 'application/json'
     }
   });
+
   console.log("mailInvitation response:", response);
   if (!response.ok) {
     const errorData = await response.json();
+
     console.log("failure", errorData);
     throw new Error(errorData.message);
   }
   const result = await response.json();
+
   console.log("mailINvitation result", result);
   return result;
 }
@@ -295,6 +308,7 @@ export async function checkInvite() {
   });
   // console.log(response);
   const result = await response.json();
+
   console.log("result from checkinvite:", result);
   console.log("is this sameUser", result.sameUser)
   return result.sameUser;
@@ -312,8 +326,10 @@ export async function inviteDoc() {
       'Content-Type': 'application/json'
     }
   });
+
   console.log(response);
   const result = await response.json();
+
   console.log(result); // objekt invite (decoded token)
   console.log(result.invite.documentId) // = id
   return result;
@@ -348,12 +364,15 @@ export async function acceptInvite(body) {
       }
     }),
   });
+
   console.log("accept invite here - body.docId", body.docId)
   const result = await response.json();
+
   console.log("after acceptInvite - ", result)
 
   return result;
     }
 
 const docs = { getAll, getOne, newDoc, sendCode, newUser, getUser, mailInvitation, inviteDoc, acceptInvite }
+
 export default docs;

@@ -6,6 +6,7 @@ import { inject } from 'vue';
 export default {
     setup() {
       const userState = inject('userState');
+
       return {userState };
     },
   components: {

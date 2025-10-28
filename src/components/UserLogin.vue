@@ -4,6 +4,7 @@ import { getUser, userLogin } from '@/models/docs';
 import { inject } from 'vue';
 
 const userState = inject('userState');
+
 console.log("from UserLogin", userState.loggedIn);
 
 const emit = defineEmits(['login-success', 'changed-mind']);
@@ -18,14 +19,17 @@ const userData = ref({
 
 async function onSubmit() {
   const form = formRef.value;
+
   if (!form.checkValidity()) {
     form.reportValidity()
     return;
   }
   try {
     const user = await userLogin(userData.value)
+
     localStorage.setItem('token', user.token)
     const currentUser = await getUser()
+
     emit('login-success', currentUser)
     userState.user = currentUser;
     userState.loggedIn = true;
@@ -49,7 +53,7 @@ async function onSubmit() {
         <br>
         <label for="password">Lösenord: </label><br>
         <input id="password" name="password" type="password" v-model="userData.password" required /><br>
-        <input type="submit" name="doit" value="Logga in">
+        <input type="submit" name="doit" value="Logga in" class="button">
         <p @click="$emit('changed-mind')" class="register-login-link">Skapa konto</p>
     </fieldset>
   </form>

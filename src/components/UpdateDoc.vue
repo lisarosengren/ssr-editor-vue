@@ -10,6 +10,7 @@
     setup() {
       const userState = inject('userState');
       const formRef = ref(null);
+
       return {userState, formRef};
     },
     created() {
@@ -38,6 +39,7 @@
 
           try {
             const document= await getOne(newId);
+
             if (!document) {
               throw new Error("Det gick fel!");
             }
@@ -91,6 +93,7 @@
             _id: this.id,
             input: type
           }
+
         this.socket.emit(what, data)
         if (what === "title") {
           clearTimeout(this.timeout);
@@ -103,6 +106,7 @@
       },
       async onSubmit() {
         const form = this.formRef;
+
         if (!form.checkValidity()) {
           form.reportValidity();
           return;
@@ -115,6 +119,7 @@
         }
         try {
           const sentTo = await mailInvitation(this.mailInvite, this.id);
+
           console.log("mailing: ", sentTo);
           this.sentMail = true;
           this.messageTimeout = setTimeout(() => {

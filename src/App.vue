@@ -66,7 +66,7 @@ function logout() {
   localStorage.removeItem('invite-token')
   userState.user = null
   userState.loggedIn = false
-  window.location.href = '/'// full reload to reset
+  // window.location.href = '/'// full reload to reset
   buttons.value = false;
 }
 

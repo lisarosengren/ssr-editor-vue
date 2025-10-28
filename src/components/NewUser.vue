@@ -52,7 +52,7 @@ async function onSubmit() {
       <label for="password">Lösenord:</label><br>
       <input id="password" name="password" type="password" v-model="newUserData.password" required />
       <br>
-      <input class="register" type="submit" name="doit" value="Skapa">
+      <input class="button register" type="submit" name="doit" value="Skapa">
       <p class="logging-in">*Du kommer att loggas in automatiskt</p>
       <p @click="$emit('changed-mind')" class="register-login-link">Logga in</p>
     </fieldset>

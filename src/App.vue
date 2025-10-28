@@ -20,6 +20,7 @@ const register = ref(false);
 const invite = ref(null);
 const documents = ref([]);
 const err = ref(false);
+let buttons = ref(true);
 
 provide('invite', invite);
 provide('userState', userState);
@@ -34,6 +35,7 @@ async function reloadDocs() {
   documents.value = await getAll();
 }
 
+
 async function loginUser(loggedInUser) {
   userState.user = loggedInUser;
   userState.loggedIn = true;
@@ -41,9 +43,11 @@ async function loginUser(loggedInUser) {
   console.log("after login", userState.user);
 
   const inviteToken = localStorage.getItem('invite-token');
+
   if (inviteToken) {
     console.log("invite token found in login function, send to check");
     const sameUser = await checkInvite();
+
     if (!sameUser) {
       console.warn("invite is not for you!");
       alert("Nej, va, den här inbjudan var inte till dig!");
@@ -67,32 +71,30 @@ function logout() {
   userState.user = null
   userState.loggedIn = false
   window.location.href = '/'// full reload to reset
+  buttons.value = false;
 }
 
 watch(
   () => route.query.token,
   async (urlToken) => {
     if (!urlToken) return;
-    console.log("found invite token", urlToken);
     localStorage.setItem('invite-token', urlToken);
     userState.inviteToken = urlToken;
 
     const token = localStorage.getItem('token');
+
     if (token) {
-      console.log("both token and invite, check");
       const sameUser = await checkInvite();
-      console.log("checked invite result", sameUser)
+
       if (sameUser == false) {
         alert(`You are trying to access an invite that was sent to another user.
               Please log in with the correct user information.
               Loggin you out.`);
-        console.log("not same");
         logout();
         return;
       }
       try {
         invite.value = await inviteDoc();
-        console.log("invite - ", invite.value);
       } catch (err) {
         console.error("failed to fetch invite", err);
       }
@@ -102,41 +104,15 @@ watch(
 );
 
 onMounted(async () => {
-  // console.log("user: ", userState.user)
-  // console.log("userState ", userState)
-  // const inviteToken = route.query.token;
   const token = localStorage.getItem('token');
+
   if (token) {
-    console.log("token found, calling getUser")
     const currentUser = await getUser();
-    console.log("current user", currentUser)
+
     userState.user = currentUser;
-    console.log("userState: ", userState)
-    // console.log("user.value.email", user.value.email)
     userState.loggedIn = true;
 
-  // if (inviteToken) {
-  //   console.log("found invite token")
-  //   localStorage.setItem('invite-token', inviteToken);
-  // }
-
-  // if (token && inviteToken) {
-  //   console.log("both token and invite found")
-  //   const sameUser = await checkInvite();
-  //   console.log("return from checkinvite: ", sameUser);
-  // }
-    // if (inviteToken) {
-    //   console.log("token and invite, checking")
-    //   const sameUser = await checkInvite();
-    //   console.log("checked invite result", sameUser)
-    // }
-    // if (!sameUser.loginUser) {
-    //   console.log("not same user loggin gout");
-    //   logout();
-    // }
-
     documents.value = await getAll();
-    console.log("did i get all?");
   }
   });
 </script>
@@ -146,33 +122,36 @@ onMounted(async () => {
   <!--  <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" /> -->
 
   <div class="left half appname">
-    <RouterLink to="/"><h1>Bobcat Noir</h1><h1>ssr-editor</h1></RouterLink>
+    <RouterLink @click="buttons = true; login = false; register = false" to="/"><h1 class="header">Bobcat Noir</h1><h2>ssr-editor</h2></RouterLink>
 <!--      <nav>
       <RouterLink to="/login">Logga in befintlig användare</RouterLink>
       <RouterLink to="/register">Registrera ny användare</RouterLink>
     </nav> -->
   </div>
   <div v-if="userState.loggedIn && userState.user" class="right half">
-    <p>inloggad som: {{  userState.user.email }}</p>
-    <button class="button" @click="logout">logga ut</button>
+    <p>inloggad som: <br>{{  userState.user.email }}</p>
+    <button class="button logout" @click="logout">logga ut</button>
   </div>
   </header>
 
-  <main v-if="!err">
-    <div class="sidebar">
-        <!--<UserDocs v-if="loggedIn && user" :user="user" />-->
-        <UserDocs v-if="userState.loggedIn" @doc-created="reloadDocs"/>
-      <div v-else>
-        <button class="button" @click="login = true; register = false">Logga in</button>
-        <button class="button" @click="register = true; login = false">Registrera ny användare</button>
-        <UserLogin v-if="login" @login-success="loginUser" />
-        <NewUser v-if="register" @register-success="loginUser" />
-      </div>
+  <main :class="{ main: userState.loggedIn, center: !userState.loggedIn }" v-if="!err">
+    <div v-if="userState.loggedIn" class="sidebar left">
+        <UserDocs @doc-created="reloadDocs"/>
     </div>
 
-    <div class="editor">
-      <RouterView @doc-created="reloadDocs"/>
-    </div>
+    <!--<div class="editor">-->
+      <RouterView class="editor" v-if="userState.loggedIn" @doc-created="reloadDocs"/>
+      <div v-else>
+        <div class="center">
+          <button v-if="buttons" class="button" @click="login = true; register = false; buttons = false">Logga in</button>
+          <button v-if="buttons" class="button" @click="register = true; login = false; buttons = false">Skapa konto</button>
+          <UserLogin v-if="login" @changed-mind="register = true; login = false;" @login-success="loginUser" />
+          <NewUser v-if="register" @changed-mind="register = false; login = true;" @register-success="loginUser" />
+        </div>
+      </div>
+
+
+   <!-- </div>-->
   </main>
 
   <main v-else>
@@ -180,13 +159,42 @@ onMounted(async () => {
 
   </main>
 
+  <footer>
+    <p class="footer">Ett JSramverkprojekt av Emma och Lisa</p>
+  </footer>
+
 </template>
 
 <style>
 header {
-  line-height: 1.5;
-  max-height: 100vh;
-  margin-bottom: 2rem;
+  margin-bottom: 3.6em;
+  border-bottom: #04AA6D 1px solid;
+}
+
+footer {
+  margin-left: 1em;
+  margin-right: 1em;
+  border-top: #04AA6D 1px solid;
+  /* margin-bottom: 0; */
+  /* left: 0; */
+  /* bottom: 0; */
+  /* width: 100%; */
+  text-align: center;
+  /* width: 100%; */
+  color: rgb(0, 91, 60);
+  /* position: relative; */
+}
+
+.header {
+  font-size: 4em;
+  margin-left: 0.2em;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+h2 {
+  margin-top: 0;
+  margin-left: 0.7em;
 }
 
 .logo {
@@ -208,15 +216,11 @@ header {
 .appname {
   display: none;
 }
-.sidebar {
-  display: flex;
-  flex-direction: row;
-  max-width:100%;
+
+.sidebar .left {
+  padding-right: 1em;
 }
-main {
-  display: flex;
-  flex-direction: row;
-}
+
 .editor {
   width: 80%;
 }
@@ -233,9 +237,6 @@ input[type=select] {
   padding: 1rem;
   margin-bottom: 1rem;
 }
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
 
 nav a.router-link-exact-active:hover {
   background-color: transparent;
@@ -244,7 +245,6 @@ nav a.router-link-exact-active:hover {
 nav a {
   display: inline-block;
   padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
 }
 
 nav a:first-of-type {
@@ -254,7 +254,6 @@ nav a:first-of-type {
 .button {
   display: inline-block;
   padding: 15px 25px;
-  /* font-size: 24px; */
   cursor: pointer;
   text-align: center;
   text-decoration: none;
@@ -262,13 +261,16 @@ nav a:first-of-type {
   background-color: #04AA6D;
   border: none;
   border-radius: 15px;
-  margin: 1.4rem;
+  margin: 0 auto;
+  margin-bottom: 1.4rem;
 }
 
-.button:active {
-  box-shadow: 0 5px #666;
-  transform: translateY(4px);
+.button:hover {
+  color: #000;
 }
+ .logout {
+  margin-top: 0.7rem;
+ }
 
 
 @media (min-width: 1024px) {

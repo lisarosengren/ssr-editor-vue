@@ -6,6 +6,7 @@ export default {
   emits: ['doc-created'],
   setup() {
     const userState = inject('userState');
+
     return {userState };
   },
   components: {

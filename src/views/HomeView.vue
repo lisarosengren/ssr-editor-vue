@@ -8,11 +8,15 @@
 </script>
 
 <template>
-  <div class="home"><h1>Welcome!</h1></div>
+  <div class="home">
+    <h2>Välkommen!</h2>
+    <p>Det här är Lisas och Emmas jsramverk-projekt.</p>
+    </div>
 </template>
 
 <style scoped>
 .home {
-  text-align: center;
+  /* text-align: center; */
+  max-width: 50%;
 }
 </style>

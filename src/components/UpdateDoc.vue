@@ -10,6 +10,7 @@
     setup() {
       const userState = inject('userState');
       const formRef = ref(null);
+
       return {userState, formRef};
     },
     created() {
@@ -38,6 +39,7 @@
 
           try {
             const document= await getOne(newId);
+
             if (!document) {
               throw new Error("Det gick fel!");
             }
@@ -91,6 +93,7 @@
             _id: this.id,
             input: type
           }
+
         this.socket.emit(what, data)
         if (what === "title") {
           clearTimeout(this.timeout);
@@ -103,6 +106,7 @@
       },
       async onSubmit() {
         const form = this.formRef;
+
         if (!form.checkValidity()) {
           form.reportValidity();
           return;
@@ -115,6 +119,7 @@
         }
         try {
           const sentTo = await mailInvitation(this.mailInvite, this.id);
+
           console.log("mailing: ", sentTo);
           this.sentMail = true;
           this.messageTimeout = setTimeout(() => {
@@ -143,21 +148,22 @@
       <label for="title">Titel</label>
       <input type="text" v-model="title" @input="onInput('title')" />
 
-      <label for="content">Innehåll</label>
-      <textarea v-model="content" @input="onInput('content')"></textarea>
-      <button>Spara*</button>
+      <textarea v-model="content" @input="onInput('content')" class="writebox" ></textarea>
+      <button class="button">Spara*</button>
       <p><i>*Knappen ovan är av typen "Emotional support button" och fyller ingen funktion mer än som stöd för den som vill ha en "spara-knapp".</i></p>
 
     </div>
     <div class="sidebar">
       <div v-if="document && document.users" >
-        <h3>Detta dokument kan användas av:</h3>
-        <p v-for="(user) in document.users" :key="user.email">{{ user.email }}</p>
+        <p class="bold">Kan användas av:</p>
+        <ul>
+          <li v-for="(user) in document.users" :key="user.email">{{ user.email }}</li>
+        </ul>
       </div>
-      <form ref="formRef" @submit.prevent="onSubmit">
-        <label for="mailInvite">Skicka inbjudan att medverka:</label>
-        <input type="email" id="mailInvite" name="mailInvite" v-model="mailInvite" />
-        <input type="submit" name="doit" value="Skicka">
+      <form class="invite" ref="formRef" @submit.prevent="onSubmit">
+        <label for="mailInvite">Bjud in till  medverkan:</label>
+        <input type="email" id="mailInvite" name="mailInvite" v-model="mailInvite" placeholder="example@example.com"/>
+        <input type="submit" name="doit" value="Skicka" class="button">
       </form>
       <div v-if="errMail">
         <div class="err">
@@ -174,6 +180,20 @@
 </template>
 
 <style scoped>
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.invite {
+  border-top: 1px solid #04AA6D;
+  padding-top: 1.4em;
+}
 
 .updated {
   background-color: rgb(53, 217, 53);
@@ -195,8 +215,18 @@
   width: 75%;
   padding-right: 2rem;
 }
+
+textarea {
+  resize: none;
+}
 .sidebar {
   width: 25%;
   padding-left: 2rem;
 }
+.writebox {
+  height: 600px;
+  box-shadow: 10px 10px 5px lightgrey;
+  border: 1px solid lightgrey;
+}
+
 </style>

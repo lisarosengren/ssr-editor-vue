@@ -4,9 +4,10 @@ import { getUser, userLogin } from '@/models/docs';
 import { inject } from 'vue';
 
 const userState = inject('userState');
+
 console.log("from UserLogin", userState.loggedIn);
 
-const emit = defineEmits(['login-success']);
+const emit = defineEmits(['login-success', 'changed-mind']);
 const formRef = ref(null);
 
 const userData = ref({
@@ -18,14 +19,17 @@ const userData = ref({
 
 async function onSubmit() {
   const form = formRef.value;
+
   if (!form.checkValidity()) {
     form.reportValidity()
     return;
   }
   try {
     const user = await userLogin(userData.value)
+
     localStorage.setItem('token', user.token)
     const currentUser = await getUser()
+
     emit('login-success', currentUser)
     userState.user = currentUser;
     userState.loggedIn = true;
@@ -39,30 +43,24 @@ async function onSubmit() {
 
 </script>
 
-
-
-
 <template>
 
-  <form ref="formRef" @submit.prevent="onSubmit">
-    <label for="email">E-post</label>
-    <input id="email" name="email" type="email" v-model="userData.email" required placeholder="example@example.com" />
-    <label for="password">Lösenord</label>
-    <input id="password" name="password" type="password" v-model="userData.password" required />
-    <input type="submit" name="doit" value="Logga in">
+  <form class="login-register" ref="formRef" @submit.prevent="onSubmit">
+    <fieldset>
+      <legend>Logga in</legend>
+        <label for="email">E-post: </label><br>
+        <input id="email" name="email" type="email" v-model="userData.email" required placeholder="example@example.com" />
+        <br>
+        <label for="password">Lösenord: </label><br>
+        <input id="password" name="password" type="password" v-model="userData.password" required /><br>
+        <input type="submit" name="doit" value="Logga in" class="button">
+        <p @click="$emit('changed-mind')" class="register-login-link">Skapa konto</p>
+    </fieldset>
   </form>
 </template>
 
 <style scoped>
-.radio {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-}
-.radiobutton {
-  margin: 0.7rem;
-  width: auto;
-}
+
 
 
 </style>
